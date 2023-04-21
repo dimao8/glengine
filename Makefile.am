@@ -1,15 +1,9 @@
 ACLOCAL_AMFLAGS = -I m4
 
-bin_PROGRAMS = glengine
-glengine_SOURCES = src/glengine.cc \
+lib_LTLIBRARIES = libglengine.la
+libglengine_la_SOURCES = src/glengine.cc \
 	src/application.h \
 	src/application.cc
-
-if DEBUG
-	glengine_CFLAGS = -DDEBUG -g -O0
-else
-	glengine_CFLAGS = -DNDEBUG -O2
-endif
 
 CLEANFILES =
 SUFFIXES =
