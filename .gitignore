@@ -1,0 +1,16 @@
+autom4te.cache/
+build/
+.vscode/
+ld/
+*~
+aclocal.m4
+compile
+config.h.in
+config.guess
+config.sub
+configure
+depcomp
+install-sh
+Makefile.in
+missing
+ltmain.sh

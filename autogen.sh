@@ -1,0 +1,5 @@
+#! /bin/sh
+
+mkdir -p "./build"
+
+autoreconf --force --install
