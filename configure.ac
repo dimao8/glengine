@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.2], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.3], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/glengine.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
