@@ -5,7 +5,9 @@ libglengine_la_SOURCES = src/glengine.cc \
 	src/application.h \
 	src/application.cc \
 	src/arguments.h \
-	src/arguments.cc
+	src/arguments.cc \
+	src/logger.h \
+	src/logger.cc
 
 libglengine_la_CXXFLAGS = -I$(srcdir)/include
 

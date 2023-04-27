@@ -1,3 +1,3 @@
 #! /bin/sh
 
-./tests/engine --hello=world -g
+./tests/engine --help

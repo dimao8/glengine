@@ -48,27 +48,10 @@ private:
   std::string m_long_name; /// Long argument name
   std::string
       m_value; /// Argument value. Can be empty string if no value has been set
+  std::string m_comment; /// Argument comment
 
 public:
   Argument () = delete;
-
-  /**
-   * Create argument with only long version
-   *
-   * \param [in] name -- Long name of the argument
-   * \param [in] value -- Value of the argument. Set this arg to empty string
-   *                    if there is no value
-   */
-  Argument (const std::string &name, const std::string &value = "");
-
-  /**
-   * Create argument with only short version
-   *
-   * \param [in] name -- Short name of the argument
-   * \param [in] value -- Value of the argument. Set this arg to empty string
-   *                    if there is no value
-   */
-  Argument (char name, const std::string &value = "");
 
   /**
    * Create argument with both short and long versions
@@ -79,7 +62,7 @@ public:
    *                    if there is no value
    */
   Argument (const std::string &lname, char sname,
-            const std::string &value = "");
+            const std::string &comment = "", const std::string &value = "");
 
   /**
    * \brief Copy constructor
@@ -94,18 +77,18 @@ public:
   /**
    * \brief Equal operator
    */
-  bool operator== (const Argument & arg);
+  bool operator== (const Argument &arg);
 
   // Getters and setters
 public:
+  std::string get_short_name ();
+  std::string get_long_name ();
+  std::string get_value ();
+  std::string get_comment ();
 
-  std::string get_short_name();
-  std::string get_long_name();
-  std::string get_value();
-
-  bool has_long_name();
-  bool has_short_name();
-  bool has_value();
+  bool has_long_name ();
+  bool has_short_name ();
+  bool has_value ();
 };
 
 }

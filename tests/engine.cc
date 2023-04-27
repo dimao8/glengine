@@ -18,5 +18,8 @@ main (int argc, char **argv)
 {
   Game game (argc, argv);
 
+  game.register_arg('h', "help", "Print this message and exit");
+  game.register_arg('v', "version", "Print version prompt and exit");
+
   return game.run();
 }
