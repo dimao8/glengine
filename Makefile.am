@@ -3,17 +3,21 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = libpngloader liblitejson
 
 lib_LTLIBRARIES = libglengine.la
-libglengine_la_SOURCES = src/glengine.cc \
-	src/application.h \
+libglengine_la_SOURCES = src/engine.cc \
 	src/application.cc \
-	src/arguments.h \
 	src/arguments.cc \
-	src/logger.h \
 	src/logger.cc \
 	src/opengl.h \
-	src/opengl.cc
+	src/opengl.cc \
+	src/image.cc
 
-libglengine_la_CXXFLAGS = -I$(srcdir)/include
+include_HEADERS = include/gle/application.h \
+	include/gle/arguments.h \
+	include/gle/engine.h \
+	include/gle/logger.h \
+	include/gle/image.h
+
+libglengine_la_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/libpngloader/include -I$(srcdir)/liblitejson/include
 libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/liblitejson -llitejson
 
 CLEANFILES =
@@ -57,8 +61,8 @@ endif
 
 TESTS = tests/t_args
 
-check_PROGRAMS = tests/engine
+check_PROGRAMS = tests/app
 
-tests_engine_SOURCES = tests/engine.cc
-tests_engine_LDADD = -lglengine
-tests_engine_CXXFLAGS = -I$(srcdir)/include
+tests_app_SOURCES = tests/app.cc
+tests_app_LDADD = -lglengine
+tests_app_CXXFLAGS = -I$(srcdir)/include

@@ -1,5 +1,5 @@
 #include <cstdarg>
-#include <logger.h>
+#include <gle/logger.h>
 #include <stdexcept>
 
 #ifdef HAVE_CONFIG_H

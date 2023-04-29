@@ -1,7 +1,7 @@
 #include "opengl.h"
 
 #include <GLFW/glfw3.h>
-#include <logger.h>
+#include <gle/logger.h>
 
 #define LOAD_GL_EXTENSION(x, y) \
   x = reinterpret_cast<y>(glfwGetProcAddress(#x)); \

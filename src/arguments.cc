@@ -4,7 +4,7 @@
  * The Arguments class implementation file.
  */
 
-#include <arguments.h>
+#include <gle/arguments.h>
 
 namespace gle
 {

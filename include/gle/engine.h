@@ -1,6 +1,6 @@
 #ifndef GLENGINE_H
 #define GLENGINE_H
 
-#include <application.h>
+#include <gle/application.h>
 
 #endif // GLENGINE_H
