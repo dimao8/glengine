@@ -1,15 +1,20 @@
 ACLOCAL_AMFLAGS = -I m4
 
-bin_PROGRAMS = glengine
-glengine_SOURCES = src/glengine.cc \
-	src/application.h \
-	src/application.cc
+SUBDIRS = libpngloader liblitejson
 
-if DEBUG
-	glengine_CFLAGS = -DDEBUG -g -O0
-else
-	glengine_CFLAGS = -DNDEBUG -O2
-endif
+lib_LTLIBRARIES = libglengine.la
+libglengine_la_SOURCES = src/glengine.cc \
+	src/application.h \
+	src/application.cc \
+	src/arguments.h \
+	src/arguments.cc \
+	src/logger.h \
+	src/logger.cc \
+	src/opengl.h \
+	src/opengl.cc
+
+libglengine_la_CXXFLAGS = -I$(srcdir)/include
+libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/liblitejson -llitejson
 
 CLEANFILES =
 SUFFIXES =
@@ -49,3 +54,11 @@ CLEANFILES += $(DOCPDF) $(DOCNAME).log $(DOCNAME).aux $(DOCNAME).toc \
 	$(MKDIR_P) $(DOCDIR)
 	$(PDFLATEX) $(PDFLATEXOPTS) $(srcdir)/$(DOCSRC)
 endif
+
+TESTS = tests/t_args
+
+check_PROGRAMS = tests/engine
+
+tests_engine_SOURCES = tests/engine.cc
+tests_engine_LDADD = -lglengine
+tests_engine_CXXFLAGS = -I$(srcdir)/include

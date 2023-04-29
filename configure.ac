@@ -1,9 +1,10 @@
 AC_PREREQ([2.69])
-AC_INIT([glengine], [0.1.0.0], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.3], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/glengine.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
 AC_CONFIG_MACRO_DIRS([m4])
+AC_CONFIG_SUBDIRS([libpngloader liblitejson])
 AC_LANG([C++])
 
 # Check for LibTool
@@ -14,13 +15,24 @@ LT_LANG([C++])
 CXXFLAGS="-std=gnu++11"
 AC_PROG_CXX(clang++ llvm-g++ g++)
 
+# Check for host
+AC_CANONICAL_HOST
+
+LIBS="$LIBS -ldl"
+
 # Check for debug option
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [Set to enable debugging, default: no])],
     [
       AS_CASE([${enableval}],
-        [yes], [ac_debug=true],
-        [no], [ac_debug=false],
+        [yes],
+        [
+          CXXFLAGS="-g -O0 -DDEBUG"
+        ],
+        [no],
+        [
+          CXXFLAGS="-O2 -DNDEBUG"
+        ],
         [AC_MSG_ERROR([Bad value ${enableval} for --enable-debug])])
     ],
     [ac_debug=false])
@@ -46,7 +58,7 @@ AS_IF([test "x$ac_build_docs" = "xyes"],
   ])
 
 # Check for GL
-AX_CHECK_GL
+AX_CHECK_OPENGL
 
 # Check for GLFW3
 AX_CHECK_GLFW
