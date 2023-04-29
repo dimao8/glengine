@@ -1,5 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
+SUBDIRS = libpngloader liblitejson
+
 lib_LTLIBRARIES = libglengine.la
 libglengine_la_SOURCES = src/glengine.cc \
 	src/application.h \
@@ -7,9 +9,12 @@ libglengine_la_SOURCES = src/glengine.cc \
 	src/arguments.h \
 	src/arguments.cc \
 	src/logger.h \
-	src/logger.cc
+	src/logger.cc \
+	src/opengl.h \
+	src/opengl.cc
 
 libglengine_la_CXXFLAGS = -I$(srcdir)/include
+libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/liblitejson -llitejson
 
 CLEANFILES =
 SUFFIXES =

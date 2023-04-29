@@ -6,7 +6,8 @@
 
 #ifndef NDEBUG
 #define LOG_PRINT(x, y, ...) \
-  gle::logger.print(SeverityLevel::none, "%s:%i at %s\n", __FILE__, __LINE__, __func__); \
+  if (x == SeverityLevel::warning || x == SeverityLevel::error) \
+    gle::logger.print(SeverityLevel::none, "%s:%i at %s\n", __FILE__, __LINE__, __func__); \
   gle::logger.print(x, y, ##__VA_ARGS__)
 #else
 #define LOG_PRINT(x, y, ...) \

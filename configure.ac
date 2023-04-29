@@ -4,6 +4,7 @@ AC_CONFIG_SRCDIR([src/glengine.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
 AC_CONFIG_MACRO_DIRS([m4])
+AC_CONFIG_SUBDIRS([libpngloader liblitejson])
 AC_LANG([C++])
 
 # Check for LibTool

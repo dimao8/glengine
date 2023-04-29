@@ -44,6 +44,11 @@ private:
    */
   void parse_arguments (int argc, char **argv);
 
+  /**
+   * Clean all resources
+   */
+  void cleanup ();
+
 protected:
 public:
   /**
@@ -53,6 +58,11 @@ public:
    * \param [in] argv -- Argument list
    */
   Application (int argc = 0, char **argv = nullptr);
+
+  /**
+   * Destroy aplication
+   */
+  virtual ~Application ();
 
   /**
    * Register argument as acceptable.
@@ -72,6 +82,11 @@ public:
    * \return Returns result of application execution
    */
   int run ();
+
+  /**
+   * Draw frame
+   */
+  void draw ();
 
   /**
    * Usage prompt of the application
