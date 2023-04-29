@@ -1,7 +1,6 @@
-[submodule]
-    path = libpngloader
-    url = https://github.com/dimao8/libpngloader.git
-
-[submodule]
-    path = liblitejson
-    url = https://github.com/dimao8/liblitejson.git
+[submodule "libpngloader"]
+	path = libpngloader
+	url = https://github.com/dimao8/libpngloader.git
+[submodule "liblitejson"]
+	path = liblitejson
+	url = https://github.com/dimao8/liblitejson.git
