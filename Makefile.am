@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = libpngloader liblitejson
+SUBDIRS = libpngloader libtgaloader liblitejson
 
 lib_LTLIBRARIES = libglengine.la
 libglengine_la_SOURCES = src/engine.cc \

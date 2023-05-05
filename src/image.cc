@@ -46,6 +46,7 @@ Image::Image (const std::string &file_name)
   uint8_t *data;
   png_header_t png_hdr;
   png_error_t png_result;
+  unsigned int bpp;
 
   for (auto n = 0; n < 8; n++)
     {
@@ -73,33 +74,36 @@ Image::Image (const std::string &file_name)
           m_size.x = png_hdr.width;
           m_size.y = png_hdr.height;
           switch (png_hdr.color_type)
-          {
-          case 0:
-            m_color_type = ColorType::luminance;
-            break;
+            {
+            case 0:
+              m_color_type = ColorType::luminance;
+              break;
 
-          case 2:
-            m_color_type = ColorType::rgb;
-            break;
+            case 2:
+              m_color_type = ColorType::rgb;
+              break;
 
-          case 3:
-            m_color_type = ColorType::rgb;
-            break;
+            case 3:
+              m_color_type = ColorType::rgb;
+              break;
 
-          case 4:
-            m_color_type = ColorType::luminance_alpha;
-            break;
+            case 4:
+              m_color_type = ColorType::luminance_alpha;
+              break;
 
-          case 6:
-            m_color_type = ColorType::rgb_alpha;
-            break;
-          
-          default:
-            break;
-          }
+            case 6:
+              m_color_type = ColorType::rgb_alpha;
+              break;
+
+            default:
+              break;
+            }
+
+          m_data.assign (
+              data, data + color_size (m_color_type) * m_size.x * m_size.y);
         }
     }
-  else  // Check for TGA
+  else // Check for TGA
     {
     }
 

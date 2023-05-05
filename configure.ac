@@ -1,10 +1,10 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.3], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.4], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/engine.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
 AC_CONFIG_MACRO_DIRS([m4])
-AC_CONFIG_SUBDIRS([libpngloader liblitejson])
+AC_CONFIG_SUBDIRS([libpngloader libtgaloader liblitejson])
 AC_LANG([C++])
 
 # Check for LibTool

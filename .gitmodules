@@ -4,3 +4,6 @@
 [submodule "liblitejson"]
 	path = liblitejson
 	url = https://github.com/dimao8/liblitejson.git
+[submodule "libtgaloader"]
+	path = libtgaloader
+	url = https://github.com/dimao8/libtgaloader.git
