@@ -49,6 +49,13 @@ public:
    * \note Only PNG and TGA files are accepted
    */
   Image (const std::string &file_name);
+
+  /**
+   * Save image to the file
+   *
+   * \param [in] file_name -- Name of the TGA file
+   */
+  void save (const std::string &file_name);
 };
 
 }

@@ -3,6 +3,9 @@
 
 #include <glm/vec4.hpp>
 
+namespace gle
+{
+
 enum class ColorType
 {
   luminance,
@@ -11,27 +14,14 @@ enum class ColorType
   rgb_alpha
 };
 
-unsigned int
-color_size (ColorType ct)
-{
-  switch (ct)
-    {
+/**
+ * Get size of pixel with ColorType
+ *
+ * \param [in] ct -- Color type
+ * \return Return size in bytes of corresponding pixel
+ */
+unsigned int color_size (ColorType ct);
 
-    case ColorType::luminance:
-      return 1;
-
-    case ColorType::luminance_alpha:
-      return 2;
-
-    case ColorType::rgb:
-      return 3;
-
-    case ColorType::rgb_alpha:
-      return 4;
-
-    default:
-      return 0;
-    }
 }
 
 #endif // COLOR_H

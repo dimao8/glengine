@@ -9,16 +9,18 @@ libglengine_la_SOURCES = src/engine.cc \
 	src/logger.cc \
 	src/opengl.h \
 	src/opengl.cc \
-	src/image.cc
+	src/image.cc \
+	src/color.cc
 
 include_HEADERS = include/gle/application.h \
 	include/gle/arguments.h \
 	include/gle/engine.h \
 	include/gle/logger.h \
-	include/gle/image.h
+	include/gle/image.h \
+	include/gle/color.h
 
-libglengine_la_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/libpngloader/include -I$(srcdir)/liblitejson/include
-libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/liblitejson -llitejson
+libglengine_la_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include -I$(srcdir)/liblitejson/include
+libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/libtgaloader -ltgaloader -L$(builddir)/liblitejson -llitejson
 
 CLEANFILES =
 SUFFIXES =
@@ -59,6 +61,7 @@ CLEANFILES += $(DOCPDF) $(DOCNAME).log $(DOCNAME).aux $(DOCNAME).toc \
 	$(PDFLATEX) $(PDFLATEXOPTS) $(srcdir)/$(DOCSRC)
 endif
 
+# Tests
 TESTS = tests/t_args
 
 check_PROGRAMS = tests/app

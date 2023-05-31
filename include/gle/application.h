@@ -8,6 +8,7 @@
 #define APPLICATION_H
 
 #include <GLFW/glfw3.h>
+#include <glm/vec2.hpp>
 #include <list>
 #include <string>
 
@@ -28,6 +29,7 @@ class Application
 private:
   std::list<Argument> m_args;          /// Argument list
   std::list<Argument> m_accepted_args; /// Accepted argument list
+  glm::uvec2 m_framebuffer_size;       /// Framebuffer size
 
   // Internal application state
   bool m_should_close; /// State of the application. Set to true to exit

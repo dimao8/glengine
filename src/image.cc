@@ -1,6 +1,7 @@
 #include <gle/image.h>
 #include <gle/logger.h>
 #include <pngloader.h>
+#include <tgaloader.h>
 
 #include <fstream>
 
@@ -119,6 +120,15 @@ Image::make_empty (unsigned int width, unsigned int height, ColorType ct)
   m_size.y = height;
   m_color_type = ct;
   m_data.assign (color_size (ct) * m_size.x * m_size.y, 255);
+}
+
+/* ****************************** Image::save ****************************** */
+
+void
+Image::save (const std::string &file_name)
+{
+  SaveTGA (m_size.x, m_size.y, color_size (m_color_type), m_data.data (),
+           file_name.c_str ());
 }
 
 }
