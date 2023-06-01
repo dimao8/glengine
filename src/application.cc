@@ -111,7 +111,7 @@ Application::Application (int argc, char **argv)
 
 Application::~Application ()
 {
-  cleanup ();
+  p_cleanup ();
 
   // TODO : Close application
 }
@@ -204,8 +204,10 @@ Application::parse_arguments (int argc, char **argv)
 /* ************************** Application::cleanup ************************* */
 
 void
-Application::cleanup ()
+Application::p_cleanup ()
 {
+  cleanup();
+
   // TODO : Clean further
   glDeleteFramebuffers (1, &m_framebuffer);
   glDeleteTextures (1, &m_framebuffer_texture);
@@ -233,6 +235,8 @@ Application::run ()
 
   if (m_should_close)
     return 0;
+
+  init();
 
   if (m_save_framebuffer)
     {

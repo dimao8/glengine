@@ -75,6 +75,7 @@ Logger::print (SeverityLevel sl, const std::string &format, ...)
   va_start (va, format);
   vfprintf(m_log_stream, format.c_str(), va);
   va_end (va);
+  fflush(m_log_stream);
 }
 
 }

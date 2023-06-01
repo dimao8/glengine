@@ -1,3 +1,4 @@
 1.06.2023
 
+    -- BUG. Fix destructor fail on Application class
     -- Make shader class and shader program class

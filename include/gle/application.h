@@ -12,6 +12,9 @@
 #include <list>
 #include <string>
 
+#include <gle/image.h>
+#include <gle/shader.h>
+
 #include "arguments.h"
 
 namespace gle
@@ -52,7 +55,7 @@ private:
   /**
    * Clean all resources
    */
-  void cleanup ();
+  void p_cleanup();
 
 protected:
 public:
@@ -65,7 +68,7 @@ public:
   Application (int argc = 0, char **argv = nullptr);
 
   /**
-   * Destroy aplication
+   * Destroy application
    */
   virtual ~Application ();
 
@@ -102,6 +105,16 @@ public:
    * Version prompt of the application
    */
   virtual void version ();
+
+  /**
+   * Custom initializer
+   */
+  virtual void init () = 0;
+
+  /**
+   * Custom cleaner
+   */
+  virtual void cleanup () = 0;
 };
 
 } // namespace gle
