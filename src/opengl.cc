@@ -13,6 +13,9 @@
 
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 
+PFNGLCREATEFRAMEBUFFERSPROC glCreateFramebuffers = nullptr;
+PFNGLBINDFRAMEBUFFERPROC glBindFrameBuffer = nullptr;
+
 namespace gle
 {
 
@@ -21,6 +24,9 @@ namespace gle
 bool load_gl_extensions()
 {
   LOAD_GL_EXTENSION(glGetStringi, PFNGLGETSTRINGIPROC);
+
+  LOAD_GL_EXTENSION(glCreateFramebuffers, PFNGLCREATEFRAMEBUFFERSPROC);
+  LOAD_GL_EXTENSION(glBindFrameBuffer, PFNGLBINDFRAMEBUFFERPROC);
 
   return true;
 }

@@ -5,6 +5,7 @@
 #include <GL/glext.h>
 
 extern PFNGLGETSTRINGIPROC glGetStringi;
+extern PFNGLCREATEFRAMEBUFFERSPROC glCreateFramebuffers;
 
 namespace gle
 {

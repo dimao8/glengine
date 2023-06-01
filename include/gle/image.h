@@ -35,11 +35,13 @@ public:
    *
    * \param [in] width -- Width of the image
    * \param [in] height -- Height of the image
-   * \param [in] ct -- CType of the pixel color
+   * \param [in] ct -- Type of the pixel color
+   * \param [in] data -- Data of the image. If this pointer is nullptr, the
+   * image will be white
    */
   Image (unsigned int width = default_image_size.x,
          unsigned int height = default_image_size.y,
-         ColorType ct = ColorType::rgb_alpha);
+         ColorType ct = ColorType::rgb_alpha, const uint8_t *data = nullptr);
 
   /**
    * Load image from the file

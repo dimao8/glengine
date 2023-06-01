@@ -1,6 +1,6 @@
 #include <gle/application.h>
-#include <gle/logger.h>
 #include <gle/image.h>
+#include <gle/logger.h>
 
 #include <iostream>
 
@@ -84,8 +84,8 @@ Application::Application (int argc, char **argv) : m_should_close (true)
     }
 
   int w, h;
-  glfwGetFramebufferSize(m_window, &w, &h);
-  m_framebuffer_size = glm::uvec2(w, h);
+  glfwGetFramebufferSize (m_window, &w, &h);
+  m_framebuffer_size = glm::uvec2 (w, h);
 
   // TODO : Further application init
 
@@ -213,9 +213,9 @@ Application::run ()
     return 0;
 
   draw ();
-  glfwSwapBuffers(m_window);
+  glfwSwapBuffers (m_window);
   draw ();
-  glfwSwapBuffers(m_window);
+  glfwSwapBuffers (m_window);
 
   // while (!glfwWindowShouldClose (m_window))
   //   {
@@ -224,10 +224,16 @@ Application::run ()
   //     glfwSwapBuffers (m_window);
   //   }
 
-  Image img(m_framebuffer_size.x, m_framebuffer_size.y, ColorType::rgb);
-  img.save("Framebuffer.tga");
+  uint8_t *framebuffer_ptr
+      = new uint8_t[m_framebuffer_size.x * m_framebuffer_size.y * 3];
 
-  glfwSetWindowShouldClose(m_window, 1);
+  glReadPixels (0, 0, m_framebuffer_size.x, m_framebuffer_size.y, GL_RGB,
+                GL_UNSIGNED_BYTE, framebuffer_ptr);
+  Image img (m_framebuffer_size.x, m_framebuffer_size.y, ColorType::rgb,
+             framebuffer_ptr);
+  img.save ("Framebuffer.tga");
+
+  glfwSetWindowShouldClose (m_window, 1);
 
   // TODO : Run the application
 
@@ -239,7 +245,7 @@ Application::run ()
 void
 Application::draw ()
 {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // TODO : Draw further
 }

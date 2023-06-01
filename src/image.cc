@@ -16,9 +16,18 @@ const glm::uvec2 Image::default_image_size
 
 /* ****************************** Image::Image ***************************** */
 
-Image::Image (unsigned int width, unsigned int height, ColorType ct)
+Image::Image (unsigned int width, unsigned int height, ColorType ct,
+              const uint8_t *data)
 {
-  make_empty (width, height, ct);
+  if (data == nullptr)
+    make_empty (width, height, ct);
+  else
+    {
+      m_size.x = width;
+      m_size.y = height;
+      m_color_type = ct;
+      m_data.assign (data, data + width * height * color_size (ct));
+    }
 }
 
 /* ****************************** Image::Image ***************************** */
