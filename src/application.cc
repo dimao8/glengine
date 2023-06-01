@@ -18,7 +18,8 @@ namespace gle
 
 /* ************************ Application::Application *********************** */
 
-Application::Application (int argc, char **argv) : m_should_close (true)
+Application::Application (int argc, char **argv)
+    : m_should_close (true), m_save_framebuffer (false)
 {
   LOG_PRINT (SeverityLevel::info, "Parse arguments\n");
   parse_arguments (argc, argv);
@@ -36,12 +37,10 @@ Application::Application (int argc, char **argv) : m_should_close (true)
   // Try to create window
   LOG_PRINT (SeverityLevel::info, "Create main window\n");
 
-  glfwWindowHint (GLFW_RESIZABLE, 1);
   glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, 1);
-  glfwWindowHint (GLFW_DOUBLEBUFFER, 1);
   glfwWindowHint (GLFW_RED_BITS, 8);
   glfwWindowHint (GLFW_GREEN_BITS, 8);
   glfwWindowHint (GLFW_BLUE_BITS, 8);
@@ -86,6 +85,22 @@ Application::Application (int argc, char **argv) : m_should_close (true)
   int w, h;
   glfwGetFramebufferSize (m_window, &w, &h);
   m_framebuffer_size = glm::uvec2 (w, h);
+
+  glGenFramebuffers (1, &m_framebuffer);
+  glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
+
+  glGenTextures (1, &m_framebuffer_texture);
+  glBindTexture (GL_TEXTURE_2D, m_framebuffer_texture);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, m_framebuffer_size.x,
+                m_framebuffer_size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+  glBindTexture (GL_TEXTURE_2D, 0);
+
+  glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                          m_framebuffer_texture, 0);
 
   // TODO : Further application init
 
@@ -192,6 +207,8 @@ void
 Application::cleanup ()
 {
   // TODO : Clean further
+  glDeleteFramebuffers (1, &m_framebuffer);
+  glDeleteTextures (1, &m_framebuffer_texture);
 
   glfwTerminate ();
 }
@@ -207,33 +224,45 @@ Application::run ()
         usage ();
       if (it.get_long_name () == "--version" || it.get_short_name () == "-v")
         version ();
+      if (it.get_long_name () == "--save-framebuffer"
+          || it.get_short_name () == "-s")
+        m_save_framebuffer = true;
+      else
+        m_save_framebuffer = false;
     }
 
   if (m_should_close)
     return 0;
 
-  draw ();
-  glfwSwapBuffers (m_window);
-  draw ();
-  glfwSwapBuffers (m_window);
+  if (m_save_framebuffer)
+    {
+      glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
+      draw ();
 
-  // while (!glfwWindowShouldClose (m_window))
-  //   {
-  //     glfwPollEvents ();
-
-  //     glfwSwapBuffers (m_window);
-  //   }
-
-  uint8_t *framebuffer_ptr
+      uint8_t *framebuffer_ptr
       = new uint8_t[m_framebuffer_size.x * m_framebuffer_size.y * 3];
 
-  glReadPixels (0, 0, m_framebuffer_size.x, m_framebuffer_size.y, GL_RGB,
-                GL_UNSIGNED_BYTE, framebuffer_ptr);
-  Image img (m_framebuffer_size.x, m_framebuffer_size.y, ColorType::rgb,
-             framebuffer_ptr);
-  img.save ("Framebuffer.tga");
+      glReadPixels (0, 0, m_framebuffer_size.x, m_framebuffer_size.y, GL_RGB,
+                    GL_UNSIGNED_BYTE, framebuffer_ptr);
+      Image img (m_framebuffer_size.x, m_framebuffer_size.y, ColorType::rgb,
+                framebuffer_ptr);
+      img.save ("framebuffer.tga");
 
-  glfwSetWindowShouldClose (m_window, 1);
+      glBindFramebuffer (GL_FRAMEBUFFER, 0);
+
+      glfwSetWindowShouldClose (m_window, 1);
+    }
+  else
+    {
+      while (!glfwWindowShouldClose (m_window))
+        {
+          glfwPollEvents ();
+
+          draw();
+
+          glfwSwapBuffers (m_window);
+        }
+    }
 
   // TODO : Run the application
 

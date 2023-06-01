@@ -1,3 +1,3 @@
 #! /bin/sh
 
-./tests/app
+./tests/app --save-framebuffer

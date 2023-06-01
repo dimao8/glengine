@@ -30,13 +30,16 @@ private:
   std::list<Argument> m_args;          /// Argument list
   std::list<Argument> m_accepted_args; /// Accepted argument list
   glm::uvec2 m_framebuffer_size;       /// Framebuffer size
+  bool m_save_framebuffer;
 
   // Internal application state
   bool m_should_close; /// State of the application. Set to true to exit
                        /// application
 
   // Native variables
-  GLFWwindow *m_window; //!< GLFW main window handle
+  GLFWwindow *m_window; /// GLFW main window handle
+  GLuint m_framebuffer; /// Framebuffer object
+  GLuint m_framebuffer_texture; /// Framebuffer texture object
 
   /**
    * \brief Parse arguments and create argument list

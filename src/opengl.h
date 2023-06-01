@@ -5,7 +5,10 @@
 #include <GL/glext.h>
 
 extern PFNGLGETSTRINGIPROC glGetStringi;
-extern PFNGLCREATEFRAMEBUFFERSPROC glCreateFramebuffers;
+extern PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
+extern PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
+extern PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
+extern PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D;
 
 namespace gle
 {
