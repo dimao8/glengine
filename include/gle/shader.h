@@ -89,10 +89,10 @@ public:
   ///
   bool compile ();
 
-  ShaderType get_type ();
-  int get_handle();
-  bool is_empty ();
-  bool is_compiled ();
+  ShaderType get_type () const;
+  int get_handle() const;
+  bool is_empty () const;
+  bool is_compiled () const;
 };
 
 }

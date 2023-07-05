@@ -151,7 +151,7 @@ Shader::compile ()
 /* **************************** Shader::get_type *************************** */
 
 ShaderType
-Shader::get_type ()
+Shader::get_type () const
 {
   return m_type;
 }
@@ -159,7 +159,7 @@ Shader::get_type ()
 /* *************************** Shader::get_handle ************************** */
 
 int
-Shader::get_handle ()
+Shader::get_handle () const
 {
   return m_handle;
 }
@@ -167,7 +167,7 @@ Shader::get_handle ()
 /* **************************** Shader::is_empty *************************** */
 
 bool
-Shader::is_empty ()
+Shader::is_empty () const
 {
   return m_state == ShaderState::empty;
 }
@@ -175,7 +175,7 @@ Shader::is_empty ()
 /* ************************** Shader::is_compiled ************************** */
 
 bool
-Shader::is_compiled ()
+Shader::is_compiled () const
 {
   return m_state == ShaderState::compiled;
 }

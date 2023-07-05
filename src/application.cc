@@ -35,6 +35,7 @@
 #endif // HAVE_CONFIG_H
 
 #include "opengl.h"
+#include "translate.h"
 
 #define DEFAULT_CLIENT_WIDTH 800
 #define DEFAULT_CLIENT_HEIGHT 600
@@ -47,17 +48,17 @@ namespace gle
 Application::Application (int argc, char **argv)
     : m_should_close (true), m_save_framebuffer (false)
 {
-  LOG_PRINT (SeverityLevel::info, "Parse arguments\n");
+  LOG_PRINT (SeverityLevel::info, _("Parse arguments\n"));
   parse_arguments (argc, argv);
 
   // Try to init glfw3
-  LOG_PRINT (SeverityLevel::info, "Init glfw3\n");
+  LOG_PRINT (SeverityLevel::info, _("Init glfw3\n"));
   if (!glfwInit ())
     {
-      LOG_PRINT (SeverityLevel::error, "Can not init glfw3\n");
+      LOG_PRINT (SeverityLevel::error, _("Can not init glfw3\n"));
       return;
     }
-  LOG_PRINT (SeverityLevel::info, "GLFW version: %s\n",
+  LOG_PRINT (SeverityLevel::info, _("GLFW version: %s\n"),
              glfwGetVersionString ());
 
   // Try to create window
@@ -79,29 +80,29 @@ Application::Application (int argc, char **argv)
                                PACKAGE " " VERSION, 0, 0);
   if (m_window == nullptr)
     {
-      LOG_PRINT (SeverityLevel::error, "Can not create main window\n");
+      LOG_PRINT (SeverityLevel::error, _("Can not create main window\n"));
       return;
     }
   glfwMakeContextCurrent (m_window);
 
   if (!load_gl_extensions ())
     {
-      LOG_PRINT (SeverityLevel::error, "Error while extensions loading\n");
+      LOG_PRINT (SeverityLevel::error, _("Error while extensions loading\n"));
       return;
     }
 
   // Get OpenGL info
   GLint version_major, version_minor, no_of_ext;
-  LOG_PRINT (SeverityLevel::info, "Device: %s\n", glGetString (GL_RENDERER));
-  LOG_PRINT (SeverityLevel::info, "Vendor: %s\n", glGetString (GL_VENDOR));
+  LOG_PRINT (SeverityLevel::info, _("Device: %s\n"), glGetString (GL_RENDERER));
+  LOG_PRINT (SeverityLevel::info, _("Vendor: %s\n"), glGetString (GL_VENDOR));
   glGetIntegerv (GL_MAJOR_VERSION, &version_major);
   glGetIntegerv (GL_MINOR_VERSION, &version_minor);
-  LOG_PRINT (SeverityLevel::info, "GL Version: %i.%i\n", version_major,
+  LOG_PRINT (SeverityLevel::info, _("GL Version: %i.%i\n"), version_major,
              version_minor);
-  LOG_PRINT (SeverityLevel::info, "GLSL Version: %s\n",
+  LOG_PRINT (SeverityLevel::info, _("GLSL Version: %s\n"),
              glGetString (GL_SHADING_LANGUAGE_VERSION));
   glGetIntegerv (GL_NUM_EXTENSIONS, &no_of_ext);
-  LOG_PRINT (SeverityLevel::info, "Extensions: \n");
+  LOG_PRINT (SeverityLevel::info, _("Extensions: \n"));
   for (auto n = 0; n < no_of_ext; n++)
     {
       LOG_PRINT (SeverityLevel::none, "  %s\n",

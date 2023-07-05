@@ -68,6 +68,11 @@ public:
   ShaderProgram (Shader *vertex, Shader *fragment, Shader *geometry = nullptr);
 
   ///
+  /// \brief Destroy shader program. Free resources
+  ///
+  ~ShaderProgram ();
+
+  ///
   /// \brief Link current shader program
   /// \return Return result of the linkage
   ///
@@ -79,9 +84,15 @@ public:
   bool link ();
 
   ///
-  /// \brief Destroy shader program. Free resources
+  /// \brief Enable current program
   ///
-  ~ShaderProgram ();
+  void enable ();
+
+  unsigned int get_handle() const;
+
+public:
+
+  static void disable ();
 };
 
 }

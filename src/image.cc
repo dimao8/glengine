@@ -30,6 +30,8 @@
 
 #include <fstream>
 
+#include "translate.h"
+
 #define DEFAULT_IMAGE_WIDTH 512
 #define DEFAULT_IMAGE_HEIGHT 512
 
@@ -59,14 +61,14 @@ Image::Image (unsigned int width, unsigned int height, ColorType ct,
 
 Image::Image (const std::string &file_name)
 {
-  LOG_PRINT (SeverityLevel::info, "Load image from ``%s\'\' file",
+  LOG_PRINT (SeverityLevel::info, _ ("Load image from ``%s\'\' file"),
              file_name.c_str ());
 
   std::ifstream ifs (file_name);
   if (!ifs)
     {
       LOG_PRINT (SeverityLevel::warning,
-                 "File ``%s\'\' not found or can not be read",
+                 _ ("File ``%s\'\' not found or can not be read"),
                  file_name.c_str ());
       make_empty (default_image_size.x, default_image_size.y,
                   ColorType::rgb_alpha);
@@ -94,13 +96,14 @@ Image::Image (const std::string &file_name)
 
   if (is_png)
     {
-      LOG_PRINT (SeverityLevel::info, "Interpret image file ``%s\'\' as PNG",
+      LOG_PRINT (SeverityLevel::info,
+                 _ ("Interpret image file ``%s\'\' as PNG"),
                  file_name.c_str ());
       png_result = LoadPNGFromFile (file_name.c_str (), &png_hdr, &data, true);
       if (png_result != PNG_ERROR_OK)
         {
           LOG_PRINT (SeverityLevel::warning,
-                     "Can not load PNG file. Reason: %i", png_result);
+                     _ ("Can not load PNG file. Reason: %i"), png_result);
           make_empty (default_image_size.x, default_image_size.y,
                       ColorType::rgb_alpha);
         }

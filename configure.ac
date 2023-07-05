@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.9], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.10], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/engine.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -13,7 +13,7 @@ LT_INIT([dlopen win32-dll])
 LT_LANG([C++])
 
 # Check for compiler
-CXXFLAGS="-std=gnu++11"
+CXXFLAGS="-std=gnu++11 -pedantic"
 AC_PROG_CXX(clang++ llvm-g++ g++)
 
 # Check for host

@@ -58,6 +58,13 @@ PFNGLATTACHSHADERPROC glAttachShader = nullptr;
 PFNGLDETACHSHADERPROC glDetachShader = nullptr;
 PFNGLGETPROGRAMIVPROC glGetProgramiv = nullptr;
 PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = nullptr;
+PFNGLUSEPROGRAMPROC glUseProgram = nullptr;
+
+PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
+PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
+PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
+PFNGLBUFFERDATAPROC glBufferData = nullptr;
+PFNGLBUFFERSUBDATAPROC glBufferSubData = nullptr;
 
 const char *err_str_no_error = _("No error");
 const char *err_str_invalid_enum = _("Invalid enumerator");
@@ -97,6 +104,13 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glDetachShader, PFNGLDETACHSHADERPROC);
   LOAD_GL_EXTENSION (glGetProgramiv, PFNGLGETPROGRAMIVPROC);
   LOAD_GL_EXTENSION (glGetProgramInfoLog, PFNGLGETPROGRAMINFOLOGPROC);
+  LOAD_GL_EXTENSION (glUseProgram, PFNGLUSEPROGRAMPROC);
+
+  LOAD_GL_EXTENSION (glGenBuffers, PFNGLGENBUFFERSPROC);
+  LOAD_GL_EXTENSION (glBindBuffer, PFNGLBINDBUFFERPROC);
+  LOAD_GL_EXTENSION (glDeleteBuffers, PFNGLDELETEBUFFERSPROC);
+  LOAD_GL_EXTENSION (glBufferData, PFNGLBUFFERDATAPROC);
+  LOAD_GL_EXTENSION (glBufferSubData, PFNGLBUFFERSUBDATAPROC);
 
   return true;
 }

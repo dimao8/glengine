@@ -1,6 +1,6 @@
-#include <gle/shaderprogram.h>
-#include <gle/shader.h>
 #include <gle/logger.h>
+#include <gle/shader.h>
+#include <gle/shaderprogram.h>
 
 #include "opengl.h"
 #include "translate.h"
@@ -23,7 +23,7 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
     {
       result = glGetError ();
       LOG_PRINT (SeverityLevel::error,
-                 _("Create shader program cause GL error: ``%s\'\'\n"),
+                 _ ("Create shader program cause GL error: ``%s\'\'\n"),
                  message_gl (result));
       return;
     }
@@ -51,7 +51,8 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
       if (m_fragment_shader->get_type () != ShaderType::fragment
           || m_fragment_shader->is_empty ())
         {
-          LOG_PRINT (SeverityLevel::error, _ ("Fragment shader is required\n"));
+          LOG_PRINT (SeverityLevel::error,
+                     _ ("Fragment shader is required\n"));
           m_fragment_shader = nullptr;
         }
       else
@@ -65,7 +66,8 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
 
   if (m_geometry_shader != nullptr)
     {
-      if (m_geometry_shader->get_type () != ShaderType::geometry || m_geometry_shader->is_empty ())
+      if (m_geometry_shader->get_type () != ShaderType::geometry
+          || m_geometry_shader->is_empty ())
         {
           LOG_PRINT (SeverityLevel::warning,
                      _ ("Geometry shader is required\n"));
@@ -116,6 +118,14 @@ ShaderProgram::link ()
   return m_state == ShaderProgramState::linked;
 }
 
+/* ************************* ShaderProgram::enable ************************* */
+
+void
+ShaderProgram::enable ()
+{
+  glUseProgram (m_handle);
+}
+
 /* ********************* ShaderProgram::~ShaderProgram ********************* */
 
 ShaderProgram::~ShaderProgram ()
@@ -129,6 +139,22 @@ ShaderProgram::~ShaderProgram ()
 
   if (m_handle != 0)
     glDeleteProgram (m_handle);
+}
+
+/* *********************** ShaderProgram::get_handle *********************** */
+
+unsigned int
+ShaderProgram::get_handle () const
+{
+  return m_handle;
+}
+
+/* ************************* ShaderProgram::disable ************************ */
+
+void
+ShaderProgram::disable ()
+{
+  glUseProgram (0);
 }
 
 }
