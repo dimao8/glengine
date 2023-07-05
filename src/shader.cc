@@ -24,6 +24,7 @@
 //
 
 #include "opengl.h"
+#include "translate.h"
 
 #include <gle/logger.h>
 #include <gle/shader.h>
@@ -39,9 +40,11 @@ namespace gle
 /* ***************************** Shader::Shader **************************** */
 
 Shader::Shader (ShaderType type, const std::string &file_name)
-    : m_handle (0), m_state (ShaderState::empty)
+    : m_handle (0), m_state (ShaderState::empty), m_type (type)
 {
-  switch (type)
+  GLenum result;
+
+  switch (m_type)
     {
 
     case ShaderType::vertex:
@@ -57,42 +60,62 @@ Shader::Shader (ShaderType type, const std::string &file_name)
       break;
     }
 
+  // Check for shader valid
+  if (m_handle == 0)
+    {
+      result = glGetError ();
+      LOG_PRINT (SeverityLevel::error,
+                 "Create shader cause GL error: ``%s\'\'\n",
+                 message_gl (result));
+      return;
+    }
+
+  // Get data from stream
   std::ifstream ifs (file_name, std::ios::binary);
   ifs.unsetf (std::ios::skipws);
   if (!ifs)
     {
       LOG_PRINT (SeverityLevel::error,
-                 "Can not load shader from file ``%s\'\'\n",
+                 _ ("Can not load shader from file ``%s\'\'\n"),
                  file_name.c_str ());
       return;
     }
   else
     {
-      LOG_PRINT (SeverityLevel::info, "Shader is loaded from file ``%s\'\'\n",
+      LOG_PRINT (SeverityLevel::info,
+                 _ ("Shader is loaded from file ``%s\'\'\n"),
                  file_name.c_str ());
     }
 
   size_t sz;
 
-  ifs.seekg(0, std::ios::end);
-  sz = ifs.tellg();
-  ifs.seekg(0, std::ios::beg);
+  ifs.seekg (0, std::ios::end);
+  sz = ifs.tellg ();
+  ifs.seekg (0, std::ios::beg);
 
-  char* source = new char[sz + 2];
+  char *source = new char[sz + 2];
 
-  ifs.read(source, sz);
+  ifs.read (source, sz);
   ifs.close ();
 
   source[sz] = 0;
   source[sz + 1] = 0;
 
-  glShaderSource(m_handle, 1, &source, nullptr);
+  glShaderSource (m_handle, 1, &source, nullptr);
 
   delete[] source;
 
   m_state = ShaderState::source;
 
   compile ();
+}
+
+/* **************************** Shader::~Shader **************************** */
+
+Shader::~Shader ()
+{
+  if (m_handle != 0)
+    glDeleteShader (m_handle);
 }
 
 /* **************************** Shader::compile **************************** */
@@ -102,25 +125,58 @@ Shader::compile ()
 {
   GLint status;
   GLint len;
-  char * log;
+  char *log;
 
   if (m_state == ShaderState::empty)
     return false;
 
-  glCompileShader(m_handle);
-  glGetShaderiv(m_handle, GL_COMPILE_STATUS, &status);
+  glCompileShader (m_handle);
+  glGetShaderiv (m_handle, GL_COMPILE_STATUS, &status);
   if (status == GL_FALSE)
     {
       m_state = ShaderState::source;
-      glGetShaderiv(m_handle, GL_INFO_LOG_LENGTH, &len);
+      glGetShaderiv (m_handle, GL_INFO_LOG_LENGTH, &len);
       log = new char[len];
-      glGetShaderInfoLog(m_handle, len, nullptr, log);
-      LOG_PRINT(SeverityLevel::error, "Can not compile shader. Reason:\n%s\n", log);
+      glGetShaderInfoLog (m_handle, len, nullptr, log);
+      LOG_PRINT (SeverityLevel::error,
+                 _ ("Can not compile shader. Compiler message:\n%s\n"), log);
       delete[] log;
     }
   else
     m_state = ShaderState::compiled;
 
+  return m_state == ShaderState::compiled;
+}
+
+/* **************************** Shader::get_type *************************** */
+
+ShaderType
+Shader::get_type ()
+{
+  return m_type;
+}
+
+/* *************************** Shader::get_handle ************************** */
+
+int
+Shader::get_handle ()
+{
+  return m_handle;
+}
+
+/* **************************** Shader::is_empty *************************** */
+
+bool
+Shader::is_empty ()
+{
+  return m_state == ShaderState::empty;
+}
+
+/* ************************** Shader::is_compiled ************************** */
+
+bool
+Shader::is_compiled ()
+{
   return m_state == ShaderState::compiled;
 }
 

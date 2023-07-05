@@ -5,6 +5,7 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
 AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_SUBDIRS([libpngloader libtgaloader liblitejson])
+AM_SILENT_RULES([yes])
 AC_LANG([C++])
 
 # Check for LibTool
@@ -65,6 +66,11 @@ AX_CHECK_GLFW
 
 # Check for glm
 AX_CHECK_GLM
+
+# Make symbolic links to the some files
+AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert
+  tests/shader.frag:tests/shader.frag
+  ])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

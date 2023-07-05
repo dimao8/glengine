@@ -33,6 +33,7 @@
 
 #include <gle/image.h>
 #include <gle/shader.h>
+#include <gle/shaderprogram.h>
 
 #include "arguments.h"
 

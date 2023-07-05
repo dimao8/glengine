@@ -28,6 +28,7 @@
 #include <gle/logger.h>
 
 #include <iostream>
+#include <stdexcept>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -231,8 +232,6 @@ Application::parse_arguments (int argc, char **argv)
 void
 Application::p_cleanup ()
 {
-  cleanup();
-
   // TODO : Clean further
   glDeleteFramebuffers (1, &m_framebuffer);
   glDeleteTextures (1, &m_framebuffer_texture);
@@ -261,7 +260,7 @@ Application::run ()
   if (m_should_close)
     return 0;
 
-  init();
+  init ();
 
   if (m_save_framebuffer)
     {
@@ -269,12 +268,12 @@ Application::run ()
       draw ();
 
       uint8_t *framebuffer_ptr
-      = new uint8_t[m_framebuffer_size.x * m_framebuffer_size.y * 3];
+          = new uint8_t[m_framebuffer_size.x * m_framebuffer_size.y * 3];
 
       glReadPixels (0, 0, m_framebuffer_size.x, m_framebuffer_size.y, GL_RGB,
                     GL_UNSIGNED_BYTE, framebuffer_ptr);
       Image img (m_framebuffer_size.x, m_framebuffer_size.y, ColorType::rgb,
-                framebuffer_ptr);
+                 framebuffer_ptr);
       img.save ("framebuffer.tga");
 
       glBindFramebuffer (GL_FRAMEBUFFER, 0);
@@ -287,7 +286,7 @@ Application::run ()
         {
           glfwPollEvents ();
 
-          draw();
+          draw ();
 
           glfwSwapBuffers (m_window);
         }

@@ -11,7 +11,8 @@ libglengine_la_SOURCES = src/engine.cc \
 	src/opengl.cc \
 	src/image.cc \
 	src/color.cc \
-	src/shader.cc
+	src/shader.cc \
+	src/shaderprogram.cc
 
 include_HEADERS = include/gle/application.h \
 	include/gle/arguments.h \
@@ -19,7 +20,8 @@ include_HEADERS = include/gle/application.h \
 	include/gle/logger.h \
 	include/gle/image.h \
 	include/gle/color.h \
-	include/gle/shader.h
+	include/gle/shader.h \
+	include/gle/shaderprogram.h
 
 libglengine_la_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include -I$(srcdir)/liblitejson/include
 libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/libtgaloader -ltgaloader -L$(builddir)/liblitejson -llitejson

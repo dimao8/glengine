@@ -61,6 +61,7 @@ class Shader
 private:
   unsigned int m_handle; /// Internal OpenGL shader name
   ShaderState m_state;   /// Shader state
+  ShaderType m_type;     /// Shader type
 
 public:
   Shader () = delete;
@@ -74,6 +75,11 @@ public:
   Shader (ShaderType type, const std::string &file_name);
 
   ///
+  /// \brief Destroy shader. Free resources
+  ///
+  ~Shader ();
+
+  ///
   /// \brief Compile current shader
   /// \return Return result of the compilation
   ///
@@ -82,6 +88,11 @@ public:
   /// ShaderState::compiled. Otherwise it's state set to ShaderState::source.
   ///
   bool compile ();
+
+  ShaderType get_type ();
+  int get_handle();
+  bool is_empty ();
+  bool is_compiled ();
 };
 
 }

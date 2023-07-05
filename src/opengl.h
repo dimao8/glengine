@@ -42,10 +42,30 @@ extern PFNGLGETSHADERIVPROC glGetShaderiv;
 extern PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
 extern PFNGLSHADERSOURCEPROC glShaderSource;
 
+extern PFNGLCREATEPROGRAMPROC glCreateProgram;
+extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+extern PFNGLLINKPROGRAMPROC glLinkProgram;
+extern PFNGLATTACHSHADERPROC glAttachShader;
+extern PFNGLDETACHSHADERPROC glDetachShader;
+extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
+extern PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog;
+
 namespace gle
 {
-  
+
+///
+/// \brief Load OpenGL extension functions needed by engine
+/// \return Return \c false when loading is fail otherwise return \c true
+///
 bool load_gl_extensions();
+
+///
+/// \brief Return constant string with error description text
+/// \param [in] code -- Code of the error. If code is not a valid error code,
+/// an empty string will be returned
+/// \return Return error code string
+///
+const char* message_gl(GLenum code);
 
 }
 
