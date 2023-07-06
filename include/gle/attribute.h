@@ -35,6 +35,10 @@ private:
   std::string m_name;   /// Optional name. Can be empty string
   int m_number;         /// Layout number of the attribute
   AttributeType m_type; /// Type of the attribute
+  unsigned int m_size;
+  unsigned int m_elements;
+  unsigned int m_gl_type;
+  bool m_normalized;
 
 public:
   Attribute () = delete;
@@ -42,18 +46,23 @@ public:
 
   ///
   /// \brief Create named attribute
-  /// \param [in] type    -- Type of the attribute. Must be one of
+  /// \param [in] type        -- Type of the attribute. Must be one of
   /// AttributeType
-  /// \param [in] number  -- Layout number. Attribute with negative number is
-  /// invalid
-  /// \param [in] name    -- Optional name of the attribute
+  /// \param [in] number      -- Layout number. Attribute with negative number
+  /// is invalid
+  /// \param [in] normalized  -- Will attribute be normalized
+  /// \param [in] name        -- Optional name of the attribute
   ///
-  Attribute (AttributeType type, int number, const std::string &name = "");
+  Attribute (AttributeType type, int number, bool normalized = false,
+             const std::string &name = "");
 
-  AttributeType get_type() const;
-  int get_number() const;
-  const std::string & get_name() const;
-  size_t get_size() const;
+  AttributeType get_type () const;
+  int get_number () const;
+  const std::string &get_name () const;
+  size_t get_size () const;
+  size_t get_elements () const;
+  unsigned int get_gl_type () const;
+  bool is_normalized() const;
 };
 
 }

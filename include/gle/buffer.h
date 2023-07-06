@@ -1,10 +1,14 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include <cstddef>
+#include <vector>
 
 namespace gle
 {
+
+class Attribute;
+
+typedef std::vector<Attribute*> attribute_vector_t;
 
 enum class BufferAccess
 {
@@ -31,9 +35,7 @@ private:
   BufferAccess m_access;             /// Data access type
   BufferOptimization m_optimization; /// Storage optimization type
   size_t m_size;                     /// Size of the buffer
-
-  static unsigned int buffer_type_to_glenum (BufferAccess access,
-                                             BufferOptimization optimization);
+  attribute_vector_t m_attributes;   /// Attribute vector
 
 public:
   Buffer () = delete;
@@ -68,6 +70,13 @@ public:
                  size_t data_size, const void *data);
 
   ///
+  /// \brief Add vertex attribute
+  /// \param [in] attr -- Vertex attribute. Only non-null attribute will be
+  /// added
+  ///
+  void add_attribute (Attribute *attr);
+
+  ///
   /// \brief Enable current buffer
   ///
   void enable();
@@ -78,6 +87,17 @@ public:
   ~Buffer ();
 
   bool is_empty () const;
+  size_t get_attribute_count() const;
+  const Attribute * get_attribute(size_t n) const;
+
+private:
+  ///
+  /// \brief Get OpenGL specific buffer type
+  /// \param [in] access        -- Access type enum
+  /// \param [in] optimization  -- Optimization type enum
+  /// 
+  static unsigned int buffer_type_to_glenum (BufferAccess access,
+                                             BufferOptimization optimization);
 
 public:
 

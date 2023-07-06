@@ -34,6 +34,8 @@
 #include <gle/image.h>
 #include <gle/shader.h>
 #include <gle/shaderprogram.h>
+#include <gle/buffer.h>
+#include <gle/vertexarray.h>
 
 #include "arguments.h"
 

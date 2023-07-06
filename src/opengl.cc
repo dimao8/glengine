@@ -66,6 +66,12 @@ PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
 PFNGLBUFFERDATAPROC glBufferData = nullptr;
 PFNGLBUFFERSUBDATAPROC glBufferSubData = nullptr;
 
+PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
+PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
+PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
+PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
+PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
+
 const char *err_str_no_error = _("No error");
 const char *err_str_invalid_enum = _("Invalid enumerator");
 const char *err_str_invalid_value = _("Invalid value");
@@ -111,6 +117,12 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glDeleteBuffers, PFNGLDELETEBUFFERSPROC);
   LOAD_GL_EXTENSION (glBufferData, PFNGLBUFFERDATAPROC);
   LOAD_GL_EXTENSION (glBufferSubData, PFNGLBUFFERSUBDATAPROC);
+  LOAD_GL_EXTENSION (glVertexAttribPointer, PFNGLVERTEXATTRIBPOINTERPROC);
+  LOAD_GL_EXTENSION (glEnableVertexAttribArray, PFNGLENABLEVERTEXATTRIBARRAYPROC);
+
+  LOAD_GL_EXTENSION (glGenVertexArrays, PFNGLGENVERTEXARRAYSPROC);
+  LOAD_GL_EXTENSION (glDeleteVertexArrays, PFNGLDELETEVERTEXARRAYSPROC);
+  LOAD_GL_EXTENSION (glBindVertexArray, PFNGLBINDVERTEXARRAYPROC);
 
   return true;
 }

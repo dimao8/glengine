@@ -1,3 +1,4 @@
+#include <gle/attribute.h>
 #include <gle/buffer.h>
 #include <gle/logger.h>
 
@@ -92,6 +93,17 @@ Buffer::set_data (BufferAccess access, BufferOptimization optimization,
     }
 }
 
+/* *********************** VertexArray::add_attribute ********************** */
+
+void
+Buffer::add_attribute (Attribute *attr)
+{
+  if (attr == nullptr)
+    return;
+
+  m_attributes.push_back (attr);
+}
+
 /* **************************** Buffer::~Buffer **************************** */
 
 Buffer::~Buffer () { glDeleteBuffers (1, &m_handle); }
@@ -111,6 +123,25 @@ bool
 Buffer::is_empty () const
 {
   return m_size == 0 || m_handle == 0;
+}
+
+/* ********************** Buffer::get_attribute_count ********************** */
+
+size_t
+Buffer::get_attribute_count () const
+{
+  return m_attributes.size ();
+}
+
+/* ************************* Buffer::get_attribute ************************* */
+
+const Attribute *
+Buffer::get_attribute (size_t n) const
+{
+  if (n >= m_attributes.size ())
+    return nullptr;
+  else
+    return m_attributes[n];
 }
 
 /* **************************** Buffer::disable **************************** */
