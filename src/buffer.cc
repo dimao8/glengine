@@ -46,7 +46,8 @@ Buffer::buffer_type_to_glenum (BufferAccess access,
 Buffer::Buffer (BufferAccess access, BufferOptimization optimization,
                 size_t data_size, const void *data)
     : m_handle (0), m_access (BufferAccess::draw),
-      m_optimization (BufferOptimization::stat), m_size (0)
+      m_optimization (BufferOptimization::stat), m_size (0),
+      m_element_size (0)
 {
   GLenum usage;
   GLenum result;
@@ -102,6 +103,9 @@ Buffer::add_attribute (Attribute *attr)
     return;
 
   m_attributes.push_back (attr);
+
+  m_element_size += attr->get_size ();
+  m_element_count = m_size / m_element_size;
 }
 
 /* **************************** Buffer::~Buffer **************************** */
@@ -142,6 +146,14 @@ Buffer::get_attribute (size_t n) const
     return nullptr;
   else
     return m_attributes[n];
+}
+
+/* *********************** Buffer::get_element_count *********************** */
+
+size_t
+Buffer::get_element_count () const
+{
+  return m_element_count;
 }
 
 /* **************************** Buffer::disable **************************** */

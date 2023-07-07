@@ -14,7 +14,8 @@ libglengine_la_SOURCES = src/engine.cc \
 	src/shader.cc \
 	src/shaderprogram.cc \
 	src/attribute.cc \
-	src/buffer.cc
+	src/buffer.cc \
+	src/vertexarray.cc
 
 gle_includedir = $(includedir)/gle
 gle_include_HEADERS = include/gle/application.h \
@@ -26,7 +27,8 @@ gle_include_HEADERS = include/gle/application.h \
 	include/gle/shader.h \
 	include/gle/shaderprogram.h \
 	include/gle/attribute.h \
-	include/gle/buffer.h
+	include/gle/buffer.h \
+	include/gle/vertexarray.h
 
 libglengine_la_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include -I$(srcdir)/liblitejson/include
 libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/libtgaloader -ltgaloader -L$(builddir)/liblitejson -llitejson

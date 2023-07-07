@@ -6,11 +6,24 @@
 namespace gle
 {
 
-typedef std::vector<Attribute *> attribute_vector_t;
+class Buffer;
+class ShaderProgram;
+
 typedef std::vector<Buffer *> buffer_vector_t;
 
-class Attribute;
-class Buffer;
+///
+/// \brief Drawing mode enumerator
+///
+enum class DrawingMode
+{
+  point,          /// Draw point
+  line,           /// Draw line
+  line_strip,     /// Draw line strip
+  line_loop,      /// Draw looped line
+  triangle,       /// Draw triangle
+  triangle_strip, /// Draw triangle strip
+  triangle_fan    /// Draw triangle fan
+};
 
 ///
 /// \brief Vertex array class
@@ -21,14 +34,19 @@ class VertexArray
 private:
   unsigned int m_handle;           /// Handle of the vertex array
   buffer_vector_t m_buffers;       /// List of vertex buffers
+  DrawingMode m_mode;              /// Drawing mode
+  unsigned int m_gl_mode;
+  size_t m_vertex_count;
 
 public:
+  VertexArray () = delete;
+  VertexArray (const VertexArray &) = delete;
+
   ///
   /// \brief Create empty vertex array
+  /// \param [in] mode -- Drawing mode for current array
   ///
-  VertexArray ();
-
-  VertexArray (const VertexArray &) = delete;
+  VertexArray (DrawingMode mode);
 
   ///
   /// \brief Destroy vertex array. Free all resources.
@@ -45,6 +63,17 @@ public:
   /// it is not added.
   ///
   void add_buffer (Buffer *buffer);
+
+  ///
+  /// \brief Draw current vertex array
+  /// \param [in] program -- Shader program
+  ///
+  void draw (ShaderProgram * program);
+
+  ///
+  /// \brief Enable current vertex array
+  ///
+  void enable ();
 };
 
 }

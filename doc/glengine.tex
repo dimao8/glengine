@@ -1,0 +1,148 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{longtable}
+
+\title{GLEngine 0.1.0 \\ \small{Техническое описание} \\
+\textit{\small Ревизия 1.0}}
+\author{Хрущев Дмитрий aka DimaO}
+\date{2023}
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{Требования к движку}
+\section{Данные моделей}
+\subsection{Массивы вершин}
+Массивами вершин управляют три основных класса: \texttt{Buffer},
+\texttt{Attribute} и \texttt{VertexArray}.
+
+Класс \texttt{Attribute} яыляется вспомогательным и описывает атрибуты вершины.
+Давайте вспомним, каким образом осуществляется связывание атрибута с объектом
+VAO (Vertex Array Object, Объект массива вершин) в библиотеке OpenGL 3.3.
+
+Информация из официальной документации Khronos Group$~^\text{\textregistered}$
+по функции \texttt{glVertexAttribPointer}.
+
+\begin{verbatim}
+void glVertexAttribPointer (
+  GLuint index,
+  GLint size,
+  GLenum type,
+  GLboolean normalized,
+  GLsizei stride,
+  const GLvoid *pointer);
+\end{verbatim}
+
+\begin{description}
+      \item[index] -- номер атрибута. Он связан с параметром \texttt{location}
+            (расположение) в лэйауте шейдера. Код шейдера в этом случае
+            выглядит так: \\
+            \texttt{layout(location = 0) in vec3 position;} \\
+            То есть, явно указанное расположение в шейдере и есть параметр
+            \texttt{index}.
+      \item[size] -- размер атрибута. Этот параметр указывает не размер
+            атрибута в байтах, а число элементов атрибута. То есть размер
+            вектора или матрицы в элементах (не в байтах).
+      \item[type] -- тип элемента атрибута. Тип данных в элементе. не учитывает
+            число элементов.
+      \item[normalized] -- флаг нормализации атрибута.
+      \item[stride] -- расстояние между началом соседних атрибутов в массиве.
+            Имеет смысл размера вершины в байтах. Поскольку массив вершин может
+            работать с несколькими буферами, необходимо учитывать, что размер
+            вершины указывается для одного буфера. Атрибуты, хранящиеся в
+            другом буфере, размер текущего не увеличивают.
+      \item[pointer] -- смещение атрибута от начала буфера. Несмотря на то, что
+            аргумент описан, как указатель, он таковым не является. Это именно
+            смещение атрибута от начала буфера в байтах; целое число.
+\end{description}
+
+Необходимо также понимать, что аргументы \texttt{type} и \texttt{normalized}
+могут принимать только определенные, константные значения, отличающиеся по
+семантике от реального назначения.
+
+Подведем итоги: выберем структуру класса атрибутов, которую можно будет
+использовать максимально удобно и быстро.
+
+\begin{verbatim}
+class Attribute
+{
+  private:
+  unsigned int m_index;
+  AttributeType m_type;
+  unsigned int m_gl_type;
+  size_t m_element_size;
+  size_t m_element_count;
+  bool m_normalized;
+  ...
+};
+\end{verbatim}
+
+\begin{description}
+      \item[m\_index] -- location (расположение) атрибута в шейдерной
+            программе.
+      \item[m\_type] -- интерфейсный тип атрибута. Используется перечислитель
+            с ключевым словом \texttt{class} для исключения приведения типа
+            из целого.
+      \item[m\_gl\_type] -- промежуточное представление типа для OpenGL.
+            изменяется синхронно с полем \texttt{m\_type} и предназначено для
+            хранения типа, используемого в функции
+            \texttt{glVertexAttribPointer}.
+      \item[m\_element\_size] -- вспомогательное поле, содержащее размер
+            элемента атрибута в байтах.
+      \item[m\_element\_count] -- число элементов в векторе или матрице.
+      \item[m\_normalized] -- флаг нормализации.
+\end{description}
+
+Поля \texttt{m\_element\_size} и \texttt{m\_element\_count} позволяют расчитать
+размер атрибута в буфере.
+
+Класс \texttt{Buffer} является непосредственным хранилищем данных массива
+вершин. Для полноценного связывания атрибута с шейдерной программой необходимо
+хранить все атрибуты в объекте буфера вместе с данными. Узнав размер каждого
+атрибута, и сложив эти размеры вместе, мы получаем размер вершины. Зная размер
+вершины и размер буфера, можо определить число вершин в буфере, что необходимо
+функции \texttt{glDrawArrays} для отрисовки.
+
+Таким образом, кроме размеров буфера в байтах нам нужно хранить в нем еще и
+список всех атрибутов вершин, хранящихся в буфере. Структура класса буфера
+выглядит так:
+
+\begin{verbatim}
+class Buffer
+{
+private:
+  unsigned int m_handle;
+  size_t m_size;
+  void *m_data;
+  std::vector<Attribute *> m_attributes;
+  BufferAccess m_access;
+  BufferOptimization m_optimization;
+  ...
+};
+\end{verbatim}
+
+\begin{description}
+      \item[m\_handle] -- имя буфера в контексте OpenGL. Получается
+            предварительным вызовом функции \texttt{glGenBuffers}.
+      \item[m\_size] -- размер буфера в байтах.
+      \item[m\_data] -- непосредственно данные. Размер данных точно равен
+            содержимому поля \texttt{m\_size}.
+      \item[m\_attributes] -- список атрибутов.
+      \item[m\_access] -- поле, определяющее тип доступа к данным (чтение,
+            рисование, копирование).
+      \item[m\_optimization] -- поле, определяющее оптимизацию хранения
+      (статическое, динамическое, потоковое).
+\end{description}
+
+Класс \texttt{VertexArray} предназначен для хранения связей данных с атрибутами
+и 
+
+\end{document}

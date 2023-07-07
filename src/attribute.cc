@@ -120,6 +120,14 @@ Attribute::get_size () const
   return m_size;
 }
 
+/* ************************ Attribute::get_elements ************************ */
+
+size_t
+Attribute::get_elements () const
+{
+  return m_elements;
+}
+
 /* ************************* Attribute::get_gl_type ************************ */
 
 unsigned int

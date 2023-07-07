@@ -36,6 +36,8 @@ private:
   BufferOptimization m_optimization; /// Storage optimization type
   size_t m_size;                     /// Size of the buffer
   attribute_vector_t m_attributes;   /// Attribute vector
+  size_t m_element_count;            /// Number of the elements
+  size_t m_element_size;             /// Size of the single element
 
 public:
   Buffer () = delete;
@@ -89,6 +91,7 @@ public:
   bool is_empty () const;
   size_t get_attribute_count() const;
   const Attribute * get_attribute(size_t n) const;
+  size_t get_element_count() const;
 
 private:
   ///

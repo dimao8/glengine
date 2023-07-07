@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.11], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.12], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/engine.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -42,14 +42,14 @@ AM_CONDITIONAL(DEBUG, test "x${ac_debug}" = "xtrue")
 
 # Check for documentation option
 AC_ARG_ENABLE([build-docs],
-    [AS_HELP_STRING([--enable-build-docs], [Set to enable build the documentation, default: yes])],
+    [AS_HELP_STRING([--enable-build-docs], [Set to enable build the documentation, default: no])],
     [
       AS_CASE([${enableval}],
-        [yes], [ac_build_docs=true],
-        [no], [ac_build_docs=false],
+        [yes], [ac_build_docs=yes],
+        [no], [ac_build_docs=no],
         [AC_MSG_ERROR([Bad value ${enableval} for --enable-build-docs])])
     ],
-    [ac_build_docs=false])
+    [ac_build_docs=no])
 AM_CONDITIONAL([BUILD_DOC], [test "x$ac_build_docs" = "xyes"])
 
 # Check for pdflatex

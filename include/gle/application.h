@@ -36,6 +36,7 @@
 #include <gle/shaderprogram.h>
 #include <gle/buffer.h>
 #include <gle/vertexarray.h>
+#include <gle/attribute.h>
 
 #include "arguments.h"
 
@@ -79,6 +80,11 @@ private:
    */
   void p_cleanup();
 
+  /**
+   * Draw frame
+   */
+  void p_draw ();
+
 protected:
 public:
   /**
@@ -113,10 +119,10 @@ public:
    */
   int run ();
 
-  /**
-   * Draw frame
-   */
-  void draw ();
+  ///
+  /// \brief Pure method for custom  drawing
+  ///
+  virtual void draw() = 0;
 
   /**
    * Usage prompt of the application
@@ -137,6 +143,13 @@ public:
    * Custom cleaner
    */
   virtual void cleanup () = 0;
+
+private:
+  static void static_framebuffer_size_callback(GLFWwindow * wnd, int w, int h);
+
+public:
+  void framebuffer_size (int w, int h);
+
 };
 
 } // namespace gle

@@ -16,6 +16,7 @@ public:
   virtual ~Game ();
   virtual void init () final;
   void cleanup () final;
+  void draw () final;
 
 private:
   static const GLsizei m_mesh_size;
@@ -60,9 +61,11 @@ Game::init ()
   m_rect_mesh = new gle::Buffer (gle::BufferAccess::draw,
                                  gle::BufferOptimization::stat,
                                  sizeof (GLfloat) * m_mesh_size, m_mesh);
-  m_rect = new gle::VertexArray ();
-  m_rect->add_attribute(new gle::Attribute(gle::AttributeType::fv3, 0));
-  m_rect->add_attribute(new gle::Attribute(gle::AttributeType::fv4, 1));
+  m_rect_mesh->add_attribute (new gle::Attribute (gle::AttributeType::fv3, 0));
+  m_rect_mesh->add_attribute (new gle::Attribute (gle::AttributeType::fv4, 1));
+
+  m_rect = new gle::VertexArray (gle::DrawingMode::triangle);
+  m_rect->add_buffer(m_rect_mesh);
 }
 
 /* ***************************** Game::cleanup ***************************** */
@@ -79,7 +82,15 @@ Game::cleanup ()
   delete m_fragment_shader;
 }
 
-/* ******************************** int main ******************************* */
+/* ******************************* Game::draw ****************************** */
+
+void
+Game::draw ()
+{
+  m_rect->draw (m_shader_program);
+}
+
+/* ********************************** main ********************************* */
 
 int
 main (int argc, char **argv)

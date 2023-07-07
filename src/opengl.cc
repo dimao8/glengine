@@ -43,6 +43,10 @@ PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers = nullptr;
 PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
 PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
 PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
+PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
+PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
+PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
+PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer = nullptr;
 
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
 PFNGLDELETESHADERPROC glDeleteShader = nullptr;
@@ -72,13 +76,13 @@ PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 
-const char *err_str_no_error = _("No error");
-const char *err_str_invalid_enum = _("Invalid enumerator");
-const char *err_str_invalid_value = _("Invalid value");
-const char *err_str_invalid_operation = _("Invalid operation");
-const char *err_str_stack_overflow = _("Stack overflow");
-const char *err_str_stack_underflow = _("Stack underflow");
-const char *err_str_out_of_memory = _("Out of memory");
+const char *err_str_no_error = _ ("No error");
+const char *err_str_invalid_enum = _ ("Invalid enumerator");
+const char *err_str_invalid_value = _ ("Invalid value");
+const char *err_str_invalid_operation = _ ("Invalid operation");
+const char *err_str_stack_overflow = _ ("Stack overflow");
+const char *err_str_stack_underflow = _ ("Stack underflow");
+const char *err_str_out_of_memory = _ ("Out of memory");
 const char *err_str_empty = "";
 
 namespace gle
@@ -95,6 +99,11 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glDeleteFramebuffers, PFNGLDELETEFRAMEBUFFERSPROC);
   LOAD_GL_EXTENSION (glBindFramebuffer, PFNGLBINDFRAMEBUFFERPROC);
   LOAD_GL_EXTENSION (glFramebufferTexture2D, PFNGLFRAMEBUFFERTEXTURE2DPROC);
+  LOAD_GL_EXTENSION (glGenRenderbuffers, PFNGLGENRENDERBUFFERSPROC);
+  LOAD_GL_EXTENSION (glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSPROC);
+  LOAD_GL_EXTENSION (glBindRenderbuffer, PFNGLBINDRENDERBUFFERPROC);
+  LOAD_GL_EXTENSION (glFramebufferRenderbuffer,
+                     PFNGLFRAMEBUFFERRENDERBUFFERPROC);
 
   LOAD_GL_EXTENSION (glCreateShader, PFNGLCREATESHADERPROC);
   LOAD_GL_EXTENSION (glDeleteShader, PFNGLDELETESHADERPROC);
@@ -118,7 +127,8 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glBufferData, PFNGLBUFFERDATAPROC);
   LOAD_GL_EXTENSION (glBufferSubData, PFNGLBUFFERSUBDATAPROC);
   LOAD_GL_EXTENSION (glVertexAttribPointer, PFNGLVERTEXATTRIBPOINTERPROC);
-  LOAD_GL_EXTENSION (glEnableVertexAttribArray, PFNGLENABLEVERTEXATTRIBARRAYPROC);
+  LOAD_GL_EXTENSION (glEnableVertexAttribArray,
+                     PFNGLENABLEVERTEXATTRIBARRAYPROC);
 
   LOAD_GL_EXTENSION (glGenVertexArrays, PFNGLGENVERTEXARRAYSPROC);
   LOAD_GL_EXTENSION (glDeleteVertexArrays, PFNGLDELETEVERTEXARRAYSPROC);
@@ -158,7 +168,6 @@ message_gl (GLenum code)
 
     default:
       return err_str_empty;
-
     }
 }
 

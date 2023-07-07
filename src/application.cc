@@ -48,17 +48,17 @@ namespace gle
 Application::Application (int argc, char **argv)
     : m_should_close (true), m_save_framebuffer (false)
 {
-  LOG_PRINT (SeverityLevel::info, _("Parse arguments\n"));
+  LOG_PRINT (SeverityLevel::info, _ ("Parse arguments\n"));
   parse_arguments (argc, argv);
 
   // Try to init glfw3
-  LOG_PRINT (SeverityLevel::info, _("Init glfw3\n"));
+  LOG_PRINT (SeverityLevel::info, _ ("Init glfw3\n"));
   if (!glfwInit ())
     {
-      LOG_PRINT (SeverityLevel::error, _("Can not init glfw3\n"));
+      LOG_PRINT (SeverityLevel::error, _ ("Can not init glfw3\n"));
       return;
     }
-  LOG_PRINT (SeverityLevel::info, _("GLFW version: %s\n"),
+  LOG_PRINT (SeverityLevel::info, _ ("GLFW version: %s\n"),
              glfwGetVersionString ());
 
   // Try to create window
@@ -80,29 +80,33 @@ Application::Application (int argc, char **argv)
                                PACKAGE " " VERSION, 0, 0);
   if (m_window == nullptr)
     {
-      LOG_PRINT (SeverityLevel::error, _("Can not create main window\n"));
+      LOG_PRINT (SeverityLevel::error, _ ("Can not create main window\n"));
       return;
     }
   glfwMakeContextCurrent (m_window);
 
+  glfwSetWindowUserPointer (m_window, this);
+  glfwSetFramebufferSizeCallback (m_window, static_framebuffer_size_callback);
+
   if (!load_gl_extensions ())
     {
-      LOG_PRINT (SeverityLevel::error, _("Error while extensions loading\n"));
+      LOG_PRINT (SeverityLevel::error, _ ("Error while extensions loading\n"));
       return;
     }
 
   // Get OpenGL info
   GLint version_major, version_minor, no_of_ext;
-  LOG_PRINT (SeverityLevel::info, _("Device: %s\n"), glGetString (GL_RENDERER));
-  LOG_PRINT (SeverityLevel::info, _("Vendor: %s\n"), glGetString (GL_VENDOR));
+  LOG_PRINT (SeverityLevel::info, _ ("Device: %s\n"),
+             glGetString (GL_RENDERER));
+  LOG_PRINT (SeverityLevel::info, _ ("Vendor: %s\n"), glGetString (GL_VENDOR));
   glGetIntegerv (GL_MAJOR_VERSION, &version_major);
   glGetIntegerv (GL_MINOR_VERSION, &version_minor);
-  LOG_PRINT (SeverityLevel::info, _("GL Version: %i.%i\n"), version_major,
+  LOG_PRINT (SeverityLevel::info, _ ("GL Version: %i.%i\n"), version_major,
              version_minor);
-  LOG_PRINT (SeverityLevel::info, _("GLSL Version: %s\n"),
+  LOG_PRINT (SeverityLevel::info, _ ("GLSL Version: %s\n"),
              glGetString (GL_SHADING_LANGUAGE_VERSION));
   glGetIntegerv (GL_NUM_EXTENSIONS, &no_of_ext);
-  LOG_PRINT (SeverityLevel::info, _("Extensions: \n"));
+  LOG_PRINT (SeverityLevel::info, _ ("Extensions: \n"));
   for (auto n = 0; n < no_of_ext; n++)
     {
       LOG_PRINT (SeverityLevel::none, "  %s\n",
@@ -128,6 +132,9 @@ Application::Application (int argc, char **argv)
 
   glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                           m_framebuffer_texture, 0);
+
+  glClearColor(1.0, 1.0, 0.0, 1.0);
+  glViewport (0, 0, m_framebuffer_size.x, m_framebuffer_size.y);
 
   // TODO : Further application init
 
@@ -267,6 +274,9 @@ Application::run ()
     {
       glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
       draw ();
+      glFlush ();
+      draw ();
+      glFlush ();
 
       uint8_t *framebuffer_ptr
           = new uint8_t[m_framebuffer_size.x * m_framebuffer_size.y * 3];
@@ -301,11 +311,11 @@ Application::run ()
 /* *************************** Application::draw *************************** */
 
 void
-Application::draw ()
+Application::p_draw ()
 {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // TODO : Draw further
+  draw ();
 }
 
 /* *********************** Application::register_arg *********************** */
@@ -339,6 +349,27 @@ void
 Application::version ()
 {
   std::cout << PACKAGE << " " << VERSION << std::endl;
+}
+
+/* ********************* Application::framebuffer_size ********************* */
+
+void
+Application::framebuffer_size (int w, int h)
+{
+  m_framebuffer_size = glm::uvec2 (w, h);
+
+  // TODO : Recreate framebuffer
+}
+
+/* ************* Application::static_framebuffer_size_callback ************* */
+
+void
+Application::static_framebuffer_size_callback (GLFWwindow *wnd, int w, int h)
+{
+  Application *app
+      = reinterpret_cast<Application *> (glfwGetWindowUserPointer (wnd));
+
+  app->framebuffer_size (w, h);
 }
 
 } // namespace gle
