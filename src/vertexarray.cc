@@ -94,8 +94,8 @@ VertexArray::add_buffer (Buffer *buffer)
           for (size_t n = 0; n < buffer->get_attribute_count (); n++)
             {
               glVertexAttribPointer (
-                  buffer->get_attribute (n)->get_number (),
-                  buffer->get_attribute (n)->get_elements (),
+                  buffer->get_attribute (n)->get_index (),
+                  buffer->get_attribute (n)->get_element_count (),
                   buffer->get_attribute (n)->get_gl_type (),
                   buffer->get_attribute (n)->is_normalized () ? GL_TRUE
                                                               : GL_FALSE,

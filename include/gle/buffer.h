@@ -32,12 +32,10 @@ class Buffer
 
 private:
   unsigned int m_handle;             /// Buffer name
-  BufferAccess m_access;             /// Data access type
-  BufferOptimization m_optimization; /// Storage optimization type
   size_t m_size;                     /// Size of the buffer
   attribute_vector_t m_attributes;   /// Attribute vector
-  size_t m_element_count;            /// Number of the elements
-  size_t m_element_size;             /// Size of the single element
+  BufferAccess m_access;             /// Data access type
+  BufferOptimization m_optimization; /// Storage optimization type
 
 public:
   Buffer () = delete;

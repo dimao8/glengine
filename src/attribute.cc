@@ -7,82 +7,82 @@ namespace gle
 
 /* ************************** Attribute::Attribute ************************* */
 
-Attribute::Attribute (AttributeType type, int number, bool normalized,
+Attribute::Attribute (AttributeType type, int index, bool normalized,
                       const std::string &name)
-    : m_type (type), m_number (number), m_name (name), m_size (0),
-      m_elements (0), m_gl_type (GL_FLOAT), m_normalized (normalized)
+    : m_type (type), m_index (index), m_name (name), m_element_size (0),
+      m_element_count (0), m_gl_type (GL_FLOAT), m_normalized (normalized)
 {
   switch (m_type)
     {
     case AttributeType::f:
-      m_size = sizeof (GLfloat);
-      m_elements = 1;
+      m_element_size = sizeof (GLfloat);
+      m_element_count = 1;
       m_gl_type = GL_FLOAT;
       break;
 
     case AttributeType::fv2:
-      m_size = sizeof (GLfloat) * 2;
-      m_elements = 2;
+      m_element_size = sizeof (GLfloat);
+      m_element_count = 2;
       m_gl_type = GL_FLOAT;
       break;
 
     case AttributeType::fv3:
-      m_size = sizeof (GLfloat) * 3;
-      m_elements = 3;
+      m_element_size = sizeof (GLfloat);
+      m_element_count = 3;
       m_gl_type = GL_FLOAT;
       break;
 
     case AttributeType::fv4:
-      m_size = sizeof (GLfloat) * 4;
-      m_elements = 4;
+      m_element_size = sizeof (GLfloat);
+      m_element_count = 4;
       m_gl_type = GL_FLOAT;
       break;
 
     case AttributeType::i:
-      m_size = sizeof (GLint);
-      m_elements = 1;
+      m_element_size = sizeof (GLint);
+      m_element_count = 1;
       m_gl_type = GL_INT;
       break;
 
     case AttributeType::iv2:
-      m_size = sizeof (GLint) * 2;
-      m_elements = 2;
+      m_element_size = sizeof (GLint);
+      m_element_count = 2;
       m_gl_type = GL_INT;
       break;
 
     case AttributeType::iv3:
-      m_size = sizeof (GLint) * 3;
-      m_elements = 3;
+      m_element_size = sizeof (GLint);
+      m_element_count = 3;
       m_gl_type = GL_INT;
       break;
 
     case AttributeType::iv4:
-      m_size = sizeof (GLint) * 4;
-      m_elements = 4;
+      m_element_size = sizeof (GLint);
+      m_element_count = 4;
       m_gl_type = GL_INT;
       break;
 
     case AttributeType::b:
-      m_size = sizeof (GLboolean);
-      m_elements = 1;
+      m_element_size = sizeof (GLboolean);
+      m_element_count = 1;
       m_gl_type = GL_BOOL;
       break;
 
     case AttributeType::bv2:
-      m_size = sizeof (GLboolean) * 2;
-      m_elements = 2;
+      m_element_size = sizeof (GLboolean);
+      m_element_count = 2;
       m_gl_type = GL_BOOL;
       break;
 
     case AttributeType::bv3:
-      m_size = sizeof (GLboolean) * 3;
-      m_elements = 3;
+      m_element_size = sizeof (GLboolean);
+      m_element_count = 3;
       m_gl_type = GL_BOOL;
       break;
 
     case AttributeType::bv4:
-      m_size = sizeof (GLboolean) * 4;
-      m_elements = 4;
+      m_element_size = sizeof (GLboolean);
+      m_element_count = 4;
       m_gl_type = GL_BOOL;
       break;
     }
@@ -96,12 +96,12 @@ Attribute::get_type () const
   return m_type;
 }
 
-/* ************************* Attribute::get_number ************************* */
+/* ************************** Attribute::get_index ************************* */
 
 int
-Attribute::get_number () const
+Attribute::get_index () const
 {
-  return m_number;
+  return m_index;
 }
 
 /* ************************** Attribute::get_name ************************** */
@@ -117,15 +117,15 @@ Attribute::get_name () const
 size_t
 Attribute::get_size () const
 {
-  return m_size;
+  return m_element_size*m_element_count;
 }
 
-/* ************************ Attribute::get_elements ************************ */
+/* ********************** Attribute::get_element_count ********************* */
 
 size_t
-Attribute::get_elements () const
+Attribute::get_element_count () const
 {
-  return m_elements;
+  return m_element_count;
 }
 
 /* ************************* Attribute::get_gl_type ************************ */

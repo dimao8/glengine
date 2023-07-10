@@ -103,9 +103,6 @@ Buffer::add_attribute (Attribute *attr)
     return;
 
   m_attributes.push_back (attr);
-
-  m_element_size += attr->get_size ();
-  m_element_count = m_size / m_element_size;
 }
 
 /* **************************** Buffer::~Buffer **************************** */
