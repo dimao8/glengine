@@ -1,9 +1,9 @@
-#include <gle/logger.h>
-#include <gle/shader.h>
-#include <gle/shaderprogram.h>
-
+#include "shaderprogram.h"
+#include "shader.h"
 #include "opengl.h"
 #include "translate.h"
+#include "logger.h"
+
 
 namespace gle
 {
@@ -155,6 +155,13 @@ void
 ShaderProgram::disable ()
 {
   glUseProgram (0);
+}
+
+/* ************************ ShaderProgram::is_linked *********************** */
+
+bool ShaderProgram::is_linked () const
+{
+  return m_state == ShaderProgramState::linked;
 }
 
 }

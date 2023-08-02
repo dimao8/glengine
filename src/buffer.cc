@@ -1,7 +1,6 @@
-#include <gle/attribute.h>
-#include <gle/buffer.h>
-#include <gle/logger.h>
-
+#include "attribute.h"
+#include "buffer.h"
+#include "logger.h"
 #include "opengl.h"
 #include "translate.h"
 
@@ -47,7 +46,7 @@ Buffer::Buffer (BufferAccess access, BufferOptimization optimization,
                 size_t data_size, const void *data)
     : m_handle (0), m_access (BufferAccess::draw),
       m_optimization (BufferOptimization::stat), m_size (0),
-      m_element_size (0)
+      m_buffer_vertices (0)
 {
   GLenum usage;
   GLenum result;
@@ -103,6 +102,13 @@ Buffer::add_attribute (Attribute *attr)
     return;
 
   m_attributes.push_back (attr);
+
+  size_t n = 0;
+  for (auto it : m_attributes)
+    n += it->get_size ();
+
+  m_buffer_vertices = m_size / n;
+
 }
 
 /* **************************** Buffer::~Buffer **************************** */
@@ -145,12 +151,12 @@ Buffer::get_attribute (size_t n) const
     return m_attributes[n];
 }
 
-/* *********************** Buffer::get_element_count *********************** */
+/* ************************ Buffer::get_vertex_count *********************** */
 
 size_t
-Buffer::get_element_count () const
+Buffer::get_vertex_count () const
 {
-  return m_element_count;
+  return m_buffer_vertices;
 }
 
 /* **************************** Buffer::disable **************************** */

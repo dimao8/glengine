@@ -23,14 +23,14 @@
 // USA
 //
 
-#include <gle/image.h>
-#include <gle/logger.h>
+#include "image.h"
+#include "logger.h"
+#include "translate.h"
+
 #include <pngloader.h>
 #include <tgaloader.h>
 
 #include <fstream>
-
-#include "translate.h"
 
 #define DEFAULT_IMAGE_WIDTH 512
 #define DEFAULT_IMAGE_HEIGHT 512

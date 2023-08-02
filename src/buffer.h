@@ -36,6 +36,7 @@ private:
   attribute_vector_t m_attributes;   /// Attribute vector
   BufferAccess m_access;             /// Data access type
   BufferOptimization m_optimization; /// Storage optimization type
+  size_t m_buffer_vertices;          /// Number of the vertices
 
 public:
   Buffer () = delete;
@@ -89,7 +90,7 @@ public:
   bool is_empty () const;
   size_t get_attribute_count() const;
   const Attribute * get_attribute(size_t n) const;
-  size_t get_element_count() const;
+  size_t get_vertex_count () const;
 
 private:
   ///

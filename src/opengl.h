@@ -30,6 +30,7 @@
 #include <GL/glext.h>
 
 extern PFNGLGETSTRINGIPROC glGetStringi;
+
 extern PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
 extern PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
 extern PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
@@ -66,6 +67,7 @@ extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
+extern PFNGLGETVERTEXATTRIBIVPROC glGetVertexAttribiv;
 
 namespace gle
 {

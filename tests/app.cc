@@ -1,4 +1,5 @@
 #include <gle/engine.h>
+#include <gle/logger.h>
 #include <iostream>
 
 class Game : public gle::Application
@@ -16,7 +17,7 @@ public:
   virtual ~Game ();
   virtual void init () final;
   void cleanup () final;
-  void draw () final;
+  virtual void draw () final;
 
 private:
   static const GLsizei m_mesh_size;

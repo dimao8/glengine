@@ -23,11 +23,10 @@
 // USA
 //
 
+#include "shader.h"
+#include "logger.h"
 #include "opengl.h"
 #include "translate.h"
-
-#include <gle/logger.h>
-#include <gle/shader.h>
 
 #include <fstream>
 #include <iostream>

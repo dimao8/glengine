@@ -31,12 +31,12 @@
 #include <list>
 #include <string>
 
-#include <gle/image.h>
-#include <gle/shader.h>
-#include <gle/shaderprogram.h>
-#include <gle/buffer.h>
-#include <gle/vertexarray.h>
-#include <gle/attribute.h>
+#include "image.h"
+#include "shader.h"
+#include "shaderprogram.h"
+#include "buffer.h"
+#include "vertexarray.h"
+#include "attribute.h"
 
 #include "arguments.h"
 

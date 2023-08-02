@@ -25,17 +25,22 @@
 
 #include "opengl.h"
 #include "translate.h"
+#include "logger.h"
 
 #include <GLFW/glfw3.h>
-#include <gle/logger.h>
 
 #define LOAD_GL_EXTENSION(x, y)                                               \
   x = reinterpret_cast<y> (glfwGetProcAddress (#x));                          \
   if (x == nullptr)                                                           \
     {                                                                         \
-      LOG_PRINT (SeverityLevel::warning, "Can not load ``%s\'\'\n", #x);      \
+      LOG_PRINT (SeverityLevel::warning, _ ("Can not load ``%s\'\'\n"), #x);  \
       return false;                                                           \
+    } \
+  else \
+    { \
+      LOG_PRINT (SeverityLevel::info, _ ("``%s\'\' was loaded\n"), #x); \
     }
+
 
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 
@@ -75,6 +80,7 @@ PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
+PFNGLGETVERTEXATTRIBIVPROC glGetVertexAttribiv = nullptr;
 
 const char *err_str_no_error = _ ("No error");
 const char *err_str_invalid_enum = _ ("Invalid enumerator");
@@ -126,13 +132,14 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glDeleteBuffers, PFNGLDELETEBUFFERSPROC);
   LOAD_GL_EXTENSION (glBufferData, PFNGLBUFFERDATAPROC);
   LOAD_GL_EXTENSION (glBufferSubData, PFNGLBUFFERSUBDATAPROC);
+
   LOAD_GL_EXTENSION (glVertexAttribPointer, PFNGLVERTEXATTRIBPOINTERPROC);
   LOAD_GL_EXTENSION (glEnableVertexAttribArray,
                      PFNGLENABLEVERTEXATTRIBARRAYPROC);
-
   LOAD_GL_EXTENSION (glGenVertexArrays, PFNGLGENVERTEXARRAYSPROC);
   LOAD_GL_EXTENSION (glDeleteVertexArrays, PFNGLDELETEVERTEXARRAYSPROC);
   LOAD_GL_EXTENSION (glBindVertexArray, PFNGLBINDVERTEXARRAYPROC);
+  LOAD_GL_EXTENSION (glGetVertexAttribiv, PFNGLGETVERTEXATTRIBIVPROC);
 
   return true;
 }

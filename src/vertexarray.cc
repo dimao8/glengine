@@ -1,9 +1,8 @@
-#include <gle/attribute.h>
-#include <gle/buffer.h>
-#include <gle/logger.h>
-#include <gle/shaderprogram.h>
-#include <gle/vertexarray.h>
-
+#include "vertexarray.h"
+#include "attribute.h"
+#include "buffer.h"
+#include "logger.h"
+#include "shaderprogram.h"
 #include "opengl.h"
 #include "translate.h"
 
@@ -82,8 +81,8 @@ VertexArray::add_buffer (Buffer *buffer)
     {
       if (!buffer->is_empty () && buffer->get_attribute_count () != 0)
         {
-          if (m_vertex_count < buffer->get_element_count())
-            m_vertex_count = buffer->get_element_count();
+          if (m_vertex_count < buffer->get_vertex_count ())
+            m_vertex_count = buffer->get_vertex_count ();
 
           m_buffers.push_back (buffer);
           buffer->enable ();
@@ -100,6 +99,7 @@ VertexArray::add_buffer (Buffer *buffer)
                   buffer->get_attribute (n)->is_normalized () ? GL_TRUE
                                                               : GL_FALSE,
                   stride, reinterpret_cast<void *> (offs));
+              glEnableVertexAttribArray (buffer->get_attribute (n)->get_index ());
               offs += buffer->get_attribute (n)->get_size ();
             }
         }
@@ -113,13 +113,30 @@ VertexArray::draw (ShaderProgram *program)
 {
   if (program == nullptr)
     return;
-  else
-    program->enable ();
+
+  GLint param;
+
+  glGetError();
+  program->enable ();
+  LOG_PRINT(SeverityLevel::warning, "OpenGL error: %s\n", message_gl(glGetError()));
+  glGetIntegerv (GL_CURRENT_PROGRAM, &param);
+  LOG_PRINT(SeverityLevel::info, "glUseProgram(%i)\n",
+    static_cast<int>(param));
 
   enable ();
 
   LOG_PRINT(SeverityLevel::info, "glDrawArrays(%i, %i, %i)\n",
-  static_cast<int>(m_gl_mode), static_cast<int>(0), static_cast<int>(m_vertex_count));
+    static_cast<int>(m_gl_mode), static_cast<int>(0), static_cast<int>(m_vertex_count));
+
+  glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &param);
+  LOG_PRINT(SeverityLevel::info, "GL_ARRAY_BUFFER_BINDING: %i\n",
+    static_cast<int>(param));
+  glGetVertexAttribiv(0, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &param);
+  LOG_PRINT(SeverityLevel::info, "GL_VERTEX_ATTRIB_ARRAY_ENABLED(0): %i\n",
+    static_cast<int>(param));
+  glGetVertexAttribiv(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &param);
+  LOG_PRINT(SeverityLevel::info, "GL_VERTEX_ATTRIB_ARRAY_ENABLED(1): %i\n",
+    static_cast<int>(param));
 
   glDrawArrays (m_gl_mode, 0, m_vertex_count);
 }

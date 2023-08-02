@@ -26,6 +26,6 @@
 #ifndef GLENGINE_H
 #define GLENGINE_H
 
-#include <gle/application.h>
+#include <gle/uuid.h>
 
 #endif // GLENGINE_H

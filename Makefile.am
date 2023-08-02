@@ -4,31 +4,35 @@ SUBDIRS = libpngloader libtgaloader liblitejson
 
 lib_LTLIBRARIES = libglengine.la
 libglengine_la_SOURCES = src/engine.cc \
+	src/application.h \
 	src/application.cc \
+	src/arguments.h \
 	src/arguments.cc \
+	src/logger.h \
 	src/logger.cc \
 	src/opengl.h \
 	src/opengl.cc \
+	src/image.h \
 	src/image.cc \
+	src/color.h \
 	src/color.cc \
+	src/shader.h \
 	src/shader.cc \
+	src/shaderprogram.h \
 	src/shaderprogram.cc \
+	src/attribute.h \
 	src/attribute.cc \
+	src/buffer.h \
 	src/buffer.cc \
-	src/vertexarray.cc
+	src/vertexarray.h \
+	src/vertexarray.cc \
+	src/uuid.cc \
+	src/object.h \
+	src/object.cc
 
 gle_includedir = $(includedir)/gle
-gle_include_HEADERS = include/gle/application.h \
-	include/gle/arguments.h \
-	include/gle/engine.h \
-	include/gle/logger.h \
-	include/gle/image.h \
-	include/gle/color.h \
-	include/gle/shader.h \
-	include/gle/shaderprogram.h \
-	include/gle/attribute.h \
-	include/gle/buffer.h \
-	include/gle/vertexarray.h
+gle_include_HEADERS = include/gle/uuid.h \
+	include/gle/engine.h
 
 libglengine_la_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include -I$(srcdir)/liblitejson/include
 libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/libtgaloader -ltgaloader -L$(builddir)/liblitejson -llitejson

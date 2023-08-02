@@ -26,8 +26,9 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include "color.h"
+
 #include <cstdint>
-#include <gle/color.h>
 #include <glm/vec2.hpp>
 #include <string>
 #include <vector>

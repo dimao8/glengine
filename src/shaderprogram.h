@@ -90,6 +90,8 @@ public:
 
   unsigned int get_handle() const;
 
+  bool is_linked () const;
+
 public:
 
   static void disable ();

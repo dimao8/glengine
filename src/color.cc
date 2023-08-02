@@ -23,7 +23,7 @@
 // USA
 //
 
-#include <gle/color.h>
+#include "color.h"
 
 namespace gle
 {

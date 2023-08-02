@@ -1,5 +1,4 @@
-#include <gle/attribute.h>
-
+#include "attribute.h"
 #include "opengl.h"
 
 namespace gle

@@ -23,9 +23,9 @@
 // USA
 //
 
-#include <gle/application.h>
-#include <gle/image.h>
-#include <gle/logger.h>
+#include "application.h"
+#include "image.h"
+#include "logger.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -34,6 +34,7 @@
 #include <config.h>
 #endif // HAVE_CONFIG_H
 
+#include "object.h"
 #include "opengl.h"
 #include "translate.h"
 
@@ -85,14 +86,14 @@ Application::Application (int argc, char **argv)
     }
   glfwMakeContextCurrent (m_window);
 
-  glfwSetWindowUserPointer (m_window, this);
-  glfwSetFramebufferSizeCallback (m_window, static_framebuffer_size_callback);
-
   if (!load_gl_extensions ())
     {
       LOG_PRINT (SeverityLevel::error, _ ("Error while extensions loading\n"));
       return;
     }
+
+  glfwSetWindowUserPointer (m_window, this);
+  glfwSetFramebufferSizeCallback (m_window, static_framebuffer_size_callback);
 
   // Get OpenGL info
   GLint version_major, version_minor, no_of_ext;
@@ -133,7 +134,7 @@ Application::Application (int argc, char **argv)
   glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                           m_framebuffer_texture, 0);
 
-  glClearColor(1.0, 1.0, 0.0, 1.0);
+  glClearColor (0.0, 0.0, 0.0, 1.0);
   glViewport (0, 0, m_framebuffer_size.x, m_framebuffer_size.y);
 
   // TODO : Further application init
@@ -240,9 +241,13 @@ Application::parse_arguments (int argc, char **argv)
 void
 Application::p_cleanup ()
 {
-  // TODO : Clean further
+  // TODO : Clean further -->
   glDeleteFramebuffers (1, &m_framebuffer);
   glDeleteTextures (1, &m_framebuffer_texture);
+
+  // <--
+
+  Object::clear_object_pool();
 
   glfwTerminate ();
 }
@@ -270,12 +275,17 @@ Application::run ()
 
   init ();
 
+  GLint param;
+
   if (m_save_framebuffer)
     {
       glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
-      draw ();
-      glFlush ();
-      draw ();
+
+      glGetIntegerv(GL_FRAMEBUFFER_BINDING, &param);
+      gle::logger.print(gle::SeverityLevel::info, "GL_FRAMEBUFFER_BINDING: %i\n",
+        static_cast<int>(param));
+
+      p_draw ();
       glFlush ();
 
       uint8_t *framebuffer_ptr
@@ -297,7 +307,7 @@ Application::run ()
         {
           glfwPollEvents ();
 
-          draw ();
+          p_draw ();
 
           glfwSwapBuffers (m_window);
         }
