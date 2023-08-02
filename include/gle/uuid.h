@@ -44,6 +44,8 @@ public:
   bool operator>= (const UUID &second) const;
   bool operator== (const UUID &second) const;
   uint64_t operator[](size_t n) const;
+
+  const std::string text() const;
 };
 
 std::ostream& operator<<(std::ostream& stream, const UUID& uuid);

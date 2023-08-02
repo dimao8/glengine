@@ -4,6 +4,7 @@
 #include <ctime>
 #include <random>
 #include <stdexcept>
+#include <sstream>
 
 namespace gle
 {
@@ -289,6 +290,16 @@ UUID::operator[] (size_t n) const
     default:
       throw std::out_of_range ("index must be in range 0-4");
     }
+}
+
+/* ******************************* UUID::text ****************************** */
+
+const std::string UUID::text() const
+{
+  std::stringstream ss;
+  ss << *this;
+
+  return ss.str();
 }
 
 /* ******************************* operator<< ****************************** */

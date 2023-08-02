@@ -26,6 +26,10 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
+#include "object.h"
+
+#include <string>
+
 namespace gle
 {
 
@@ -45,7 +49,7 @@ enum class ShaderProgramState
 ///
 /// \brief openGL shader program class
 ///
-class ShaderProgram
+class ShaderProgram : public Object
 {
 private:
   unsigned int m_handle; /// Internal OpenGL shader program name
@@ -70,7 +74,7 @@ public:
   ///
   /// \brief Destroy shader program. Free resources
   ///
-  ~ShaderProgram ();
+  virtual ~ShaderProgram ();
 
   ///
   /// \brief Link current shader program
@@ -95,6 +99,8 @@ public:
 public:
 
   static void disable ();
+
+  virtual const std::string type_name() const;
 };
 
 }

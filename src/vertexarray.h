@@ -1,7 +1,10 @@
 #ifndef VERTEXARRAY_H
 #define VERTEXARRAY_H
 
+#include "object.h"
+
 #include <vector>
+#include <string>
 
 namespace gle
 {
@@ -51,7 +54,7 @@ public:
   ///
   /// \brief Destroy vertex array. Free all resources.
   ///
-  ~VertexArray ();
+  virtual ~VertexArray ();
 
   ///
   /// \brief Add data buffer
@@ -74,6 +77,8 @@ public:
   /// \brief Enable current vertex array
   ///
   void enable ();
+
+  virtual const std::string type_name() const;
 };
 
 }

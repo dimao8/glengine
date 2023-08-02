@@ -26,6 +26,7 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include "object.h"
 #include "color.h"
 
 #include <cstdint>
@@ -41,7 +42,7 @@ namespace gle
  *
  * The Image class contains image data and all image properties.
  */
-class Image
+class Image : public Object
 {
 
 private:
@@ -78,12 +79,16 @@ public:
    */
   Image (const std::string &file_name);
 
+  virtual ~Image() {}
+
   /**
    * Save image to the file
    *
    * \param [in] file_name -- Name of the TGA file
    */
   void save (const std::string &file_name);
+
+  virtual const std::string type_name() const;
 };
 
 }

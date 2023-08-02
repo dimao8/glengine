@@ -70,6 +70,7 @@ AX_CHECK_GLM
 # Make symbolic links to the some files
 AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert
   tests/shader.frag:tests/shader.frag
+  tests/test.png:tests/test.png
   ])
 
 AC_CONFIG_FILES([Makefile])

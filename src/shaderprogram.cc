@@ -1,9 +1,8 @@
 #include "shaderprogram.h"
-#include "shader.h"
-#include "opengl.h"
-#include "translate.h"
 #include "logger.h"
-
+#include "opengl.h"
+#include "shader.h"
+#include "translate.h"
 
 namespace gle
 {
@@ -159,9 +158,18 @@ ShaderProgram::disable ()
 
 /* ************************ ShaderProgram::is_linked *********************** */
 
-bool ShaderProgram::is_linked () const
+bool
+ShaderProgram::is_linked () const
 {
   return m_state == ShaderProgramState::linked;
+}
+
+/* ************************ ShaderProgram::type_name *********************** */
+
+const std::string
+ShaderProgram::type_name () const
+{
+  return "ShaderProgram";
 }
 
 }

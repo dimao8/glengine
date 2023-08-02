@@ -8,8 +8,9 @@ namespace gle
 
 Attribute::Attribute (AttributeType type, int index, bool normalized,
                       const std::string &name)
-    : m_type (type), m_index (index), m_name (name), m_element_size (0),
-      m_element_count (0), m_gl_type (GL_FLOAT), m_normalized (normalized)
+    : Object (), m_type (type), m_index (index), m_name (name),
+      m_element_size (0), m_element_count (0), m_gl_type (GL_FLOAT),
+      m_normalized (normalized)
 {
   switch (m_type)
     {
@@ -116,7 +117,7 @@ Attribute::get_name () const
 size_t
 Attribute::get_size () const
 {
-  return m_element_size*m_element_count;
+  return m_element_size * m_element_count;
 }
 
 /* ********************** Attribute::get_element_count ********************* */
@@ -141,6 +142,14 @@ bool
 Attribute::is_normalized () const
 {
   return m_normalized;
+}
+
+/* ************************** Attribute::type_name ************************* */
+
+const std::string
+Attribute::type_name () const
+{
+  return "Attribute";
 }
 
 }

@@ -179,4 +179,12 @@ Shader::is_compiled () const
   return m_state == ShaderState::compiled;
 }
 
+/* *************************** Shader::type_name *************************** */
+
+const std::string
+Shader::type_name () const
+{
+  return "Shader";
+}
+
 }

@@ -1,5 +1,5 @@
-#include "attribute.h"
 #include "buffer.h"
+#include "attribute.h"
 #include "logger.h"
 #include "opengl.h"
 #include "translate.h"
@@ -44,7 +44,7 @@ Buffer::buffer_type_to_glenum (BufferAccess access,
 
 Buffer::Buffer (BufferAccess access, BufferOptimization optimization,
                 size_t data_size, const void *data)
-    : m_handle (0), m_access (BufferAccess::draw),
+    : Object (), m_handle (0), m_access (BufferAccess::draw),
       m_optimization (BufferOptimization::stat), m_size (0),
       m_buffer_vertices (0)
 {
@@ -108,7 +108,6 @@ Buffer::add_attribute (Attribute *attr)
     n += it->get_size ();
 
   m_buffer_vertices = m_size / n;
-
 }
 
 /* **************************** Buffer::~Buffer **************************** */
@@ -165,6 +164,14 @@ void
 Buffer::disable ()
 {
   glBindBuffer (GL_ARRAY_BUFFER, 0);
+}
+
+/* *************************** Buffer::type_name *************************** */
+
+const std::string
+Buffer::type_name () const
+{
+  return "Buffer";
 }
 
 }

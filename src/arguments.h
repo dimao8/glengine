@@ -88,6 +88,8 @@ public:
    */
   Argument (const Argument &arg);
 
+  virtual ~Argument() {}
+
   /**
    * \brief Assignment operator
    */

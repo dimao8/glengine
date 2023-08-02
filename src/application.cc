@@ -247,8 +247,6 @@ Application::p_cleanup ()
 
   // <--
 
-  Object::clear_object_pool();
-
   glfwTerminate ();
 }
 

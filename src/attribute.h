@@ -1,6 +1,8 @@
 #ifndef ATTRIBUTE_H
 #define ATTRIBUTE_H
 
+#include "object.h"
+
 #include <string>
 
 namespace gle
@@ -28,7 +30,7 @@ enum class AttributeType
 ///
 /// \brief Vertex attribute
 ///
-class Attribute
+class Attribute : public Object
 {
 
 private:
@@ -43,6 +45,8 @@ private:
 public:
   Attribute () = delete;
   Attribute (const Attribute &) = delete;
+
+  virtual ~Attribute() {}
 
   ///
   /// \brief Create named attribute
@@ -63,6 +67,8 @@ public:
   size_t get_element_count () const;
   unsigned int get_gl_type () const;
   bool is_normalized() const;
+
+  virtual const std::string type_name() const;
 };
 
 }

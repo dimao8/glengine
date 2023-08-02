@@ -4,6 +4,7 @@
 #include <gle/uuid.h>
 
 #include <map>
+#include <string>
 
 namespace gle
 {
@@ -14,7 +15,7 @@ class Object
 private:
 
   typedef std::map<UUID, Object*> object_map_t;
-  typedef object_map_t::const_iterator object_map_citer_t;
+  typedef object_map_t::iterator object_map_iter_t;
 
   static object_map_t object_pool;
 
@@ -24,6 +25,7 @@ private:
 public:
 
   static void clear_object_pool();
+  static Object* get_object(const UUID & object_id);
 
 private:
 
@@ -33,7 +35,9 @@ public:
   Object();
   Object(const Object &) = delete;
   Object(Object &&) = delete;
-  virtual ~Object() {}
+  virtual ~Object();
+
+  virtual const std::string type_name() const = 0;
 
   const UUID & id() const;
 };

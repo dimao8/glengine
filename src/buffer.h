@@ -1,6 +1,8 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
+#include "object.h"
+
 #include <vector>
 
 namespace gle
@@ -27,7 +29,7 @@ enum class BufferOptimization
 ///
 /// \brief Data buffer class
 ///
-class Buffer
+class Buffer : public Object
 {
 
 private:
@@ -85,12 +87,14 @@ public:
   ///
   /// \brief Destroy buffer. Free resources
   ///
-  ~Buffer ();
+  virtual ~Buffer ();
 
   bool is_empty () const;
   size_t get_attribute_count() const;
   const Attribute * get_attribute(size_t n) const;
   size_t get_vertex_count () const;
+
+  virtual const std::string type_name() const;
 
 private:
   ///

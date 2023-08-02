@@ -26,6 +26,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include "object.h"
+
 #include <string>
 
 namespace gle
@@ -55,7 +57,7 @@ enum class ShaderType
 ///
 /// \brief openGL shader class
 ///
-class Shader
+class Shader : public Object
 {
 
 private:
@@ -77,7 +79,7 @@ public:
   ///
   /// \brief Destroy shader. Free resources
   ///
-  ~Shader ();
+  virtual ~Shader ();
 
   ///
   /// \brief Compile current shader
@@ -93,6 +95,8 @@ public:
   int get_handle() const;
   bool is_empty () const;
   bool is_compiled () const;
+
+  virtual const std::string type_name() const;
 };
 
 }
