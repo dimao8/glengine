@@ -8,6 +8,8 @@
 namespace gle
 {
 
+class Logger;
+
 class UUID
 {
 
@@ -49,6 +51,7 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& stream, const UUID& uuid);
+Logger &operator<< (Logger & logger, const UUID& uuid);
 
 }
 

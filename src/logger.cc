@@ -99,9 +99,81 @@ Logger::print (SeverityLevel sl, const std::string &format, ...)
     }
 
   va_start (va, format);
-  vfprintf(m_log_stream, format.c_str(), va);
+  vfprintf (m_log_stream, format.c_str (), va);
   va_end (va);
-  fflush(m_log_stream);
+  fflush (m_log_stream);
+}
+
+/* *************************** Logger::operator<< ************************** */
+
+Logger &
+Logger::operator<< (char c)
+{
+  fprintf (m_log_stream, " ``%c\'\' ", c);
+  return *this;
+}
+
+/* *************************** Logger::operator<< ************************** */
+
+Logger &
+Logger::operator<< (int i)
+{
+  fprintf (m_log_stream, " %i ", i);
+  return *this;
+}
+
+/* *************************** Logger::operator<< ************************** */
+
+Logger &
+Logger::operator<< (float f)
+{
+  fprintf (m_log_stream, " %f ", f);
+  return *this;
+}
+
+/* *************************** Logger::operator<< ************************** */
+
+Logger &
+Logger::operator<< (const std::string &str)
+{
+  fprintf (m_log_stream, " ``%s\'\' ", str.c_str ());
+  return *this;
+}
+
+/* *************************** Logger::operator<< ************************** */
+
+Logger &
+Logger::operator<< (const char *str)
+{
+  fprintf (m_log_stream, " ``%s\'\' ", str);
+  return *this;
+}
+
+/* *************************** Logger::operator<< ************************** */
+
+Logger &
+Logger::operator<< (bool b)
+{
+  fprintf (m_log_stream, " %s ", b ? "true" : "false");
+  return *this;
+}
+
+/* *************************** Logger::operator<< ************************** */
+
+Logger &
+Logger::operator<< (log::log_manip_t l)
+{
+  switch (l)
+    {
+
+    case log::endl:
+      fprintf (m_log_stream, "\n");
+      fflush (m_log_stream);
+      break;
+
+    }
+
+  return *this;
 }
 
 }

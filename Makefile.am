@@ -28,14 +28,25 @@ libglengine_la_SOURCES = src/engine.cc \
 	src/vertexarray.cc \
 	src/uuid.cc \
 	src/object.h \
-	src/object.cc
+	src/object.cc \
+	src/scene.h \
+	src/scene.cc \
+	src/scenenode.h \
+	src/scenenode.cc \
+	src/mesh.h \
+	src/mesh.cc \
+	src/light.h \
+	src/light.cc
 
 gle_includedir = $(includedir)/gle
 gle_include_HEADERS = include/gle/uuid.h \
 	include/gle/engine.h
 
-libglengine_la_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include -I$(srcdir)/liblitejson/include
-libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader -L$(builddir)/libtgaloader -ltgaloader -L$(builddir)/liblitejson -llitejson
+libglengine_la_CXXFLAGS = -I$(srcdir)/include \
+	-I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include \
+	-I$(srcdir)/liblitejson/include
+libglengine_la_LIBADD = -L$(builddir)/libpngloader -lpngloader \
+	-L$(builddir)/libtgaloader -ltgaloader -L$(builddir)/liblitejson -llitejson
 
 CLEANFILES =
 SUFFIXES =

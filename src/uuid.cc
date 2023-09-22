@@ -1,15 +1,17 @@
+#include "logger.h"
+
 #include <gle/uuid.h>
 
 #include <chrono>
 #include <ctime>
 #include <random>
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
 
 namespace gle
 {
 
-const UUID UUID::invalid_uuid = {0, 0, 0, 0, 0};
+const UUID UUID::invalid_uuid = { 0, 0, 0, 0, 0 };
 
 const uint32_t UUID::version = 1;
 const uint32_t UUID::variant = 4;
@@ -294,12 +296,13 @@ UUID::operator[] (size_t n) const
 
 /* ******************************* UUID::text ****************************** */
 
-const std::string UUID::text() const
+const std::string
+UUID::text () const
 {
   std::stringstream ss;
   ss << *this;
 
-  return ss.str();
+  return ss.str ();
 }
 
 /* ******************************* operator<< ****************************** */
@@ -308,15 +311,26 @@ std::ostream &
 operator<< (std::ostream &stream, const UUID &uuid)
 {
   std::streamsize width = stream.width (8);
-  stream << std::hex << std::setfill('0') << uuid[0] << "-";
+  stream << std::hex << std::setfill ('0') << uuid[0] << "-";
   stream << std::setw (4) << uuid[1] << "-";
   stream << uuid[2] << "-";
   stream << uuid[3] << "-";
   stream << std::setw (16) << uuid[4];
 
-  stream << std::setw (width) << std::dec << std::setfill(' ');
+  stream << std::setw (width) << std::dec << std::setfill (' ');
 
   return stream;
+}
+
+/* ******************************* operator<< ****************************** */
+
+Logger &
+operator<< (Logger &logger, const UUID &uuid)
+{
+  logger.print (SeverityLevel::none, "{%08llx-%04llx-%04llx-%04llx-%016llx}", uuid[0], uuid[1],
+                uuid[2], uuid[3], uuid[4]);
+
+  return logger;
 }
 
 }

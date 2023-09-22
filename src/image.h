@@ -88,8 +88,14 @@ public:
    */
   void save (const std::string &file_name);
 
+  int width () const;
+  int height () const;
+  ColorType color_type () const;
+
   virtual const std::string type_name() const;
 };
+
+Logger& operator<<(Logger& logger, const Image& image);
 
 }
 

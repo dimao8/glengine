@@ -42,6 +42,16 @@
 namespace gle
 {
 
+namespace log
+{
+
+enum log_manip_t
+{
+  endl
+};
+
+}
+
 /**
  * \brief Severity level type
  */
@@ -61,6 +71,7 @@ class Logger
 
 private:
   FILE *m_log_stream; /// Logger stream
+  SeverityLevel m_severity; /// Severity level
 
 public:
   /**
@@ -83,6 +94,15 @@ public:
    * \param [in] format -- Format string just like in printf
    */
   void print (SeverityLevel sl, const std::string &format, ...);
+
+  /// Input operators
+  Logger & operator <<(char c);
+  Logger & operator <<(int i);
+  Logger & operator <<(float f);
+  Logger & operator <<(const std::string & str);
+  Logger & operator <<(const char * str);
+  Logger & operator <<(bool b);
+  Logger & operator <<(log::log_manip_t l);
 };
 
 extern Logger logger;

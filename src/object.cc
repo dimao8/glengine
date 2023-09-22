@@ -1,6 +1,8 @@
 #include "object.h"
 #include "logger.h"
 
+#include <typeinfo>
+
 namespace gle
 {
 
@@ -8,14 +10,16 @@ Object::object_map_t Object::object_pool;
 
 /* ***************************** Object::Object **************************** */
 
-Object::Object () : m_id () { register_object (this); }
+Object::Object () : m_id () 
+{
+  //
+}
 
 /* **************************** Object::~Object **************************** */
 
 Object::~Object ()
 {
-  LOG_PRINT (SeverityLevel::info, "Delete %s\n",
-             m_id.text ().c_str ());
+  LOG_PRINT (SeverityLevel::info, "Delete %s\n", m_id.text ().c_str ());
 }
 
 /* ******************************* Object::id ****************************** */
@@ -34,12 +38,18 @@ Object::register_object (Object *obj)
   if (obj == nullptr)
     return UUID::invalid_uuid;
 
+  LOG_PRINT (SeverityLevel::info, "Register object");
+  logger << *obj << log::endl;
+
   object_map_iter_t it = object_pool.find (obj->id ());
 
   if (it != object_pool.end ())
-    delete it->second;
+    {
+      delete it->second;
+      object_pool.erase (it);
+    }
 
-  object_pool[obj->id ()] = obj;
+  object_pool.emplace (obj->id (), obj);
 
   return obj->id ();
 }
@@ -59,7 +69,7 @@ Object::unregister_object (const UUID &id)
 void
 Object::clear_object_pool ()
 {
-  for (auto it : object_pool)
+  for (auto &it : object_pool)
     delete it.second;
 }
 
@@ -79,6 +89,16 @@ Object::get_object (const UUID &object_id)
     }
   else
     return it->second;
+}
+
+/* ******************************* operator<< ****************************** */
+
+Logger &
+operator<< (Logger &logger, const Object &object)
+{
+  logger.print (SeverityLevel::none, " %s(%s)", object.type_name ().c_str (),
+                object.id ().text ().c_str ());
+  return logger;
 }
 
 }

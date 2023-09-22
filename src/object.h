@@ -9,6 +9,8 @@
 namespace gle
 {
 
+class Logger;
+
 class Object
 {
 
@@ -19,13 +21,12 @@ private:
 
   static object_map_t object_pool;
 
-  static const UUID & register_object(Object * obj);
-  static void unregister_object(const UUID & id);
-
 public:
 
   static void clear_object_pool();
   static Object* get_object(const UUID & object_id);
+  static const UUID & register_object(Object * obj);
+  static void unregister_object(const UUID & id);
 
 private:
 
@@ -41,6 +42,8 @@ public:
 
   const UUID & id() const;
 };
+
+Logger& operator<<(Logger& logger, const Object& object);
 
 }
 

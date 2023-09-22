@@ -25,13 +25,61 @@
 
 #include "color.h"
 
+#include <glm/gtc/round.hpp>
+
 namespace gle
 {
 
-/* ******************************* color_size ****************************** */
+/* ****************************** Color::Color ***************************** */
+
+Color::Color (float r, float g, float b, float a)
+    : m_color_value (glm::clamp (glm::vec4 (r, g, b, a),
+                                 glm::vec4 (0.0, 0.0, 0.0, 0.0),
+                                 glm::vec4 (1.0, 1.0, 1.0, 1.0)))
+{
+  //
+}
+
+/* ****************************** Color::Color ***************************** */
+
+Color::Color (uint32_t color)
+{
+  float cl[4];
+  cl[0] = static_cast<float> (color & 0xFF) / 255.0f;
+  cl[1] = static_cast<float> ((color >> 8) & 0xFF) / 255.0f;
+  cl[2] = static_cast<float> ((color >> 16) & 0xFF) / 255.0f;
+  cl[3] = static_cast<float> ((color >> 24) & 0xFF) / 255.0f;
+
+  m_color_value = glm::vec4(cl[0], cl[1], cl[2], cl[3]);
+}
+
+/* ****************************** Color::Color ***************************** */
+
+Color::Color (const Color& color)
+{
+  m_color_value = color.m_color_value;
+}
+
+/* **************************** Color::operator= *************************** */
+
+Color & Color::operator=(const Color& color)
+{
+  m_color_value = color.m_color_value;
+  return *this;
+}
+
+/* **************************** Color::type_name *************************** */
+
+const std::string
+Color::type_name () const
+{
+  return "Color";
+}
+
+/* *************************** Color::color_size *************************** */
 
 unsigned int
-color_size (ColorType ct)
+Color::color_size (ColorType ct)
 {
   switch (ct)
     {

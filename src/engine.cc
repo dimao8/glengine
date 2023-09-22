@@ -28,6 +28,7 @@
 #include "image.h"
 #include "shader.h"
 #include "shaderprogram.h"
+#include "logger.h"
 
 namespace gle
 {
@@ -37,6 +38,8 @@ namespace gle
 bool
 init (int argc, char **argv)
 {
+  image_create_from_file("tests/test.png");
+
   // TODO : Init here
   return true;
 }

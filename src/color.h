@@ -26,6 +26,9 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "object.h"
+
+#include <cstdint>
 #include <glm/vec4.hpp>
 
 namespace gle
@@ -39,13 +42,58 @@ enum class ColorType
   rgb_alpha
 };
 
-/**
- * Get size of pixel with ColorType
- *
- * \param [in] ct -- Color type
- * \return Return size in bytes of corresponding pixel
- */
-unsigned int color_size (ColorType ct);
+///
+/// \brief Color class
+///
+class Color : public Object
+{
+
+private:
+
+  glm::vec4 m_color_value;
+
+public:
+  Color() = delete;
+
+  ///
+  /// \brief Create color from floats
+  /// \param [in] r -- Red channel (0; 1)
+  /// \param [in] g -- Green channel (0; 1)
+  /// \param [in] b -- Blue channel (0; 1)
+  /// \param [in] a -- Alpha channel (0; 1)
+  ///
+  Color(float r, float g, float b, float a);
+
+  ///
+  /// \brief Create color from packed int
+  /// \param [in] color -- Integer value with 4 channels
+  ///
+  Color(uint32_t color);
+
+  ///
+  /// \brief Copying constructor
+  /// \param [in] -- Color value
+  ///
+  Color(const Color & color);
+
+  virtual ~Color() {}
+ 
+  Color & operator =(const Color& color);
+
+  virtual const std::string type_name() const;
+
+public:
+  ///
+  /// Get size of pixel with ColorType
+  ///
+  /// \param [in] ct -- Color type
+  /// \return Return size in bytes of corresponding pixel
+  ///
+  static unsigned int color_size (ColorType ct);
+
+};
+
+
 
 }
 

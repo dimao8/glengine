@@ -54,8 +54,10 @@ Image::Image (unsigned int width, unsigned int height, ColorType ct,
       m_size.x = width;
       m_size.y = height;
       m_color_type = ct;
-      m_data.assign (data, data + width * height * color_size (ct));
+      m_data.assign (data, data + width * height * Color::color_size (ct));
     }
+
+  Object::register_object(this);
 }
 
 /* ****************************** Image::Image ***************************** */
@@ -73,6 +75,8 @@ Image::Image (const std::string &file_name) : Object ()
                  file_name.c_str ());
       make_empty (default_image_size.x, default_image_size.y,
                   ColorType::rgb_alpha);
+
+      Object::register_object(this);
       return;
     }
 
@@ -139,7 +143,8 @@ Image::Image (const std::string &file_name) : Object ()
             }
 
           m_data.assign (
-              data, data + color_size (m_color_type) * m_size.x * m_size.y);
+              data,
+              data + Color::color_size (m_color_type) * m_size.x * m_size.y);
         }
     }
   else // Check for TGA
@@ -147,6 +152,8 @@ Image::Image (const std::string &file_name) : Object ()
     }
 
   ifs.close ();
+
+  Object::register_object(this);
 }
 
 /* *************************** Image::make_empty *************************** */
@@ -157,7 +164,7 @@ Image::make_empty (unsigned int width, unsigned int height, ColorType ct)
   m_size.x = width;
   m_size.y = height;
   m_color_type = ct;
-  m_data.assign (color_size (ct) * m_size.x * m_size.y, 255);
+  m_data.assign (Color::color_size (ct) * m_size.x * m_size.y, 255);
 }
 
 /* ****************************** Image::save ****************************** */
@@ -165,8 +172,8 @@ Image::make_empty (unsigned int width, unsigned int height, ColorType ct)
 void
 Image::save (const std::string &file_name)
 {
-  SaveTGA (m_size.x, m_size.y, color_size (m_color_type), m_data.data (),
-           file_name.c_str ());
+  SaveTGA (m_size.x, m_size.y, Color::color_size (m_color_type),
+           m_data.data (), file_name.c_str ());
 }
 
 /* **************************** Image::type_name *************************** */
@@ -175,6 +182,43 @@ const std::string
 Image::type_name () const
 {
   return "Image";
+}
+
+/* ****************************** Image::width ***************************** */
+
+int
+Image::width () const
+{
+  return m_size.x;
+}
+
+/* ***************************** Image::height ***************************** */
+
+int
+Image::height () const
+{
+  return m_size.y;
+}
+
+/* *************************** Image::color_type *************************** */
+
+ColorType
+Image::color_type () const
+{
+  return m_color_type;
+}
+
+/* ******************************* operator<< ****************************** */
+
+Logger &
+operator<< (Logger &logger, const Image &image)
+{
+  logger.print (SeverityLevel::none, "%s(%s)(%ix%ix%i)",
+                image.type_name ().c_str (), image.id ().text ().c_str (),
+                image.width (), image.height (),
+                Color::color_size (image.color_type ()));
+
+  return logger;
 }
 
 }

@@ -3,8 +3,8 @@
 
 #include "object.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace gle
 {
@@ -31,13 +31,13 @@ enum class DrawingMode
 ///
 /// \brief Vertex array class
 ///
-class VertexArray
+class VertexArray : public Object
 {
 
 private:
-  unsigned int m_handle;           /// Handle of the vertex array
-  buffer_vector_t m_buffers;       /// List of vertex buffers
-  DrawingMode m_mode;              /// Drawing mode
+  unsigned int m_handle;     /// Handle of the vertex array
+  buffer_vector_t m_buffers; /// List of vertex buffers
+  DrawingMode m_mode;        /// Drawing mode
   unsigned int m_gl_mode;
   size_t m_vertex_count;
 
@@ -68,17 +68,22 @@ public:
   void add_buffer (Buffer *buffer);
 
   ///
+  /// \brief Remove all data buffers
+  ///
+  void remove_buffers ();
+
+  ///
   /// \brief Draw current vertex array
   /// \param [in] program -- Shader program
   ///
-  void draw (ShaderProgram * program);
+  void draw (ShaderProgram *program);
 
   ///
   /// \brief Enable current vertex array
   ///
   void enable ();
 
-  virtual const std::string type_name() const;
+  virtual const std::string type_name () const;
 };
 
 }
