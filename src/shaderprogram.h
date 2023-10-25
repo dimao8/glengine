@@ -26,8 +26,6 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include "object.h"
-
 #include <string>
 
 namespace gle
@@ -49,7 +47,7 @@ enum class ShaderProgramState
 ///
 /// \brief openGL shader program class
 ///
-class ShaderProgram : public Object
+class ShaderProgram
 {
 private:
   unsigned int m_handle; /// Internal OpenGL shader program name

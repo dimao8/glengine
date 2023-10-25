@@ -1,14 +1,52 @@
-#include <gle/engine.h>
+#include "../src/application.h"
 
-#include <iostream>
+class App : public gle::Application
+{
+
+public:
+  App (int argc = 0, char **argv = nullptr);
+
+  virtual void draw ();
+  virtual void init ();
+  virtual void cleanup ();
+
+};
+
+/* ******************************** App::App ******************************* */
+
+App::App (int argc, char **argv) :
+  gle::Application(argc, argv)
+{
+  // 
+}
+
+/* ******************************* App::draw ******************************* */
+
+void App::draw ()
+{
+
+}
+
+/* ******************************* App::init ******************************* */
+
+void App::init ()
+{
+
+}
+
+/* ****************************** App::cleanup ***************************** */
+
+void App::cleanup ()
+{
+
+}
+
+/* ********************************** main ********************************* */
 
 int
 main (int argc, char **argv)
 {
-  if (gle::init (argc, argv))
-    {
-      // Code here
-    }
+  App app(argc, argv);
 
-  return gle::terminate ();
+  return app.run ();
 }

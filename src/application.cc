@@ -241,6 +241,7 @@ Application::parse_arguments (int argc, char **argv)
 void
 Application::p_cleanup ()
 {
+  cleanup ();
   // TODO : Clean further -->
   glDeleteFramebuffers (1, &m_framebuffer);
   glDeleteTextures (1, &m_framebuffer_texture);
@@ -279,9 +280,10 @@ Application::run ()
     {
       glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
 
-      glGetIntegerv(GL_FRAMEBUFFER_BINDING, &param);
-      gle::logger.print(gle::SeverityLevel::info, "GL_FRAMEBUFFER_BINDING: %i\n",
-        static_cast<int>(param));
+      glGetIntegerv (GL_FRAMEBUFFER_BINDING, &param);
+      gle::logger.print (gle::SeverityLevel::info,
+                         "GL_FRAMEBUFFER_BINDING: %i\n",
+                         static_cast<int> (param));
 
       p_draw ();
       glFlush ();

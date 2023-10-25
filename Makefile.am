@@ -3,44 +3,39 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = libpngloader libtgaloader liblitejson
 
 lib_LTLIBRARIES = libglengine.la
-libglengine_la_SOURCES = src/engine.cc \
-	src/application.h \
+libglengine_la_SOURCES = src/application.h \
 	src/application.cc \
-	src/arguments.h \
-	src/arguments.cc \
-	src/logger.h \
-	src/logger.cc \
-	src/opengl.h \
-	src/opengl.cc \
-	src/image.h \
-	src/image.cc \
-	src/color.h \
-	src/color.cc \
-	src/shader.h \
-	src/shader.cc \
-	src/shaderprogram.h \
-	src/shaderprogram.cc \
 	src/attribute.h \
 	src/attribute.cc \
+	src/arguments.h \
+	src/arguments.cc \
 	src/buffer.h \
 	src/buffer.cc \
-	src/vertexarray.h \
-	src/vertexarray.cc \
-	src/uuid.cc \
-	src/object.h \
-	src/object.cc \
+	src/color.h \
+	src/color.cc \
+	src/image.h \
+	src/image.cc \
+	src/logger.h \
+	src/logger.cc \
+	src/mesh.h \
+	src/mesh.cc \
+	src/opengl.h \
+	src/opengl.cc \
 	src/scene.h \
 	src/scene.cc \
 	src/scenenode.h \
 	src/scenenode.cc \
-	src/mesh.h \
-	src/mesh.cc \
-	src/light.h \
-	src/light.cc
+	src/shader.h \
+	src/shader.cc \
+	src/shaderprogram.h \
+	src/shaderprogram.cc \
+	src/uuid.h \
+	src/uuid.cc \
+	src/vertexarray.h \
+	src/vertexarray.cc
 
 gle_includedir = $(includedir)/gle
-gle_include_HEADERS = include/gle/uuid.h \
-	include/gle/engine.h
+gle_include_HEADERS =
 
 libglengine_la_CXXFLAGS = -I$(srcdir)/include \
 	-I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include \

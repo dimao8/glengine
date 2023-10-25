@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <gle/uuid.h>
+#include "uuid.h"
 
 #include <map>
 #include <string>

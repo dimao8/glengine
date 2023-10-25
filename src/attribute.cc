@@ -8,7 +8,7 @@ namespace gle
 
 Attribute::Attribute (AttributeType type, int index, bool normalized,
                       const std::string &name)
-    : Object (), m_type (type), m_index (index), m_name (name),
+    : m_type (type), m_index (index), m_name (name),
       m_element_size (0), m_element_count (0), m_gl_type (GL_FLOAT),
       m_normalized (normalized)
 {

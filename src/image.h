@@ -26,8 +26,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "object.h"
 #include "color.h"
+#include "logger.h"
 
 #include <cstdint>
 #include <glm/vec2.hpp>
@@ -42,7 +42,7 @@ namespace gle
  *
  * The Image class contains image data and all image properties.
  */
-class Image : public Object
+class Image
 {
 
 private:
@@ -93,9 +93,9 @@ public:
   ColorType color_type () const;
 
   virtual const std::string type_name() const;
-};
 
-Logger& operator<<(Logger& logger, const Image& image);
+  friend Logger& operator<<(Logger& logger, const Image& image);
+};
 
 }
 

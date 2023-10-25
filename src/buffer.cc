@@ -44,7 +44,7 @@ Buffer::buffer_type_to_glenum (BufferAccess access,
 
 Buffer::Buffer (BufferAccess access, BufferOptimization optimization,
                 size_t data_size, const void *data)
-    : Object (), m_handle (0), m_access (BufferAccess::draw),
+    : m_handle (0), m_access (BufferAccess::draw),
       m_optimization (BufferOptimization::stat), m_size (0),
       m_buffer_vertices (0)
 {

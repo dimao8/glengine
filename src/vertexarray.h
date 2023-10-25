@@ -31,7 +31,7 @@ enum class DrawingMode
 ///
 /// \brief Vertex array class
 ///
-class VertexArray : public Object
+class VertexArray
 {
 
 private:

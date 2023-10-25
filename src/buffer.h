@@ -1,9 +1,9 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include "object.h"
-
 #include <vector>
+
+#include <string>
 
 namespace gle
 {
@@ -29,7 +29,7 @@ enum class BufferOptimization
 ///
 /// \brief Data buffer class
 ///
-class Buffer : public Object
+class Buffer
 {
 
 private:

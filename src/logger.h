@@ -30,13 +30,13 @@
 #include <string>
 
 #ifndef NDEBUG
-#define LOG_PRINT(x, y, ...) \
-  if (x == SeverityLevel::warning || x == SeverityLevel::error) \
-    gle::logger.print(SeverityLevel::none, "%s:%i at %s\n", __FILE__, __LINE__, __func__); \
-  gle::logger.print(x, y, ##__VA_ARGS__)
+#define LOG_PRINT(x, y, ...)                                                  \
+  if (x == SeverityLevel::warning || x == SeverityLevel::error)               \
+    gle::logger.print (SeverityLevel::none, "%s:%i at %s\n", __FILE__,        \
+                       __LINE__, __func__);                                   \
+  gle::logger.print (x, y, ##__VA_ARGS__)
 #else
-#define LOG_PRINT(x, y, ...) \
-  gle::logger.print(x, y, ##__VA_ARGS__)
+#define LOG_PRINT(x, y, ...) gle::logger.print (x, y, ##__VA_ARGS__)
 #endif // NDEBUG
 
 namespace gle
@@ -47,7 +47,9 @@ namespace log
 
 enum log_manip_t
 {
-  endl
+  endl,
+  quoted,
+  unquoted
 };
 
 }
@@ -70,8 +72,10 @@ class Logger
 {
 
 private:
-  FILE *m_log_stream; /// Logger stream
+  FILE *m_log_stream;       /// Logger stream
   SeverityLevel m_severity; /// Severity level
+
+  bool m_state_quoted; /// If this flag is set, all strings wil be quoted
 
 public:
   /**
@@ -95,14 +99,19 @@ public:
    */
   void print (SeverityLevel sl, const std::string &format, ...);
 
+  // State readers
+
+  bool is_quoted () const;
+
   /// Input operators
-  Logger & operator <<(char c);
-  Logger & operator <<(int i);
-  Logger & operator <<(float f);
-  Logger & operator <<(const std::string & str);
-  Logger & operator <<(const char * str);
-  Logger & operator <<(bool b);
-  Logger & operator <<(log::log_manip_t l);
+  Logger &operator<< (char c);
+  Logger &operator<< (int i);
+  Logger &operator<< (float f);
+  Logger &operator<< (const std::string &str);
+  Logger &operator<< (const char *str);
+  Logger &operator<< (bool b);
+  Logger &operator<< (log::log_manip_t l);
+  Logger &operator<< (SeverityLevel l);
 };
 
 extern Logger logger;

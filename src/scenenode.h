@@ -1,7 +1,6 @@
 #ifndef SCENENODE_H
 #define SCENENODE_H
 
-#include "object.h"
 #include "shaderprogram.h"
 
 #include <glm/mat4x4.hpp>
@@ -15,7 +14,7 @@ namespace gle
 ///
 /// \brief Scene Node class
 ///
-class SceneNode : public Object
+class SceneNode
 {
 
 private:

@@ -39,7 +39,7 @@ Logger logger;
 
 /* ***************************** Logger::Logger **************************** */
 
-Logger::Logger (const std::string &file_name)
+Logger::Logger (const std::string &file_name) : m_state_quoted (true)
 {
   std::string fname;
 
@@ -62,7 +62,12 @@ Logger::Logger (const std::string &file_name)
 
 /* **************************** Logger::~Logger **************************** */
 
-Logger::~Logger () { fclose (m_log_stream); }
+Logger::~Logger ()
+{
+  LOG_PRINT (SeverityLevel::info, "Close log file\n");
+
+  fclose (m_log_stream);
+}
 
 /* ***************************** Logger::print ***************************** */
 
@@ -104,12 +109,24 @@ Logger::print (SeverityLevel sl, const std::string &format, ...)
   fflush (m_log_stream);
 }
 
+/* *************************** Logger::is_quoted *************************** */
+
+bool
+Logger::is_quoted () const
+{
+  return m_state_quoted;
+}
+
 /* *************************** Logger::operator<< ************************** */
 
 Logger &
 Logger::operator<< (char c)
 {
-  fprintf (m_log_stream, " ``%c\'\' ", c);
+  if (m_state_quoted)
+    fprintf (m_log_stream, " ``%c\'\' ", c);
+  else
+    fprintf (m_log_stream, " %c ", c);
+  fflush (m_log_stream);
   return *this;
 }
 
@@ -119,6 +136,7 @@ Logger &
 Logger::operator<< (int i)
 {
   fprintf (m_log_stream, " %i ", i);
+  fflush (m_log_stream);
   return *this;
 }
 
@@ -128,6 +146,7 @@ Logger &
 Logger::operator<< (float f)
 {
   fprintf (m_log_stream, " %f ", f);
+  fflush (m_log_stream);
   return *this;
 }
 
@@ -136,7 +155,11 @@ Logger::operator<< (float f)
 Logger &
 Logger::operator<< (const std::string &str)
 {
-  fprintf (m_log_stream, " ``%s\'\' ", str.c_str ());
+  if (m_state_quoted)
+    fprintf (m_log_stream, " ``%s\'\' ", str.c_str ());
+  else
+    fprintf (m_log_stream, " %s ", str.c_str ());
+  fflush (m_log_stream);
   return *this;
 }
 
@@ -145,7 +168,11 @@ Logger::operator<< (const std::string &str)
 Logger &
 Logger::operator<< (const char *str)
 {
-  fprintf (m_log_stream, " ``%s\'\' ", str);
+  if (m_state_quoted)
+    fprintf (m_log_stream, " ``%s\'\' ", str);
+  else
+    fprintf (m_log_stream, " %s ", str);
+  fflush (m_log_stream);
   return *this;
 }
 
@@ -155,6 +182,7 @@ Logger &
 Logger::operator<< (bool b)
 {
   fprintf (m_log_stream, " %s ", b ? "true" : "false");
+  fflush (m_log_stream);
   return *this;
 }
 
@@ -171,6 +199,40 @@ Logger::operator<< (log::log_manip_t l)
       fflush (m_log_stream);
       break;
 
+    case log::quoted:
+      m_state_quoted = true;
+      break;
+
+    case log::unquoted:
+      m_state_quoted = false;
+      break;
+
+    }
+
+  return *this;
+}
+
+/* ************************** Logger::operator << ************************** */
+
+Logger &
+Logger::operator<< (SeverityLevel l)
+{
+  switch (l)
+    {
+    case SeverityLevel::error:
+      fprintf (m_log_stream, "[E] ");
+      fflush (m_log_stream);
+      break;
+
+    case SeverityLevel::info:
+      fprintf (m_log_stream, "[I] ");
+      fflush (m_log_stream);
+      break;
+
+    case SeverityLevel::warning:
+      fprintf (m_log_stream, "[W] ");
+      fflush (m_log_stream);
+      break;
     }
 
   return *this;

@@ -11,8 +11,7 @@ namespace gle
 
 /* ************************ VertexArray::VertexArray *********************** */
 
-VertexArray::VertexArray (DrawingMode mode)
-    : Object (), m_mode (mode), m_vertex_count (0)
+VertexArray::VertexArray (DrawingMode mode) : m_mode (mode), m_vertex_count (0)
 {
   GLenum result;
   glGenVertexArrays (1, &m_handle);
@@ -113,7 +112,7 @@ VertexArray::add_buffer (Buffer *buffer)
 void
 VertexArray::remove_buffers ()
 {
-  m_buffers.clear();
+  m_buffers.clear ();
 }
 
 /* *************************** VertexArray::draw *************************** */

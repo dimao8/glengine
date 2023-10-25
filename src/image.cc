@@ -45,7 +45,6 @@ const glm::uvec2 Image::default_image_size
 
 Image::Image (unsigned int width, unsigned int height, ColorType ct,
               const uint8_t *data)
-    : Object ()
 {
   if (data == nullptr)
     make_empty (width, height, ct);
@@ -56,13 +55,11 @@ Image::Image (unsigned int width, unsigned int height, ColorType ct,
       m_color_type = ct;
       m_data.assign (data, data + width * height * Color::color_size (ct));
     }
-
-  Object::register_object(this);
 }
 
 /* ****************************** Image::Image ***************************** */
 
-Image::Image (const std::string &file_name) : Object ()
+Image::Image (const std::string &file_name)
 {
   LOG_PRINT (SeverityLevel::info, _ ("Load image from ``%s\'\' file\n"),
              file_name.c_str ());
@@ -75,8 +72,6 @@ Image::Image (const std::string &file_name) : Object ()
                  file_name.c_str ());
       make_empty (default_image_size.x, default_image_size.y,
                   ColorType::rgb_alpha);
-
-      Object::register_object(this);
       return;
     }
 
@@ -152,8 +147,6 @@ Image::Image (const std::string &file_name) : Object ()
     }
 
   ifs.close ();
-
-  Object::register_object(this);
 }
 
 /* *************************** Image::make_empty *************************** */
@@ -214,8 +207,7 @@ Logger &
 operator<< (Logger &logger, const Image &image)
 {
   logger.print (SeverityLevel::none, "%s(%s)(%ix%ix%i)",
-                image.type_name ().c_str (), image.id ().text ().c_str (),
-                image.width (), image.height (),
+                image.type_name ().c_str (), image.width (), image.height (),
                 Color::color_size (image.color_type ()));
 
   return logger;

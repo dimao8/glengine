@@ -26,9 +26,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include "object.h"
-
 #include <cstdint>
+#include <string>
 #include <glm/vec4.hpp>
 
 namespace gle
@@ -45,7 +44,7 @@ enum class ColorType
 ///
 /// \brief Color class
 ///
-class Color : public Object
+class Color
 {
 
 private:

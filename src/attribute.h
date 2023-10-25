@@ -1,8 +1,6 @@
 #ifndef ATTRIBUTE_H
 #define ATTRIBUTE_H
 
-#include "object.h"
-
 #include <string>
 
 namespace gle
@@ -30,7 +28,7 @@ enum class AttributeType
 ///
 /// \brief Vertex attribute
 ///
-class Attribute : public Object
+class Attribute
 {
 
 private:

@@ -26,8 +26,6 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include "object.h"
-
 #include <string>
 
 namespace gle
@@ -57,7 +55,7 @@ enum class ShaderType
 ///
 /// \brief openGL shader class
 ///
-class Shader : public Object
+class Shader
 {
 
 private:

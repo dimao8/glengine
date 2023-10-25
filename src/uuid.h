@@ -48,10 +48,12 @@ public:
   uint64_t operator[](size_t n) const;
 
   const std::string text() const;
+
+  friend std::ostream& operator<<(std::ostream& stream, const UUID& uuid);
+  friend Logger &operator<< (Logger & logger, const UUID& uuid);
 };
 
-std::ostream& operator<<(std::ostream& stream, const UUID& uuid);
-Logger &operator<< (Logger & logger, const UUID& uuid);
+
 
 }
 

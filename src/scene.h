@@ -1,7 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "object.h"
 #include "scenenode.h"
 
 #include <string>
@@ -13,7 +12,7 @@ namespace gle
 ///
 /// \brief Scene class
 ///
-class Scene : public Object
+class Scene
 {
 
 private:
