@@ -49,21 +49,22 @@ namespace gle
 Application::Application (int argc, char **argv)
     : m_should_close (true), m_save_framebuffer (false)
 {
-  LOG_PRINT (SeverityLevel::info, _ ("Parse arguments\n"));
+  logger << SeverityLevel::info << _ ("Parse arguments") << std::endl;
   parse_arguments (argc, argv);
 
   // Try to init glfw3
-  LOG_PRINT (SeverityLevel::info, _ ("Init glfw3\n"));
+  logger << SeverityLevel::info << _ ("Init glfw3") << std::endl;
   if (!glfwInit ())
     {
-      LOG_PRINT (SeverityLevel::error, _ ("Can not init glfw3\n"));
+      logger << SeverityLevel::error << _ ("Can not init glfw3")
+             << std::endl;
       return;
     }
-  LOG_PRINT (SeverityLevel::info, _ ("GLFW version: %s\n"),
-             glfwGetVersionString ());
+  logger << SeverityLevel::info << _ ("GLFW version: ")
+         << glfwGetVersionString () << std::endl;
 
   // Try to create window
-  LOG_PRINT (SeverityLevel::info, "Create main window\n");
+  logger << SeverityLevel::info << "Create main window" << std::endl;
 
   glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -81,14 +82,16 @@ Application::Application (int argc, char **argv)
                                PACKAGE " " VERSION, 0, 0);
   if (m_window == nullptr)
     {
-      LOG_PRINT (SeverityLevel::error, _ ("Can not create main window\n"));
+      logger << SeverityLevel::error << _ ("Can not create main window")
+             << std::endl;
       return;
     }
   glfwMakeContextCurrent (m_window);
 
   if (!load_gl_extensions ())
     {
-      LOG_PRINT (SeverityLevel::error, _ ("Error while extensions loading\n"));
+      logger << SeverityLevel::error << _ ("Error while extensions loading")
+             << std::endl;
       return;
     }
 
@@ -97,21 +100,22 @@ Application::Application (int argc, char **argv)
 
   // Get OpenGL info
   GLint version_major, version_minor, no_of_ext;
-  LOG_PRINT (SeverityLevel::info, _ ("Device: %s\n"),
-             glGetString (GL_RENDERER));
-  LOG_PRINT (SeverityLevel::info, _ ("Vendor: %s\n"), glGetString (GL_VENDOR));
+  logger << SeverityLevel::info << _ ("Device: ") << glGetString (GL_RENDERER)
+         << std::endl;
+  logger << SeverityLevel::info << _ ("Vendor: ") << glGetString (GL_VENDOR)
+         << std::endl;
   glGetIntegerv (GL_MAJOR_VERSION, &version_major);
   glGetIntegerv (GL_MINOR_VERSION, &version_minor);
-  LOG_PRINT (SeverityLevel::info, _ ("GL Version: %i.%i\n"), version_major,
-             version_minor);
-  LOG_PRINT (SeverityLevel::info, _ ("GLSL Version: %s\n"),
-             glGetString (GL_SHADING_LANGUAGE_VERSION));
+  logger << SeverityLevel::info << _ ("GL Version: ") << version_major << "."
+         << version_minor << std::endl;
+  logger << SeverityLevel::info << _ ("GLSL Version: ")
+         << glGetString (GL_SHADING_LANGUAGE_VERSION) << std::endl;
   glGetIntegerv (GL_NUM_EXTENSIONS, &no_of_ext);
-  LOG_PRINT (SeverityLevel::info, _ ("Extensions: \n"));
+  logger << SeverityLevel::info << _ ("Extensions: ") << std::endl;
   for (auto n = 0; n < no_of_ext; n++)
     {
-      LOG_PRINT (SeverityLevel::none, "  %s\n",
-                 glGetStringi (GL_EXTENSIONS, n));
+      logger << SeverityLevel::none << "  " << glGetStringi (GL_EXTENSIONS, n)
+             << std::endl;
     }
 
   int w, h;
@@ -134,7 +138,7 @@ Application::Application (int argc, char **argv)
   glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                           m_framebuffer_texture, 0);
 
-  glClearColor (0.0, 0.0, 0.0, 1.0);
+  glClearColor (0.75, 0.70, 0.5, 1.0);
   glViewport (0, 0, m_framebuffer_size.x, m_framebuffer_size.y);
 
   // TODO : Further application init
@@ -281,9 +285,9 @@ Application::run ()
       glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
 
       glGetIntegerv (GL_FRAMEBUFFER_BINDING, &param);
-      gle::logger.print (gle::SeverityLevel::info,
-                         "GL_FRAMEBUFFER_BINDING: %i\n",
-                         static_cast<int> (param));
+      logger << gle::SeverityLevel::info
+             << "GL_FRAMEBUFFER_BINDING: " << static_cast<int> (param)
+             << std::endl;
 
       p_draw ();
       glFlush ();

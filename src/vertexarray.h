@@ -83,7 +83,6 @@ public:
   ///
   void enable ();
 
-  virtual const std::string type_name () const;
 };
 
 }

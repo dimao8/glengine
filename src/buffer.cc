@@ -57,9 +57,8 @@ Buffer::Buffer (BufferAccess access, BufferOptimization optimization,
   if (m_handle == 0)
     {
       result = glGetError ();
-      LOG_PRINT (SeverityLevel::error,
-                 "Create buffer cause GL error: ``%s\'\'\n",
-                 message_gl (result));
+      logger << SeverityLevel::error << _("Create buffer cause GL error: ``")
+             << message_gl (result) << "\'\'" << std::endl;
       return;
     }
 
@@ -164,14 +163,6 @@ void
 Buffer::disable ()
 {
   glBindBuffer (GL_ARRAY_BUFFER, 0);
-}
-
-/* *************************** Buffer::type_name *************************** */
-
-const std::string
-Buffer::type_name () const
-{
-  return "Buffer";
 }
 
 }

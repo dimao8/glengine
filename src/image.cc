@@ -61,15 +61,14 @@ Image::Image (unsigned int width, unsigned int height, ColorType ct,
 
 Image::Image (const std::string &file_name)
 {
-  LOG_PRINT (SeverityLevel::info, _ ("Load image from ``%s\'\' file\n"),
-             file_name.c_str ());
+  logger << SeverityLevel::info << _ ("Load image from ``")
+         << file_name.c_str () << _ ("\'\' file") << std::endl;
 
   std::ifstream ifs (file_name);
   if (!ifs)
     {
-      LOG_PRINT (SeverityLevel::warning,
-                 _ ("File ``%s\'\' not found or can not be read\n"),
-                 file_name.c_str ());
+      logger << SeverityLevel::warning << _ ("File ``") << file_name.c_str ()
+             << _ ("\'\' not found or can not be read") << std::endl;
       make_empty (default_image_size.x, default_image_size.y,
                   ColorType::rgb_alpha);
       return;
@@ -96,14 +95,14 @@ Image::Image (const std::string &file_name)
 
   if (is_png)
     {
-      LOG_PRINT (SeverityLevel::info,
-                 _ ("Interpret image file ``%s\'\' as PNG\n"),
-                 file_name.c_str ());
+      logger << SeverityLevel::info << _ ("Interpret image file ``")
+             << file_name.c_str () << _ ("\'\' as PNG\n") << std::endl;
       png_result = LoadPNGFromFile (file_name.c_str (), &png_hdr, &data, true);
       if (png_result != PNG_ERROR_OK)
         {
-          LOG_PRINT (SeverityLevel::warning,
-                     _ ("Can not load PNG file. Reason: %i\n"), png_result);
+          logger << SeverityLevel::warning
+                 << _ ("Can not load PNG file. Reason: ") << png_result
+                 << std::endl;
           make_empty (default_image_size.x, default_image_size.y,
                       ColorType::rgb_alpha);
         }
@@ -169,14 +168,6 @@ Image::save (const std::string &file_name)
            m_data.data (), file_name.c_str ());
 }
 
-/* **************************** Image::type_name *************************** */
-
-const std::string
-Image::type_name () const
-{
-  return "Image";
-}
-
 /* ****************************** Image::width ***************************** */
 
 int
@@ -206,9 +197,10 @@ Image::color_type () const
 Logger &
 operator<< (Logger &logger, const Image &image)
 {
-  logger.print (SeverityLevel::none, "%s(%s)(%ix%ix%i)",
-                image.type_name ().c_str (), image.width (), image.height (),
-                Color::color_size (image.color_type ()));
+  logger << "Image(" << image.width () << ")(" << image.width () << "x"
+         << image.height () << "x"
+         << static_cast<int> (Color::color_size (image.color_type ())) << ")"
+         << std::endl;
 
   return logger;
 }

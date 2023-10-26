@@ -21,9 +21,9 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
   if (m_handle == 0)
     {
       result = glGetError ();
-      LOG_PRINT (SeverityLevel::error,
-                 _ ("Create shader program cause GL error: ``%s\'\'\n"),
-                 message_gl (result));
+      logger << SeverityLevel::error
+             << _ ("Create shader program cause GL error: ``")
+             << message_gl (result) << "\'\'" << std::endl;
       return;
     }
 
@@ -33,15 +33,17 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
       if (m_vertex_shader->get_type () != ShaderType::vertex
           || m_vertex_shader->is_empty ())
         {
-          LOG_PRINT (SeverityLevel::error, _ ("Vertex shader is required\n"));
+          logger << SeverityLevel::error << _ ("Vertex shader is required")
+                 << std::endl;
           m_vertex_shader = nullptr;
         }
       else
         {
           glAttachShader (
               m_handle, static_cast<GLuint> (m_vertex_shader->get_handle ()));
-          LOG_PRINT (SeverityLevel::info,
-                     _ ("Vertex shader is loaded and attached\n"));
+          logger << SeverityLevel::info
+                 << _ ("Vertex shader is loaded and attached")
+                 << std::endl;
         }
     }
 
@@ -50,16 +52,17 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
       if (m_fragment_shader->get_type () != ShaderType::fragment
           || m_fragment_shader->is_empty ())
         {
-          LOG_PRINT (SeverityLevel::error,
-                     _ ("Fragment shader is required\n"));
+          logger << SeverityLevel::error << _ ("Fragment shader is required")
+                 << std::endl;
           m_fragment_shader = nullptr;
         }
       else
         {
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_fragment_shader->get_handle ()));
-          LOG_PRINT (SeverityLevel::info,
-                     _ ("Fragment shader is loaded and attached\n"));
+          logger << SeverityLevel::info
+                 << _ ("Fragment shader is loaded and attached")
+                 << std::endl;
         }
     }
 
@@ -68,16 +71,17 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
       if (m_geometry_shader->get_type () != ShaderType::geometry
           || m_geometry_shader->is_empty ())
         {
-          LOG_PRINT (SeverityLevel::warning,
-                     _ ("Geometry shader is required\n"));
+          logger << SeverityLevel::warning << _ ("Geometry shader is required")
+                 << std::endl;
           m_geometry_shader = nullptr;
         }
       else
         {
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_geometry_shader->get_handle ()));
-          LOG_PRINT (SeverityLevel::info,
-                     _ ("Geometry shader is loaded and attached\n"));
+          logger << SeverityLevel::info
+                 << _ ("Geometry shader is loaded and attached")
+                 << std::endl;
         }
     }
 
@@ -107,8 +111,9 @@ ShaderProgram::link ()
       glGetProgramiv (m_handle, GL_INFO_LOG_LENGTH, &len);
       log = new char[len];
       glGetProgramInfoLog (m_handle, len, nullptr, log);
-      LOG_PRINT (SeverityLevel::error,
-                 _ ("Can not link shader. Linker message:\n%s\n"), log);
+      logger << SeverityLevel::error
+             << _ ("Can not link shader. Linker message:") << std::endl
+             << log << std::endl;
       delete[] log;
     }
   else
@@ -162,14 +167,6 @@ bool
 ShaderProgram::is_linked () const
 {
   return m_state == ShaderProgramState::linked;
-}
-
-/* ************************ ShaderProgram::type_name *********************** */
-
-const std::string
-ShaderProgram::type_name () const
-{
-  return "ShaderProgram";
 }
 
 }

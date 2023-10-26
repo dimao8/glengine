@@ -26,33 +26,13 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <cstdio>
+#include <ostream>
+#include <iostream>
+#include <fstream>
 #include <string>
-
-#ifndef NDEBUG
-#define LOG_PRINT(x, y, ...)                                                  \
-  if (x == SeverityLevel::warning || x == SeverityLevel::error)               \
-    gle::logger.print (SeverityLevel::none, "%s:%i at %s\n", __FILE__,        \
-                       __LINE__, __func__);                                   \
-  gle::logger.print (x, y, ##__VA_ARGS__)
-#else
-#define LOG_PRINT(x, y, ...) gle::logger.print (x, y, ##__VA_ARGS__)
-#endif // NDEBUG
 
 namespace gle
 {
-
-namespace log
-{
-
-enum log_manip_t
-{
-  endl,
-  quoted,
-  unquoted
-};
-
-}
 
 /**
  * \brief Severity level type
@@ -68,14 +48,12 @@ enum class SeverityLevel
 /**
  * The Logger class
  */
-class Logger
+class Logger : public std::ostream
 {
 
 private:
-  FILE *m_log_stream;       /// Logger stream
-  SeverityLevel m_severity; /// Severity level
 
-  bool m_state_quoted; /// If this flag is set, all strings wil be quoted
+  std::ofstream m_ofs;
 
 public:
   /**
@@ -84,34 +62,17 @@ public:
    *
    * \param [in] file_name -- Name of the log-file
    */
-  explicit Logger (const std::string &file_name = "");
+  explicit Logger (const std::string & file_name = "");
+  
+  explicit Logger (std::ostream & os);
 
   /**
    * Close logger stream.
    */
   virtual ~Logger ();
 
-  /**
-   * \brief Formatted output to the log file.
-   *
-   * \param [in] sl -- Severity level. Can be one of SeverityLevel values
-   * \param [in] format -- Format string just like in printf
-   */
-  void print (SeverityLevel sl, const std::string &format, ...);
-
-  // State readers
-
-  bool is_quoted () const;
-
   /// Input operators
-  Logger &operator<< (char c);
-  Logger &operator<< (int i);
-  Logger &operator<< (float f);
-  Logger &operator<< (const std::string &str);
-  Logger &operator<< (const char *str);
-  Logger &operator<< (bool b);
-  Logger &operator<< (log::log_manip_t l);
-  Logger &operator<< (SeverityLevel l);
+  friend Logger &operator<< (Logger & log, SeverityLevel lev);
 };
 
 extern Logger logger;

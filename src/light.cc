@@ -11,12 +11,4 @@ Light::Light (const Color &color, SceneNode *parent)
   //
 }
 
-/* **************************** Light::type_name *************************** */
-
-const std::string
-Light::type_name () const
-{
-  return "Light";
-}
-
 }

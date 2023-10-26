@@ -63,9 +63,8 @@ Shader::Shader (ShaderType type, const std::string &file_name)
   if (m_handle == 0)
     {
       result = glGetError ();
-      LOG_PRINT (SeverityLevel::error,
-                 "Create shader cause GL error: ``%s\'\'\n",
-                 message_gl (result));
+      logger << SeverityLevel::error << _ ("Create shader cause GL error: ``")
+             << message_gl (result) << _ ("\'\'") << std::endl;
       return;
     }
 
@@ -74,16 +73,14 @@ Shader::Shader (ShaderType type, const std::string &file_name)
   ifs.unsetf (std::ios::skipws);
   if (!ifs)
     {
-      LOG_PRINT (SeverityLevel::error,
-                 _ ("Can not load shader from file ``%s\'\'\n"),
-                 file_name.c_str ());
+      logger << SeverityLevel::error << _ ("Can not load shader from file ``")
+             << file_name.c_str () << _ ("\'\'") << std::endl;
       return;
     }
   else
     {
-      LOG_PRINT (SeverityLevel::info,
-                 _ ("Shader is loaded from file ``%s\'\'\n"),
-                 file_name.c_str ());
+      logger << SeverityLevel::info << _ ("Shader is loaded from file ``")
+             << file_name.c_str () << "\'\'" << std::endl;
     }
 
   size_t sz;
@@ -137,8 +134,10 @@ Shader::compile ()
       glGetShaderiv (m_handle, GL_INFO_LOG_LENGTH, &len);
       log = new char[len];
       glGetShaderInfoLog (m_handle, len, nullptr, log);
-      LOG_PRINT (SeverityLevel::error,
-                 _ ("Can not compile shader. Compiler message:\n%s\n"), log);
+      logger << SeverityLevel::error
+             << _ ("Can not compile shader. Compiler message:")
+             << std::endl
+             << log << std::endl;
       delete[] log;
     }
   else
@@ -177,14 +176,6 @@ bool
 Shader::is_compiled () const
 {
   return m_state == ShaderState::compiled;
-}
-
-/* *************************** Shader::type_name *************************** */
-
-const std::string
-Shader::type_name () const
-{
-  return "Shader";
 }
 
 }

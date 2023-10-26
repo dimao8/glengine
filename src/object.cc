@@ -1,7 +1,6 @@
 #include "object.h"
 #include "logger.h"
-
-#include <typeinfo>
+#include "translate.h"
 
 namespace gle
 {
@@ -10,7 +9,7 @@ Object::object_map_t Object::object_pool;
 
 /* ***************************** Object::Object **************************** */
 
-Object::Object () : m_id () 
+Object::Object () : m_id ()
 {
   //
 }
@@ -19,7 +18,8 @@ Object::Object () : m_id ()
 
 Object::~Object ()
 {
-  LOG_PRINT (SeverityLevel::info, "Delete %s\n", m_id.text ().c_str ());
+  logger << SeverityLevel::info << _ ("Delete ") << m_id.text ().c_str ()
+         << std::endl;
 }
 
 /* ******************************* Object::id ****************************** */
@@ -38,8 +38,8 @@ Object::register_object (Object *obj)
   if (obj == nullptr)
     return UUID::invalid_uuid;
 
-  LOG_PRINT (SeverityLevel::info, "Register object");
-  logger << *obj << log::endl;
+  logger << SeverityLevel::info << "Register object";
+  logger << *obj << std::endl;
 
   object_map_iter_t it = object_pool.find (obj->id ());
 
@@ -82,9 +82,9 @@ Object::get_object (const UUID &object_id)
 
   if (it == object_pool.end ())
     {
-      LOG_PRINT (SeverityLevel::warning,
-                 "Object with id %s is not registered\n",
-                 object_id.text ().c_str ());
+      logger << SeverityLevel::warning << _ ("Object with id ")
+             << object_id.text ().c_str () << _ (" is not registered")
+             << std::endl;
       return nullptr;
     }
   else
@@ -96,8 +96,7 @@ Object::get_object (const UUID &object_id)
 Logger &
 operator<< (Logger &logger, const Object &object)
 {
-  logger.print (SeverityLevel::none, " %s(%s)", object.type_name ().c_str (),
-                object.id ().text ().c_str ());
+  logger << _ ("Object ") << object.id ().text ().c_str () << std::endl;
   return logger;
 }
 

@@ -48,8 +48,6 @@ public:
   /// \brief Draw scene node
   ///
   virtual void draw(ShaderProgram & program);
-
-  virtual const std::string type_name () const;
 };
 
 }

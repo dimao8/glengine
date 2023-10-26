@@ -94,8 +94,6 @@ public:
   const Attribute * get_attribute(size_t n) const;
   size_t get_vertex_count () const;
 
-  virtual const std::string type_name() const;
-
 private:
   ///
   /// \brief Get OpenGL specific buffer type

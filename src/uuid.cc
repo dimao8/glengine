@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <ctime>
+#include <iomanip>
 #include <random>
 #include <sstream>
 #include <stdexcept>
@@ -320,17 +321,6 @@ operator<< (std::ostream &stream, const UUID &uuid)
   stream << std::setw (width) << std::dec << std::setfill (' ');
 
   return stream;
-}
-
-/* ******************************* operator<< ****************************** */
-
-Logger &
-operator<< (Logger &logger, const UUID &uuid)
-{
-  logger.print (SeverityLevel::none, "{%08llx-%04llx-%04llx-%04llx-%016llx}", uuid[0], uuid[1],
-                uuid[2], uuid[3], uuid[4]);
-
-  return logger;
 }
 
 }

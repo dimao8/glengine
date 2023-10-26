@@ -39,8 +39,6 @@ public:
   ///
   virtual void draw();
 
-  virtual const std::string type_name () const;
-
 };
 
 } // namespace gle

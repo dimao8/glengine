@@ -144,12 +144,4 @@ Attribute::is_normalized () const
   return m_normalized;
 }
 
-/* ************************** Attribute::type_name ************************* */
-
-const std::string
-Attribute::type_name () const
-{
-  return "Attribute";
-}
-
 }

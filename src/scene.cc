@@ -3,14 +3,6 @@
 namespace gle
 {
 
-/* **************************** Scene::type_name *************************** */
-
-const std::string
-Scene::type_name () const
-{
-  return "Scene";
-}
-
 /* ***************************** Scene::~Scene ***************************** */
 
 Scene::~Scene()

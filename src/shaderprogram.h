@@ -97,8 +97,7 @@ public:
 public:
 
   static void disable ();
-
-  virtual const std::string type_name() const;
+  
 };
 
 }

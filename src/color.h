@@ -79,8 +79,6 @@ public:
  
   Color & operator =(const Color& color);
 
-  virtual const std::string type_name() const;
-
 public:
   ///
   /// Get size of pixel with ColorType

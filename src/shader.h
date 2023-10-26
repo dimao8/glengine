@@ -93,8 +93,6 @@ public:
   int get_handle() const;
   bool is_empty () const;
   bool is_compiled () const;
-
-  virtual const std::string type_name() const;
 };
 
 }

@@ -68,14 +68,6 @@ Color & Color::operator=(const Color& color)
   return *this;
 }
 
-/* **************************** Color::type_name *************************** */
-
-const std::string
-Color::type_name () const
-{
-  return "Color";
-}
-
 /* *************************** Color::color_size *************************** */
 
 unsigned int

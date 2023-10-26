@@ -21,8 +21,6 @@ public:
   /// \brief Delete light source
   ///
   virtual ~Light () {}
-
-  virtual const std::string type_name () const;
 };
 
 }

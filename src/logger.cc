@@ -24,9 +24,7 @@
 //
 
 #include "logger.h"
-
-#include <cstdarg>
-#include <stdexcept>
+#include "translate.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -39,7 +37,7 @@ Logger logger;
 
 /* ***************************** Logger::Logger **************************** */
 
-Logger::Logger (const std::string &file_name) : m_state_quoted (true)
+Logger::Logger (const std::string &file_name)
 {
   std::string fname;
 
@@ -54,188 +52,58 @@ Logger::Logger (const std::string &file_name) : m_state_quoted (true)
       fname = file_name;
     }
 
-  // Open logger
-  m_log_stream = fopen (fname.c_str (), "w");
-  if (!m_log_stream)
-    throw std::runtime_error ("fstream::open");
+  std::streambuf *buf;
+  m_ofs.open (fname);
+  if (!m_ofs)
+    {
+      std::cout << _ ("Can not open file ``") << fname
+                << _ ("\'\' for writing") << std::endl;
+      buf = std::cout.rdbuf ();
+    }
+  else
+    {
+      buf = m_ofs.rdbuf ();
+    }
+
+  rdbuf (buf);
+}
+
+/* ***************************** Logger::Logger **************************** */
+
+Logger::Logger (std::ostream & os)
+{
+  std::streambuf *buf = os.rdbuf ();
+  rdbuf (buf);
 }
 
 /* **************************** Logger::~Logger **************************** */
 
 Logger::~Logger ()
 {
-  LOG_PRINT (SeverityLevel::info, "Close log file\n");
-
-  fclose (m_log_stream);
+  *this << SeverityLevel::info << _ ("Close log stream") << std::endl;
 }
 
-/* ***************************** Logger::print ***************************** */
-
-void
-Logger::print (SeverityLevel sl, const std::string &format, ...)
-{
-  va_list va;
-
-  switch (sl)
-    {
-
-    case SeverityLevel::info:
-#ifndef NDEBUG
-      fprintf (m_log_stream, "[I] ");
-#else
-      return;
-#endif // NDEBUG
-      break;
-
-    case SeverityLevel::warning:
-#ifndef NDEBUG
-      fprintf (m_log_stream, "[W] ");
-#else
-      return;
-#endif // NDEBUG
-      break;
-
-    case SeverityLevel::error:
-      fprintf (m_log_stream, "[E] ");
-      break;
-
-    default:
-      break;
-    }
-
-  va_start (va, format);
-  vfprintf (m_log_stream, format.c_str (), va);
-  va_end (va);
-  fflush (m_log_stream);
-}
-
-/* *************************** Logger::is_quoted *************************** */
-
-bool
-Logger::is_quoted () const
-{
-  return m_state_quoted;
-}
-
-/* *************************** Logger::operator<< ************************** */
+/* ******************************* operator<< ****************************** */
 
 Logger &
-Logger::operator<< (char c)
+operator<< (Logger &log, SeverityLevel lev)
 {
-  if (m_state_quoted)
-    fprintf (m_log_stream, " ``%c\'\' ", c);
-  else
-    fprintf (m_log_stream, " %c ", c);
-  fflush (m_log_stream);
-  return *this;
-}
-
-/* *************************** Logger::operator<< ************************** */
-
-Logger &
-Logger::operator<< (int i)
-{
-  fprintf (m_log_stream, " %i ", i);
-  fflush (m_log_stream);
-  return *this;
-}
-
-/* *************************** Logger::operator<< ************************** */
-
-Logger &
-Logger::operator<< (float f)
-{
-  fprintf (m_log_stream, " %f ", f);
-  fflush (m_log_stream);
-  return *this;
-}
-
-/* *************************** Logger::operator<< ************************** */
-
-Logger &
-Logger::operator<< (const std::string &str)
-{
-  if (m_state_quoted)
-    fprintf (m_log_stream, " ``%s\'\' ", str.c_str ());
-  else
-    fprintf (m_log_stream, " %s ", str.c_str ());
-  fflush (m_log_stream);
-  return *this;
-}
-
-/* *************************** Logger::operator<< ************************** */
-
-Logger &
-Logger::operator<< (const char *str)
-{
-  if (m_state_quoted)
-    fprintf (m_log_stream, " ``%s\'\' ", str);
-  else
-    fprintf (m_log_stream, " %s ", str);
-  fflush (m_log_stream);
-  return *this;
-}
-
-/* *************************** Logger::operator<< ************************** */
-
-Logger &
-Logger::operator<< (bool b)
-{
-  fprintf (m_log_stream, " %s ", b ? "true" : "false");
-  fflush (m_log_stream);
-  return *this;
-}
-
-/* *************************** Logger::operator<< ************************** */
-
-Logger &
-Logger::operator<< (log::log_manip_t l)
-{
-  switch (l)
-    {
-
-    case log::endl:
-      fprintf (m_log_stream, "\n");
-      fflush (m_log_stream);
-      break;
-
-    case log::quoted:
-      m_state_quoted = true;
-      break;
-
-    case log::unquoted:
-      m_state_quoted = false;
-      break;
-
-    }
-
-  return *this;
-}
-
-/* ************************** Logger::operator << ************************** */
-
-Logger &
-Logger::operator<< (SeverityLevel l)
-{
-  switch (l)
+  switch (lev)
     {
     case SeverityLevel::error:
-      fprintf (m_log_stream, "[E] ");
-      fflush (m_log_stream);
+      log << "[E] ";
       break;
 
     case SeverityLevel::info:
-      fprintf (m_log_stream, "[I] ");
-      fflush (m_log_stream);
+      log << "[I] ";
       break;
 
     case SeverityLevel::warning:
-      fprintf (m_log_stream, "[W] ");
-      fflush (m_log_stream);
+      log << "[W] ";
       break;
     }
 
-  return *this;
+  return log;
 }
 
 }

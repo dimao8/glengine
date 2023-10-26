@@ -38,8 +38,6 @@ public:
   Object(Object &&) = delete;
   virtual ~Object();
 
-  virtual const std::string type_name() const = 0;
-
   const UUID & id() const;
 };
 

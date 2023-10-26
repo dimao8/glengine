@@ -28,12 +28,4 @@ Mesh::draw ()
   // TODO : Draw mesh code
 }
 
-/* **************************** Mesh::type_name **************************** */
-
-const std::string
-Mesh::type_name () const
-{
-  return "Mesh";
-}
-
 }

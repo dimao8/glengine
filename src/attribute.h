@@ -65,8 +65,6 @@ public:
   size_t get_element_count () const;
   unsigned int get_gl_type () const;
   bool is_normalized() const;
-
-  virtual const std::string type_name() const;
 };
 
 }

@@ -24,8 +24,8 @@
 //
 
 #include "opengl.h"
-#include "translate.h"
 #include "logger.h"
+#include "translate.h"
 
 #include <GLFW/glfw3.h>
 
@@ -33,14 +33,15 @@
   x = reinterpret_cast<y> (glfwGetProcAddress (#x));                          \
   if (x == nullptr)                                                           \
     {                                                                         \
-      LOG_PRINT (SeverityLevel::warning, _ ("Can not load ``%s\'\'\n"), #x);  \
+      logger << SeverityLevel::warning << _ ("Can not load ``") << #x         \
+             << _ ("\'\'\n") << std::endl;                               \
       return false;                                                           \
-    } \
-  else \
-    { \
-      LOG_PRINT (SeverityLevel::info, _ ("``%s\'\' was loaded\n"), #x); \
+    }                                                                         \
+  else                                                                        \
+    {                                                                         \
+      logger << SeverityLevel::info << _ ("``") << #x                         \
+             << _ ("\'\' was loaded") << std::endl;                    \
     }
-
 
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 
