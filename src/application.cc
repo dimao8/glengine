@@ -34,7 +34,6 @@
 #include <config.h>
 #endif // HAVE_CONFIG_H
 
-#include "object.h"
 #include "opengl.h"
 #include "translate.h"
 
@@ -150,8 +149,6 @@ Application::Application (int argc, char **argv)
 
 Application::~Application ()
 {
-  p_cleanup ();
-
   // TODO : Close application
 }
 
@@ -274,7 +271,9 @@ Application::run ()
     }
 
   if (m_should_close)
-    return 0;
+    {
+      return 0;
+    }
 
   init ();
 
@@ -384,6 +383,13 @@ Application::static_framebuffer_size_callback (GLFWwindow *wnd, int w, int h)
       = reinterpret_cast<Application *> (glfwGetWindowUserPointer (wnd));
 
   app->framebuffer_size (w, h);
+}
+
+/* ************************* Application::terminate ************************ */
+
+void Application::terminate ()
+{
+  p_cleanup ();
 }
 
 } // namespace gle

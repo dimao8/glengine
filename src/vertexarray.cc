@@ -1,6 +1,5 @@
 #include "vertexarray.h"
 #include "attribute.h"
-#include "buffer.h"
 #include "logger.h"
 #include "opengl.h"
 #include "shaderprogram.h"
@@ -11,7 +10,8 @@ namespace gle
 
 /* ************************ VertexArray::VertexArray *********************** */
 
-VertexArray::VertexArray (DrawingMode mode) : m_mode (mode), m_vertex_count (0)
+VertexArray::VertexArray (DrawingMode mode)
+    : m_mode (mode), m_vertex_count (0), m_actual (false)
 {
   GLenum result;
   glGenVertexArrays (1, &m_handle);
@@ -72,39 +72,32 @@ VertexArray::~VertexArray ()
 /* ************************ VertexArray::add_buffer ************************ */
 
 void
-VertexArray::add_buffer (Buffer *buffer)
+VertexArray::add_buffer (Buffer *buffer, Attribute *attribute)
 {
   GLsizei stride = 0;
   unsigned int offs = 0;
+  bool exist = false;
 
-  if (buffer != nullptr)
+  if (buffer == nullptr)
     {
-      if (!buffer->is_empty () && buffer->get_attribute_count () != 0)
-        {
-          if (m_vertex_count < buffer->get_vertex_count ())
-            m_vertex_count = buffer->get_vertex_count ();
-
-          m_buffers.push_back (buffer);
-          buffer->enable ();
-          for (size_t n = 0; n < buffer->get_attribute_count (); n++)
-            {
-              stride += buffer->get_attribute (n)->get_size ();
-            }
-          for (size_t n = 0; n < buffer->get_attribute_count (); n++)
-            {
-              glVertexAttribPointer (
-                  buffer->get_attribute (n)->get_index (),
-                  buffer->get_attribute (n)->get_element_count (),
-                  buffer->get_attribute (n)->get_gl_type (),
-                  buffer->get_attribute (n)->is_normalized () ? GL_TRUE
-                                                              : GL_FALSE,
-                  stride, reinterpret_cast<void *> (offs));
-              glEnableVertexAttribArray (
-                  buffer->get_attribute (n)->get_index ());
-              offs += buffer->get_attribute (n)->get_size ();
-            }
-        }
+      logger << SeverityLevel::warning << _ ("Try to add null buffer object")
+             << std::endl;
+      return;
     }
+
+  Buffer *buf = nullptr;
+
+  for (auto it : m_buffers)
+    {
+      if (buffer == it)
+        buf = it;
+    }
+  if (buf == nullptr)
+    buf = buffer;
+
+  buf->add_attribute (attribute);
+
+  m_actual = false;
 }
 
 /* ********************** VertexArray::remove_buffers ********************** */
@@ -113,6 +106,7 @@ void
 VertexArray::remove_buffers ()
 {
   m_buffers.clear ();
+  m_actual = false;
 }
 
 /* *************************** VertexArray::draw *************************** */
@@ -127,30 +121,7 @@ VertexArray::draw (ShaderProgram *program)
 
   glGetError ();
   program->enable ();
-  logger << SeverityLevel::warning << _ ("OpenGL error: ")
-         << message_gl (glGetError ()) << std::endl;
-  glGetIntegerv (GL_CURRENT_PROGRAM, &param);
-  logger << SeverityLevel::info << "glUseProgram(" << static_cast<int> (param)
-         << ")" << std::endl;
-
   enable ();
-
-  logger << SeverityLevel::info << "glDrawArrays("
-         << static_cast<int> (m_gl_mode) << ", " << static_cast<int> (0)
-         << ", " << static_cast<int> (m_vertex_count) << ")" << std::endl;
-
-  glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &param);
-  logger << SeverityLevel::info
-         << "GL_ARRAY_BUFFER_BINDING: " << static_cast<int> (param)
-         << std::endl;
-  glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &param);
-  logger << SeverityLevel::info
-         << "GL_VERTEX_ATTRIB_ARRAY_ENABLED(0): " << static_cast<int> (param)
-         << std::endl;
-  glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &param);
-  logger << SeverityLevel::info
-         << "GL_VERTEX_ATTRIB_ARRAY_ENABLED(1): " << static_cast<int> (param)
-         << std::endl;
 
   glDrawArrays (m_gl_mode, 0, m_vertex_count);
 }
@@ -162,6 +133,45 @@ VertexArray::enable ()
 {
   if (m_handle != 0)
     glBindVertexArray (m_handle);
+}
+
+/* ************************** VertexArray::update ************************** */
+
+void
+VertexArray::update ()
+{
+  GLsizei sz = 0;
+  GLsizei offs = 0;
+
+  for (auto it : m_buffers)
+    {
+      sz = 0;
+      offs = 0;
+      it->enable ();
+      for (int i = 0; i < it->attrib_size (); i++)
+        sz += it->attribute (i)->get_size ();
+      for (int i = 0; i < it->attrib_size (); i++)
+        {
+          glVertexAttribPointer (
+              it->attribute (i)->get_index (),
+              it->attribute (i)->get_element_count (),
+              it->attribute (i)->get_gl_type (),
+              it->attribute (i)->is_normalized () ? GL_TRUE : GL_FALSE, sz,
+              reinterpret_cast<void *> (offs));
+          glEnableVertexAttribArray (it->attribute (i)->get_index ());
+          offs += it->attribute (i)->get_size ();
+        }
+    }
+
+  m_actual = true;
+}
+
+/* ************************* VertexArray::is_actual ************************ */
+
+bool
+VertexArray::is_actual () const
+{
+  return m_actual;
 }
 
 }

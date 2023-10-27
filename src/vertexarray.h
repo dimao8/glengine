@@ -1,7 +1,7 @@
 #ifndef VERTEXARRAY_H
 #define VERTEXARRAY_H
 
-#include "object.h"
+#include "buffer.h"
 
 #include <string>
 #include <vector>
@@ -9,7 +9,6 @@
 namespace gle
 {
 
-class Buffer;
 class ShaderProgram;
 
 typedef std::vector<Buffer *> buffer_vector_t;
@@ -35,11 +34,13 @@ class VertexArray
 {
 
 private:
-  unsigned int m_handle;     /// Handle of the vertex array
-  buffer_vector_t m_buffers; /// List of vertex buffers
-  DrawingMode m_mode;        /// Drawing mode
+  unsigned int m_handle;           /// Handle of the vertex array
+  buffer_vector_t m_buffers;       /// List of vertex buffers
+  attribute_vector_t m_attributes; /// Attribute vector
+  DrawingMode m_mode;              /// Drawing mode
   unsigned int m_gl_mode;
   size_t m_vertex_count;
+  bool m_actual;
 
 public:
   VertexArray () = delete;
@@ -60,12 +61,12 @@ public:
   /// \brief Add data buffer
   /// \param [in] buffer -- Data buffer. Only non-null valid buffer will be
   /// added
+  /// \param [in] attribute -- Attribute of that buffer.
   ///
-  /// After buffer has been added, add_buffer add all buffer's attributes
-  /// to the vertex array state. If there is no attributes in the buffer,
-  /// it is not added.
+  /// Add data buffer and link it with an attribute. If buffer is already
+  /// exists, bind it and add attribute.
   ///
-  void add_buffer (Buffer *buffer);
+  void add_buffer (Buffer *buffer, Attribute *attrib);
 
   ///
   /// \brief Remove all data buffers
@@ -83,6 +84,9 @@ public:
   ///
   void enable ();
 
+  void update ();
+
+  bool is_actual () const;
 };
 
 }

@@ -4,6 +4,7 @@
 #include "scenenode.h"
 #include "buffer.h"
 #include "vertexarray.h"
+#include "attribute.h"
 
 #include <vector>
 
@@ -14,9 +15,8 @@ class Mesh : public SceneNode
 {
 
 private:
-
-  std::vector<Buffer *> m_buffers;
   VertexArray m_vertex_array;
+  buffer_vector_t m_buffers;
 
 public:
 

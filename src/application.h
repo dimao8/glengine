@@ -31,12 +31,12 @@
 #include <list>
 #include <string>
 
+#include "attribute.h"
+#include "buffer.h"
 #include "image.h"
 #include "shader.h"
 #include "shaderprogram.h"
-#include "buffer.h"
 #include "vertexarray.h"
-#include "attribute.h"
 
 #include "arguments.h"
 
@@ -63,8 +63,8 @@ private:
                        /// application
 
   // Native variables
-  GLFWwindow *m_window; /// GLFW main window handle
-  GLuint m_framebuffer; /// Framebuffer object
+  GLFWwindow *m_window;         /// GLFW main window handle
+  GLuint m_framebuffer;         /// Framebuffer object
   GLuint m_framebuffer_texture; /// Framebuffer texture object
 
   /**
@@ -78,7 +78,7 @@ private:
   /**
    * Clean all resources
    */
-  void p_cleanup();
+  void p_cleanup ();
 
   /**
    * Draw frame
@@ -122,7 +122,7 @@ public:
   ///
   /// \brief Pure method for custom  drawing
   ///
-  virtual void draw() = 0;
+  virtual void draw () = 0;
 
   /**
    * Usage prompt of the application
@@ -144,12 +144,13 @@ public:
    */
   virtual void cleanup () = 0;
 
+  void terminate ();
+
 private:
-  static void static_framebuffer_size_callback(GLFWwindow * wnd, int w, int h);
+  static void static_framebuffer_size_callback (GLFWwindow *wnd, int w, int h);
 
 public:
   void framebuffer_size (int w, int h);
-
 };
 
 } // namespace gle

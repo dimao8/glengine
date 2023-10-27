@@ -96,7 +96,7 @@ Image::Image (const std::string &file_name)
   if (is_png)
     {
       logger << SeverityLevel::info << _ ("Interpret image file ``")
-             << file_name.c_str () << _ ("\'\' as PNG\n") << std::endl;
+             << file_name.c_str () << _ ("\'\' as PNG") << std::endl;
       png_result = LoadPNGFromFile (file_name.c_str (), &png_hdr, &data, true);
       if (png_result != PNG_ERROR_OK)
         {
