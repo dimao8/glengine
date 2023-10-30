@@ -55,8 +55,7 @@ Application::Application (int argc, char **argv)
   logger << SeverityLevel::info << _ ("Init glfw3") << std::endl;
   if (!glfwInit ())
     {
-      logger << SeverityLevel::error << _ ("Can not init glfw3")
-             << std::endl;
+      logger << SeverityLevel::error << _ ("Can not init glfw3") << std::endl;
       return;
     }
   logger << SeverityLevel::info << _ ("GLFW version: ")
@@ -65,6 +64,7 @@ Application::Application (int argc, char **argv)
   // Try to create window
   logger << SeverityLevel::info << "Create main window" << std::endl;
 
+  // glfwWindowHint (GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
   glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -76,6 +76,9 @@ Application::Application (int argc, char **argv)
   glfwWindowHint (GLFW_DEPTH_BITS, 24);
   glfwWindowHint (GLFW_STENCIL_BITS, 8);
   glfwWindowHint (GLFW_RESIZABLE, 0);
+#ifndef NDEBUG
+  glfwWindowHint (GLFW_OPENGL_DEBUG_CONTEXT, 1);
+#endif // NDEBUG
 
   m_window = glfwCreateWindow (DEFAULT_CLIENT_WIDTH, DEFAULT_CLIENT_HEIGHT,
                                PACKAGE " " VERSION, 0, 0);
@@ -113,7 +116,7 @@ Application::Application (int argc, char **argv)
   logger << SeverityLevel::info << _ ("Extensions: ") << std::endl;
   for (auto n = 0; n < no_of_ext; n++)
     {
-      logger << SeverityLevel::none << "  " << glGetStringi (GL_EXTENSIONS, n)
+      logger << "\t" << glGetStringi (GL_EXTENSIONS, n)
              << std::endl;
     }
 
@@ -297,7 +300,7 @@ Application::run ()
       glReadPixels (0, 0, m_framebuffer_size.x, m_framebuffer_size.y, GL_RGB,
                     GL_UNSIGNED_BYTE, framebuffer_ptr);
       Image img (m_framebuffer_size.x, m_framebuffer_size.y, ColorType::rgb,
-                 framebuffer_ptr);
+                 framebuffer_ptr, true);
       img.save ("framebuffer.tga");
 
       glBindFramebuffer (GL_FRAMEBUFFER, 0);
@@ -306,6 +309,7 @@ Application::run ()
     }
   else
     {
+      glBindFramebuffer (GL_FRAMEBUFFER, 0);
       while (!glfwWindowShouldClose (m_window))
         {
           glfwPollEvents ();
@@ -327,6 +331,8 @@ void
 Application::p_draw ()
 {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  logger << SeverityLevel::info << "Application::p_draw()" << std::endl;
 
   draw ();
 }
@@ -387,7 +393,8 @@ Application::static_framebuffer_size_callback (GLFWwindow *wnd, int w, int h)
 
 /* ************************* Application::terminate ************************ */
 
-void Application::terminate ()
+void
+Application::terminate ()
 {
   p_cleanup ();
 }

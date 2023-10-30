@@ -65,10 +65,12 @@ public:
    * \param [in] ct -- Type of the pixel color
    * \param [in] data -- Data of the image. If this pointer is nullptr, the
    * image will be white
+   * \param [in] hflip -- Horizontal flip
    */
   Image (unsigned int width = default_image_size.x,
          unsigned int height = default_image_size.y,
-         ColorType ct = ColorType::rgb_alpha, const uint8_t *data = nullptr);
+         ColorType ct = ColorType::rgb_alpha, const uint8_t *data = nullptr,
+         bool hflip = false);
 
   /**
    * Load image from the file
@@ -79,7 +81,7 @@ public:
    */
   Image (const std::string &file_name);
 
-  virtual ~Image() {}
+  virtual ~Image () {}
 
   /**
    * Save image to the file
@@ -92,7 +94,7 @@ public:
   int height () const;
   ColorType color_type () const;
 
-  friend Logger& operator<<(Logger& logger, const Image& image);
+  friend Logger &operator<< (Logger &logger, const Image &image);
 };
 
 }

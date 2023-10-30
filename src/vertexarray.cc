@@ -22,7 +22,7 @@ VertexArray::VertexArray (DrawingMode mode)
       result = glGetError ();
       logger << SeverityLevel::error
              << _ ("Create vertex buffer cause GL error: ``")
-             << message_gl (result) << _ ("\'\'") << std::endl;
+             << message_gl (result) << "\'\'" << std::endl;
       return;
     }
 
@@ -67,6 +67,8 @@ VertexArray::~VertexArray ()
 {
   if (m_handle != 0)
     glDeleteVertexArrays (1, &m_handle);
+  for (auto it : m_attributes)
+    delete it;
 }
 
 /* ************************ VertexArray::add_buffer ************************ */
@@ -93,7 +95,10 @@ VertexArray::add_buffer (Buffer *buffer, Attribute *attribute)
         buf = it;
     }
   if (buf == nullptr)
-    buf = buffer;
+    {
+      m_buffers.push_back (buffer);
+      buf = buffer;
+    }
 
   buf->add_attribute (attribute);
 
@@ -114,16 +119,64 @@ VertexArray::remove_buffers ()
 void
 VertexArray::draw (ShaderProgram *program)
 {
+  GLint result;
+  GLvoid *presult;
+
   if (program == nullptr)
     return;
 
-  GLint param;
-
-  glGetError ();
   program->enable ();
   enable ();
 
+  glGetError ();
   glDrawArrays (m_gl_mode, 0, m_vertex_count);
+
+  logger << SeverityLevel::info << "ShaderProgram" << program->get_handle ()
+         << ":" << std::endl;
+  glGetProgramiv (program->get_handle (), GL_ACTIVE_ATTRIBUTES, &result);
+  logger << "\tGL_ACTIVE_ATTRIBUTES: " << result << std::endl;
+  glGetProgramiv (program->get_handle (), GL_ACTIVE_UNIFORMS, &result);
+  logger << "\tGL_ACTIVE_UNIFORMS: " << result << std::endl;
+
+  logger << SeverityLevel::info << "VertexAttribArray0"
+         << ":" << std::endl;
+  glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_ENABLED: " << result << std::endl;
+  glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_SIZE, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_SIZE: " << result << std::endl;
+  glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_TYPE, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_TYPE: " << result << std::endl;
+  glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_NORMALIZED: " << result << std::endl;
+  glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_STRIDE: " << result << std::endl;
+  glGetVertexAttribPointerv (0, GL_VERTEX_ATTRIB_ARRAY_POINTER, &presult);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_POINTER: "
+         << reinterpret_cast<intptr_t> (presult) << std::endl;
+  glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: " << result << std::endl;
+  glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &result);
+  logger << "\tGL_ARRAY_BUFFER_BINDING: " << result << std::endl;
+
+  logger << SeverityLevel::info << "VertexAttribArray1"
+         << ":" << std::endl;
+  glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_ENABLED: " << result << std::endl;
+  glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_SIZE, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_SIZE: " << result << std::endl;
+  glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_TYPE, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_TYPE: " << result << std::endl;
+  glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_NORMALIZED: " << result << std::endl;
+  glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_STRIDE: " << result << std::endl;
+  glGetVertexAttribPointerv (1, GL_VERTEX_ATTRIB_ARRAY_POINTER, &presult);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_POINTER: "
+         << reinterpret_cast<intptr_t> (presult) << std::endl;
+  glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &result);
+  logger << "\tGL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: " << result << std::endl;
+  glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &result);
+  logger << "\tGL_ARRAY_BUFFER_BINDING: " << result << std::endl;
 }
 
 /* ************************** VertexArray::enable ************************** */
@@ -143,11 +196,16 @@ VertexArray::update ()
   GLsizei sz = 0;
   GLsizei offs = 0;
 
+  m_vertex_count = 0;
+
   for (auto it : m_buffers)
     {
       sz = 0;
       offs = 0;
       it->enable ();
+      it->update ();
+      logger << SeverityLevel::warning << "Buffer content is "
+             << (it->is_actual () ? "actual" : "not actual") << std::endl;
       for (int i = 0; i < it->attrib_size (); i++)
         sz += it->attribute (i)->get_size ();
       for (int i = 0; i < it->attrib_size (); i++)
@@ -162,6 +220,15 @@ VertexArray::update ()
           offs += it->attribute (i)->get_size ();
         }
     }
+
+  sz = 0;
+
+  for (auto i = 0; i < m_buffers[0]->attrib_size (); i++)
+    sz += m_buffers[0]->attribute (i)->get_element_count ();
+
+  m_vertex_count = m_buffers[0]->size () / sz;
+  logger << SeverityLevel::info << "m_vertex_count: " << m_vertex_count
+         << std::endl;
 
   m_actual = true;
 }

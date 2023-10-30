@@ -29,6 +29,7 @@
 
 #include <pngloader.h>
 #include <tgaloader.h>
+#include <algorithm>
 
 #include <fstream>
 
@@ -44,16 +45,29 @@ const glm::uvec2 Image::default_image_size
 /* ****************************** Image::Image ***************************** */
 
 Image::Image (unsigned int width, unsigned int height, ColorType ct,
-              const uint8_t *data)
+              const uint8_t *data, bool hflip)
 {
   if (data == nullptr)
     make_empty (width, height, ct);
   else
     {
+      unsigned int bpp = Color::color_size (ct);
+
       m_size.x = width;
       m_size.y = height;
       m_color_type = ct;
-      m_data.assign (data, data + width * height * Color::color_size (ct));
+      if (!hflip)
+        m_data.assign (data, data + width * height * bpp);
+      else
+        {
+          m_data.resize (height*width*bpp);
+          for (auto i = 0; i < height; i++)
+            {
+              std::copy (data + (height - i - 1) * width * bpp,
+                         data + (height - i) * width * bpp,
+                         m_data.begin () + i * width * bpp);
+            }
+        }
     }
 }
 

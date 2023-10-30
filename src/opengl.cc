@@ -34,13 +34,14 @@
   if (x == nullptr)                                                           \
     {                                                                         \
       logger << SeverityLevel::warning << _ ("Can not load ``") << #x         \
-             << _ ("\'\'\n") << std::endl;                               \
+             << "\'\'\n"                                                      \
+             << std::endl;                                                    \
       return false;                                                           \
     }                                                                         \
   else                                                                        \
     {                                                                         \
-      logger << SeverityLevel::info << _ ("``") << #x                         \
-             << _ ("\'\' was loaded") << std::endl;                    \
+      logger << SeverityLevel::info << "``" << #x << _ ("\'\' was loaded")    \
+             << std::endl;                                                    \
     }
 
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
@@ -82,6 +83,7 @@ PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 PFNGLGETVERTEXATTRIBIVPROC glGetVertexAttribiv = nullptr;
+PFNGLGETVERTEXATTRIBPOINTERVPROC glGetVertexAttribPointerv = nullptr;
 
 const char *err_str_no_error = _ ("No error");
 const char *err_str_invalid_enum = _ ("Invalid enumerator");
@@ -141,6 +143,7 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glDeleteVertexArrays, PFNGLDELETEVERTEXARRAYSPROC);
   LOAD_GL_EXTENSION (glBindVertexArray, PFNGLBINDVERTEXARRAYPROC);
   LOAD_GL_EXTENSION (glGetVertexAttribiv, PFNGLGETVERTEXATTRIBIVPROC);
+  LOAD_GL_EXTENSION (glGetVertexAttribPointerv, PFNGLGETVERTEXATTRIBPOINTERVPROC);
 
   return true;
 }

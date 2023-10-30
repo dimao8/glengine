@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.15dev], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.16dev], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/application.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -27,13 +27,9 @@ AC_ARG_ENABLE([debug],
     [
       AS_CASE([${enableval}],
         [yes],
-        [
-          CXXFLAGS="-g -O0 -DDEBUG"
-        ],
+        [CXXFLAGS="-g -O0 -DDEBUG"],
         [no],
-        [
-          CXXFLAGS="-O2 -DNDEBUG"
-        ],
+        [CXXFLAGS="-O2 -DNDEBUG"],
         [AC_MSG_ERROR([Bad value ${enableval} for --enable-debug])])
     ],
     [ac_debug=false])

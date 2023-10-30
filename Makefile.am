@@ -89,4 +89,4 @@ check_PROGRAMS = tests/app
 
 tests_app_SOURCES = tests/app.cc
 tests_app_LDADD = -lglengine
-tests_app_CXXFLAGS = -I$(srcdir)/include
+tests_app_CXXFLAGS = -I$(srcdir)/include -g -O0

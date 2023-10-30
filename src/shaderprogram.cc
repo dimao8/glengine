@@ -42,8 +42,7 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
           glAttachShader (
               m_handle, static_cast<GLuint> (m_vertex_shader->get_handle ()));
           logger << SeverityLevel::info
-                 << _ ("Vertex shader is loaded and attached")
-                 << std::endl;
+                 << _ ("Vertex shader is loaded and attached") << std::endl;
         }
     }
 
@@ -61,8 +60,7 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_fragment_shader->get_handle ()));
           logger << SeverityLevel::info
-                 << _ ("Fragment shader is loaded and attached")
-                 << std::endl;
+                 << _ ("Fragment shader is loaded and attached") << std::endl;
         }
     }
 
@@ -80,13 +78,12 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_geometry_shader->get_handle ()));
           logger << SeverityLevel::info
-                 << _ ("Geometry shader is loaded and attached")
-                 << std::endl;
+                 << _ ("Geometry shader is loaded and attached") << std::endl;
         }
     }
 
   if (m_vertex_shader != nullptr && m_fragment_shader != nullptr)
-    m_state == ShaderProgramState::shaders;
+    m_state = ShaderProgramState::shaders;
 
   link ();
 }
@@ -101,7 +98,11 @@ ShaderProgram::link ()
   char *log;
 
   if (m_state == ShaderProgramState::empty)
-    return false;
+    {
+      logger << SeverityLevel::warning << _ ("Empty shader program")
+             << std::endl;
+      return false;
+    }
 
   glLinkProgram (m_handle);
   glGetProgramiv (m_handle, GL_LINK_STATUS, &status);
@@ -117,7 +118,11 @@ ShaderProgram::link ()
       delete[] log;
     }
   else
-    m_state = ShaderProgramState::linked;
+    {
+      m_state = ShaderProgramState::linked;
+      logger << SeverityLevel::info << _ ("Program is linked successfully")
+             << std::endl;
+    }
 
   return m_state == ShaderProgramState::linked;
 }

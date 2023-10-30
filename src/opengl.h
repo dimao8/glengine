@@ -68,6 +68,7 @@ extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 extern PFNGLGETVERTEXATTRIBIVPROC glGetVertexAttribiv;
+extern PFNGLGETVERTEXATTRIBPOINTERVPROC glGetVertexAttribPointerv;
 
 namespace gle
 {
