@@ -77,7 +77,7 @@ public:
   /// \brief Draw current vertex array
   /// \param [in] program -- Shader program
   ///
-  void draw (ShaderProgram *program);
+  void draw (ShaderProgram & program);
 
   ///
   /// \brief Enable current vertex array

@@ -70,7 +70,7 @@ public:
   Image (unsigned int width = default_image_size.x,
          unsigned int height = default_image_size.y,
          ColorType ct = ColorType::rgb_alpha, const uint8_t *data = nullptr,
-         bool hflip = false);
+         bool vflip = false);
 
   /**
    * Load image from the file

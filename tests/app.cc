@@ -7,8 +7,8 @@ private:
   gle::Shader *m_vertex_shader;
   gle::Shader *m_fragment_shader;
   gle::ShaderProgram *m_shader_program;
-  gle::VertexArray *m_vertex_array;
-  gle::Buffer *m_buffer;
+  gle::Mesh *m_cube;
+  gle::Camera *m_camera;
 
 public:
   App (int argc = 0, char **argv = nullptr);
@@ -17,10 +17,6 @@ public:
   virtual void init ();
   virtual void cleanup ();
 };
-
-GLfloat mesh[21]
-    = { -1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        1.0f,  0.0f,  1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f };
 
 /* ******************************** App::App ******************************* */
 
@@ -32,7 +28,7 @@ void
 App::draw ()
 {
   gle::logger << gle::SeverityLevel::info << "App::draw()" << std::endl;
-  m_vertex_array->draw (m_shader_program);
+  m_cube->draw (*m_shader_program, *m_camera);
 }
 
 /* ******************************* App::init ******************************* */
@@ -46,19 +42,11 @@ App::init ()
       = new gle::Shader (gle::ShaderType::fragment, "tests/shader.frag");
   m_shader_program
       = new gle::ShaderProgram (m_vertex_shader, m_fragment_shader);
-  m_shader_program->enable ();
-
-  m_buffer = new gle::Buffer (gle::BufferAccess::draw,
-                              gle::BufferOptimization::stat);
-  m_buffer->append_data (gle::BufferAccess::draw,
-                         gle::BufferOptimization::stat, 21, mesh);
-  m_vertex_array = new gle::VertexArray (gle::DrawingMode::triangle);
-  m_vertex_array->enable ();
-  m_vertex_array->add_buffer (m_buffer,
-                              new gle::Attribute (gle::AttributeType::fv3, 0));
-  m_vertex_array->add_buffer (m_buffer,
-                              new gle::Attribute (gle::AttributeType::fv4, 1));
-  m_vertex_array->update ();
+  m_cube = new gle::Mesh ();
+  m_camera = new gle::Camera ();
+  m_camera->move_position_to (glm::vec3 (1.0f, 5.0f, -1.0f));
+  m_camera->move_pov_to (glm::vec3 (0.0f));
+  m_camera->update ();
 }
 
 /* ****************************** App::cleanup ***************************** */
@@ -69,8 +57,8 @@ App::cleanup ()
   delete m_shader_program;
   delete m_vertex_shader;
   delete m_fragment_shader;
-  delete m_vertex_array;
-  delete m_buffer;
+  delete m_cube;
+  delete m_camera;
 }
 
 /* ********************************** main ********************************* */

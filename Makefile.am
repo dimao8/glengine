@@ -11,6 +11,8 @@ libglengine_la_SOURCES = src/application.h \
 	src/arguments.cc \
 	src/buffer.h \
 	src/buffer.cc \
+	src/camera.h \
+	src/camera.cc \
 	src/color.h \
 	src/color.cc \
 	src/image.h \
@@ -89,4 +91,4 @@ check_PROGRAMS = tests/app
 
 tests_app_SOURCES = tests/app.cc
 tests_app_LDADD = -lglengine
-tests_app_CXXFLAGS = -I$(srcdir)/include -g -O0
+tests_app_CXXFLAGS = -I$(srcdir)/include

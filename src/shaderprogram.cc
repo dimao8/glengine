@@ -158,6 +158,14 @@ ShaderProgram::get_handle () const
   return m_handle;
 }
 
+/* ****************** ShaderProgram::get_uniform_location ****************** */
+
+int
+ShaderProgram::get_uniform_location (const std::string &location_name) const
+{
+  return glGetUniformLocation (m_handle, location_name.c_str ());
+}
+
 /* ************************* ShaderProgram::disable ************************ */
 
 void

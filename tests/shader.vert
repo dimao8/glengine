@@ -1,19 +1,16 @@
 #version 330 core
 
 layout(location=0) in vec3 vposition;
-layout(location=1) in vec4 vcolor;
+layout(location=1) in vec3 vnormal;
+layout(location=2) in vec2 vtexcoord;
 
-out vec4 fcolor;
+out vec2 ftexcoord;
 
-const mat4 projection = mat4(
-  1.0, 0.0, 0.0, 0.0,
-  0.0, 1.0, 0.0, 0.0,
-  0.0, 0.0, 1.0, 0.0,
-  0.0, 0.0, 0.0, 1.0);
+uniform mat4 model_view_projection_matrix;
 
 void main()
 {
-  gl_Position = projection*vec4(vposition, 1.0);
+  gl_Position = model_view_projection_matrix*vec4(vposition, 1.0);
 
-  fcolor = vcolor;
+  ftexcoord = vtexcoord;
 }

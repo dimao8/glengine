@@ -85,6 +85,12 @@ PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 PFNGLGETVERTEXATTRIBIVPROC glGetVertexAttribiv = nullptr;
 PFNGLGETVERTEXATTRIBPOINTERVPROC glGetVertexAttribPointerv = nullptr;
 
+PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation = nullptr;
+PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = nullptr;
+PFNGLUNIFORM1IPROC glUniform1i = nullptr;
+PFNGLUNIFORM3FVPROC glUniform3fv = nullptr;
+PFNGLUNIFORM4FVPROC glUniform4fv = nullptr;
+
 const char *err_str_no_error = _ ("No error");
 const char *err_str_invalid_enum = _ ("Invalid enumerator");
 const char *err_str_invalid_value = _ ("Invalid value");
@@ -144,6 +150,12 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glBindVertexArray, PFNGLBINDVERTEXARRAYPROC);
   LOAD_GL_EXTENSION (glGetVertexAttribiv, PFNGLGETVERTEXATTRIBIVPROC);
   LOAD_GL_EXTENSION (glGetVertexAttribPointerv, PFNGLGETVERTEXATTRIBPOINTERVPROC);
+
+  LOAD_GL_EXTENSION (glGetUniformLocation, PFNGLGETUNIFORMLOCATIONPROC);
+  LOAD_GL_EXTENSION (glUniformMatrix4fv, PFNGLUNIFORMMATRIX4FVPROC);
+  LOAD_GL_EXTENSION (glUniform1i, PFNGLUNIFORM1IPROC);
+  LOAD_GL_EXTENSION (glUniform3fv, PFNGLUNIFORM3FVPROC);
+  LOAD_GL_EXTENSION (glUniform4fv, PFNGLUNIFORM4FVPROC);
 
   return true;
 }

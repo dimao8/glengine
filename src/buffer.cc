@@ -105,7 +105,7 @@ Buffer::add_attribute (Attribute *attribute)
 /* ************************** Buffer::attrib_size ************************** */
 
 size_t
-Buffer::attrib_size () const
+Buffer::attrib_count () const
 {
   return m_attributes.size ();
 }

@@ -37,6 +37,8 @@
 #include "shader.h"
 #include "shaderprogram.h"
 #include "vertexarray.h"
+#include "mesh.h"
+#include "camera.h"
 
 #include "arguments.h"
 

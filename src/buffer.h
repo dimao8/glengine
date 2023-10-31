@@ -80,7 +80,7 @@ public:
 
   void add_attribute (Attribute * attribute);
 
-  size_t attrib_size () const;
+  size_t attrib_count () const;
 
   const Attribute * attribute (int i) const;
 

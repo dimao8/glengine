@@ -90,14 +90,14 @@ public:
   ///
   void enable ();
 
-  unsigned int get_handle() const;
+  unsigned int get_handle () const;
+
+  int get_uniform_location (const std::string & location_name) const;
 
   bool is_linked () const;
 
 public:
-
   static void disable ();
-  
 };
 
 }

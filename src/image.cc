@@ -45,7 +45,7 @@ const glm::uvec2 Image::default_image_size
 /* ****************************** Image::Image ***************************** */
 
 Image::Image (unsigned int width, unsigned int height, ColorType ct,
-              const uint8_t *data, bool hflip)
+              const uint8_t *data, bool vflip)
 {
   if (data == nullptr)
     make_empty (width, height, ct);
@@ -56,7 +56,7 @@ Image::Image (unsigned int width, unsigned int height, ColorType ct,
       m_size.x = width;
       m_size.y = height;
       m_color_type = ct;
-      if (!hflip)
+      if (!vflip)
         m_data.assign (data, data + width * height * bpp);
       else
         {
