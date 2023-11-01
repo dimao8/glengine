@@ -25,11 +25,12 @@
 
 #include "image.h"
 #include "logger.h"
+#include "opengl.h"
 #include "translate.h"
 
+#include <algorithm>
 #include <pngloader.h>
 #include <tgaloader.h>
-#include <algorithm>
 
 #include <fstream>
 
@@ -60,7 +61,7 @@ Image::Image (unsigned int width, unsigned int height, ColorType ct,
         m_data.assign (data, data + width * height * bpp);
       else
         {
-          m_data.resize (height*width*bpp);
+          m_data.resize (height * width * bpp);
           for (auto i = 0; i < height; i++)
             {
               std::copy (data + (height - i - 1) * width * bpp,
@@ -204,6 +205,39 @@ ColorType
 Image::color_type () const
 {
   return m_color_type;
+}
+
+/* ***************************** Image::gl_type **************************** */
+
+int
+Image::gl_type () const
+{
+  switch (m_color_type)
+    {
+
+    case ColorType::luminance:
+      return GL_RED;
+
+    case ColorType::luminance_alpha:
+      return GL_RG;
+
+    case ColorType::rgb:
+      return GL_RGB;
+
+    case ColorType::rgb_alpha:
+      return GL_RGBA;
+
+    default:
+      return 0;
+    }
+}
+
+/* **************************** Image::data_ptr **************************** */
+
+const uint8_t *
+Image::data_ptr () const
+{
+  return m_data.data ();
 }
 
 /* ******************************* operator<< ****************************** */

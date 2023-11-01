@@ -93,6 +93,9 @@ public:
   int width () const;
   int height () const;
   ColorType color_type () const;
+  int gl_type () const;
+
+  const uint8_t *data_ptr () const;
 
   friend Logger &operator<< (Logger &logger, const Image &image);
 };
