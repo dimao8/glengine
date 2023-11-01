@@ -9,18 +9,25 @@ namespace gle
 
 class Light : public SceneNode
 {
+private:
+  Color m_color;        /// Light source color
+  glm::vec3 m_position; /// Light source position
 
 public:
-  Color m_color; /// Light source color
-
-  Light() = delete;
-  Light(const Light &) = delete;
-  Light(const Color& color, SceneNode *parent = nullptr);
+  Light () = delete;
+  Light (const Light &) = delete;
+  Light (SceneNode *parent = nullptr, const Color &color = Color (0xFFFFFFFF),
+         const glm::vec3 &position = glm::vec3 (0.0f, 0.0f, 0.0f));
 
   ///
   /// \brief Delete light source
   ///
   virtual ~Light () {}
+
+  void move_to (const glm::vec3 & pos);
+
+  const float *position_ptr () const;
+  const float *color_ptr () const;
 };
 
 }

@@ -116,8 +116,7 @@ Application::Application (int argc, char **argv)
   logger << SeverityLevel::info << _ ("Extensions: ") << std::endl;
   for (auto n = 0; n < no_of_ext; n++)
     {
-      logger << "\t" << glGetStringi (GL_EXTENSIONS, n)
-             << std::endl;
+      logger << "\t" << glGetStringi (GL_EXTENSIONS, n) << std::endl;
     }
 
   int w, h;
@@ -140,6 +139,7 @@ Application::Application (int argc, char **argv)
   glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                           m_framebuffer_texture, 0);
 
+  glEnable (GL_DEPTH_TEST);
   glClearColor (0.75, 0.70, 0.5, 1.0);
   glViewport (0, 0, m_framebuffer_size.x, m_framebuffer_size.y);
 

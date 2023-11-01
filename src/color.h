@@ -27,8 +27,8 @@
 #define COLOR_H
 
 #include <cstdint>
-#include <string>
 #include <glm/vec4.hpp>
+#include <string>
 
 namespace gle
 {
@@ -48,11 +48,10 @@ class Color
 {
 
 private:
-
   glm::vec4 m_color_value;
 
 public:
-  Color() = delete;
+  Color () = delete;
 
   ///
   /// \brief Create color from floats
@@ -61,23 +60,25 @@ public:
   /// \param [in] b -- Blue channel (0; 1)
   /// \param [in] a -- Alpha channel (0; 1)
   ///
-  Color(float r, float g, float b, float a);
+  Color (float r, float g, float b, float a);
 
   ///
   /// \brief Create color from packed int
   /// \param [in] color -- Integer value with 4 channels
   ///
-  Color(uint32_t color);
+  Color (uint32_t color);
 
   ///
   /// \brief Copying constructor
   /// \param [in] -- Color value
   ///
-  Color(const Color & color);
+  Color (const Color &color);
 
-  virtual ~Color() {}
- 
-  Color & operator =(const Color& color);
+  virtual ~Color () {}
+
+  const float *color_ptr () const;
+
+  Color &operator= (const Color &color);
 
 public:
   ///
@@ -87,10 +88,7 @@ public:
   /// \return Return size in bytes of corresponding pixel
   ///
   static unsigned int color_size (ColorType ct);
-
 };
-
-
 
 }
 

@@ -22,6 +22,7 @@ private:
   VertexArray m_vertex_array;
   buffer_vector_t m_buffers;
   glm::mat4 m_model;
+  glm::mat3 m_normal;
 
 public:
   ///

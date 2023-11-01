@@ -39,6 +39,7 @@
 #include "vertexarray.h"
 #include "mesh.h"
 #include "camera.h"
+#include "light.h"
 
 #include "arguments.h"
 

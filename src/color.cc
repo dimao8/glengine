@@ -26,6 +26,7 @@
 #include "color.h"
 
 #include <glm/gtc/round.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace gle
 {
@@ -50,19 +51,25 @@ Color::Color (uint32_t color)
   cl[2] = static_cast<float> ((color >> 16) & 0xFF) / 255.0f;
   cl[3] = static_cast<float> ((color >> 24) & 0xFF) / 255.0f;
 
-  m_color_value = glm::vec4(cl[0], cl[1], cl[2], cl[3]);
+  m_color_value = glm::vec4 (cl[0], cl[1], cl[2], cl[3]);
 }
 
 /* ****************************** Color::Color ***************************** */
 
-Color::Color (const Color& color)
+Color::Color (const Color &color) { m_color_value = color.m_color_value; }
+
+/* **************************** Color::color_ptr *************************** */
+
+const float *
+Color::color_ptr () const
 {
-  m_color_value = color.m_color_value;
+  return glm::value_ptr<float> (m_color_value);
 }
 
 /* **************************** Color::operator= *************************** */
 
-Color & Color::operator=(const Color& color)
+Color &
+Color::operator= (const Color &color)
 {
   m_color_value = color.m_color_value;
   return *this;

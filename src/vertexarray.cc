@@ -135,45 +135,28 @@ VertexArray::draw (ShaderProgram & program)
   // glGetProgramiv (program.get_handle (), GL_ACTIVE_UNIFORMS, &result);
   // logger << "\tGL_ACTIVE_UNIFORMS: " << result << std::endl;
 
-  // logger << SeverityLevel::info << "VertexAttribArray0"
-  //        << ":" << std::endl;
-  // glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_ENABLED: " << result << std::endl;
-  // glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_SIZE, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_SIZE: " << result << std::endl;
-  // glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_TYPE, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_TYPE: " << result << std::endl;
-  // glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_NORMALIZED: " << result << std::endl;
-  // glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_STRIDE: " << result << std::endl;
-  // glGetVertexAttribPointerv (0, GL_VERTEX_ATTRIB_ARRAY_POINTER, &presult);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_POINTER: "
-  //        << reinterpret_cast<intptr_t> (presult) << std::endl;
-  // glGetVertexAttribiv (0, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: " << result << std::endl;
-  // glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &result);
-  // logger << "\tGL_ARRAY_BUFFER_BINDING: " << result << std::endl;
-
-  // logger << SeverityLevel::info << "VertexAttribArray1"
-  //        << ":" << std::endl;
-  // glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_ENABLED: " << result << std::endl;
-  // glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_SIZE, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_SIZE: " << result << std::endl;
-  // glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_TYPE, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_TYPE: " << result << std::endl;
-  // glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_NORMALIZED: " << result << std::endl;
-  // glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_STRIDE: " << result << std::endl;
-  // glGetVertexAttribPointerv (1, GL_VERTEX_ATTRIB_ARRAY_POINTER, &presult);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_POINTER: "
-  //        << reinterpret_cast<intptr_t> (presult) << std::endl;
-  // glGetVertexAttribiv (1, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &result);
-  // logger << "\tGL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: " << result << std::endl;
-  // glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &result);
-  // logger << "\tGL_ARRAY_BUFFER_BINDING: " << result << std::endl;
+  // for (auto i = 0; i < m_buffers[0]->attrib_count(); i++)
+  //   {
+  //     logger << SeverityLevel::info << "VertexAttribArray" << i
+  //           << ":" << std::endl;
+  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &result);
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_ENABLED: " << result << std::endl;
+  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_SIZE, &result);
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_SIZE: " << result << std::endl;
+  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_TYPE, &result);
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_TYPE: " << result << std::endl;
+  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &result);
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_NORMALIZED: " << result << std::endl;
+  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &result);
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_STRIDE: " << result << std::endl;
+  //     glGetVertexAttribPointerv (i, GL_VERTEX_ATTRIB_ARRAY_POINTER, &presult);
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_POINTER: "
+  //           << reinterpret_cast<intptr_t> (presult) << std::endl;
+  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &result);
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: " << result << std::endl;
+  //     glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &result);
+  //     logger << "\tGL_ARRAY_BUFFER_BINDING: " << result << std::endl;
+  //   }
 }
 
 /* ************************** VertexArray::enable ************************** */

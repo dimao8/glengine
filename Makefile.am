@@ -17,6 +17,8 @@ libglengine_la_SOURCES = src/application.h \
 	src/color.cc \
 	src/image.h \
 	src/image.cc \
+	src/light.h \
+	src/light.cc \
 	src/logger.h \
 	src/logger.cc \
 	src/mesh.h \

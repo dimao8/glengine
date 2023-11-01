@@ -1,5 +1,7 @@
 #include "../src/application.h"
 
+#include <glm/trigonometric.hpp>
+
 class App : public gle::Application
 {
 
@@ -9,6 +11,7 @@ private:
   gle::ShaderProgram *m_shader_program;
   gle::Mesh *m_cube;
   gle::Camera *m_camera;
+  gle::Light *m_light;
 
 public:
   App (int argc = 0, char **argv = nullptr);
@@ -27,8 +30,18 @@ App::App (int argc, char **argv) : gle::Application (argc, argv) {}
 void
 App::draw ()
 {
-  gle::logger << gle::SeverityLevel::info << "App::draw()" << std::endl;
+  GLint location = m_shader_program->get_uniform_location ("emitter");
+  glUniform3fv (location, 1, m_light->position_ptr ());
+  location = m_shader_program->get_uniform_location ("emitter_color");
+  glUniform4fv (location, 1, m_light->color_ptr ());
   m_cube->draw (*m_shader_program, *m_camera);
+
+  static float a = 0;
+  m_light->move_to (
+      glm::vec3 (10.0f * glm::sin (a), 10.0f, 10.0f * glm::cos (a)));
+  a += 0.01;
+  if (a > 6.28318530718f)
+    a = 0.0f;
 }
 
 /* ******************************* App::init ******************************* */
@@ -44,9 +57,13 @@ App::init ()
       = new gle::ShaderProgram (m_vertex_shader, m_fragment_shader);
   m_cube = new gle::Mesh ();
   m_camera = new gle::Camera ();
-  m_camera->move_position_to (glm::vec3 (1.0f, 5.0f, -1.0f));
+  m_camera->move_position_to (glm::vec3 (2.0f, 4.0f, -2.0f));
   m_camera->move_pov_to (glm::vec3 (0.0f));
   m_camera->update ();
+
+  m_shader_program->enable ();
+  m_light = new gle::Light (nullptr, gle::Color (1.0, 1.0, 1.0, 1.0),
+                            glm::vec3 (-10.0, 10.0, -10.0));
 }
 
 /* ****************************** App::cleanup ***************************** */
@@ -59,6 +76,7 @@ App::cleanup ()
   delete m_fragment_shader;
   delete m_cube;
   delete m_camera;
+  delete m_light;
 }
 
 /* ********************************** main ********************************* */

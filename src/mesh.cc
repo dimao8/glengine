@@ -94,17 +94,24 @@ void
 Mesh::update ()
 {
   m_vertex_array.update ();
+  m_normal = glm::mat3 (glm::transpose (glm::inverse (m_model)));
 }
 
 /* ******************************* Mesh::draw ****************************** */
 
 void
-Mesh::draw (ShaderProgram &prog, const Camera& camera)
+Mesh::draw (ShaderProgram &prog, const Camera &camera)
 {
   glm::mat4 full_matrix = camera.view_projection () * m_model;
 
   prog.enable ();
-  GLint location = prog.get_uniform_location ("model_view_projection_matrix");
+  GLint location = prog.get_uniform_location ("normal_matrix");
+  glUniformMatrix3fv (location, 1, GL_FALSE, glm::value_ptr<float> (m_normal));
+
+  location = prog.get_uniform_location ("model_matrix");
+  glUniformMatrix4fv (location, 1, GL_FALSE, glm::value_ptr<float> (m_model));
+
+  location = prog.get_uniform_location ("model_view_projection_matrix");
   glUniformMatrix4fv (location, 1, GL_FALSE,
                       glm::value_ptr<float> (full_matrix));
 
