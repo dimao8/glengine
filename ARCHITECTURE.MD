@@ -21,6 +21,7 @@ public:
   Texture ();
   virtual ~Texture ()
   void enable ();
+  GLuint handle () const;
 ...
   static void disable ();
 };
@@ -46,6 +47,11 @@ void Texture::disable ()
 {
   glBindTexture (GL_TEXTURE_2D, 0);
 }
+...
+GLuint Texture::handle () const
+{
+  return m_handle;
+}
 ```
 
 When wrapper in creation, there must be glGen function used to generate object.
@@ -54,4 +60,9 @@ glDelete is used. `m_handle` used to delete object.
 
 If bind is needed before use of object, glBind function must be called with
 `m_handle` field as object name. Bind wrap function must be called `enable` and
-must have no arguments nor return values.
+must have no arguments nor return values. To unbind any previously bound object
+there must be _static_ `disable` function, that bind default object (usually
+object with name 0). It is good idea to check if current object was bound
+before unbind it in destructor.
+
+Object name can be retrieved by using getter `handle()`.

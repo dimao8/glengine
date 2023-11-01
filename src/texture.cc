@@ -51,6 +51,15 @@ Texture::Texture ()
                     TextureWrap::clamp_to_edge, TextureWrap::clamp_to_edge);
 }
 
+/* **************************** Texture::Texture *************************** */
+
+Texture::Texture (const std::string & file_name) :
+  m_image (new Image(file_name))
+{
+  generate_texture (TextureFilter::nearest, TextureFilter::nearest,
+                    TextureWrap::clamp_to_edge, TextureWrap::clamp_to_edge);
+}
+
 /* *************************** Texture::~Texture *************************** */
 
 Texture::~Texture ()
@@ -66,8 +75,9 @@ Texture::~Texture ()
 /* **************************** Texture::enable **************************** */
 
 void
-Texture::enable ()
+Texture::enable (int index)
 {
+  glActiveTexture (GL_TEXTURE0 + index);
   glBindTexture (GL_TEXTURE_2D, m_handle);
 }
 

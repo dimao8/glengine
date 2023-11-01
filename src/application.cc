@@ -140,6 +140,7 @@ Application::Application (int argc, char **argv)
                           m_framebuffer_texture, 0);
 
   glEnable (GL_DEPTH_TEST);
+  glEnable (GL_TEXTURE_2D);
   glClearColor (0.75, 0.70, 0.5, 1.0);
   glViewport (0, 0, m_framebuffer_size.x, m_framebuffer_size.y);
 

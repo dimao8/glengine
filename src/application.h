@@ -40,6 +40,7 @@
 #include "mesh.h"
 #include "camera.h"
 #include "light.h"
+#include "texture.h"
 
 #include "arguments.h"
 

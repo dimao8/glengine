@@ -33,6 +33,8 @@ libglengine_la_SOURCES = src/application.h \
 	src/shader.cc \
 	src/shaderprogram.h \
 	src/shaderprogram.cc \
+	src/texture.h \
+	src/texture.cc \
 	src/uuid.h \
 	src/uuid.cc \
 	src/vertexarray.h \

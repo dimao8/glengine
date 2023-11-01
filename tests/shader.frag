@@ -13,7 +13,6 @@ out vec4 color;
 void
 main ()
 {
-  vec3 c = texture (tex, ftexcoord) * vec3 (emitter_color)
-           * max (dot (fnormal, femitter), 0.0);
-  color = vec4 (c, 1.0);
+  vec3 c = vec3 (emitter_color) * max (dot (fnormal, femitter), 0.0);
+  color = vec4 (c, 1.0) * texture (tex, ftexcoord);
 }

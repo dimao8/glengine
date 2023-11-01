@@ -12,6 +12,7 @@ private:
   gle::Mesh *m_cube;
   gle::Camera *m_camera;
   gle::Light *m_light;
+  gle::Texture *m_texture;
 
 public:
   App (int argc = 0, char **argv = nullptr);
@@ -34,6 +35,9 @@ App::draw ()
   glUniform3fv (location, 1, m_light->position_ptr ());
   location = m_shader_program->get_uniform_location ("emitter_color");
   glUniform4fv (location, 1, m_light->color_ptr ());
+  location = m_shader_program->get_uniform_location ("tex");
+  glUniform1i (location, 0);
+
   m_cube->draw (*m_shader_program, *m_camera);
 
   static float a = 0;
@@ -64,6 +68,9 @@ App::init ()
   m_shader_program->enable ();
   m_light = new gle::Light (nullptr, gle::Color (1.0, 1.0, 1.0, 1.0),
                             glm::vec3 (-10.0, 10.0, -10.0));
+
+  m_texture = new gle::Texture ("tests/test.png");
+  m_texture->enable (0);
 }
 
 /* ****************************** App::cleanup ***************************** */
@@ -77,6 +84,7 @@ App::cleanup ()
   delete m_cube;
   delete m_camera;
   delete m_light;
+  delete m_texture;
 }
 
 /* ********************************** main ********************************* */

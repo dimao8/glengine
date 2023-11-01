@@ -38,8 +38,9 @@ private:
 public:
 
   Texture ();
+  Texture (const std::string & file_name);
   virtual ~Texture ();
-  void enable ();
+  void enable (int index = 0);
 
 private:
 
