@@ -54,9 +54,9 @@ void
 App::init ()
 {
   m_vertex_shader
-      = new gle::Shader (gle::ShaderType::vertex, "tests/shader.vert");
+      = new gle::Shader (gle::ShaderType::vertex, "tests/shader.vert", true);
   m_fragment_shader
-      = new gle::Shader (gle::ShaderType::fragment, "tests/shader.frag");
+      = new gle::Shader (gle::ShaderType::fragment, "tests/shader.frag", true);
   m_shader_program
       = new gle::ShaderProgram (m_vertex_shader, m_fragment_shader);
   m_cube = new gle::Mesh ();
@@ -69,8 +69,10 @@ App::init ()
   m_light = new gle::Light (nullptr, gle::Color (1.0, 1.0, 1.0, 1.0),
                             glm::vec3 (-10.0, 10.0, -10.0));
 
-  m_texture = new gle::Texture ("tests/test.png");
+  m_texture = new gle::Texture ("tests/test.tga");
   m_texture->enable (0);
+  m_texture->set_filtering (gle::TextureFilter::linear,
+                            gle::TextureFilter::linear);
 }
 
 /* ****************************** App::cleanup ***************************** */

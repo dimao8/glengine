@@ -79,6 +79,8 @@ Image::Image (const std::string &file_name)
   logger << SeverityLevel::info << _ ("Load image from ``")
          << file_name.c_str () << _ ("\'\' file") << std::endl;
 
+  size_t sz;
+
   std::ifstream ifs (file_name);
   if (!ifs)
     {
@@ -90,28 +92,38 @@ Image::Image (const std::string &file_name)
     }
 
   // Check for PNG
-  const uint8_t png_signature[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
+  const std::array<uint8_t, 8> png_signature
+      = { 137, 80, 78, 71, 13, 10, 26, 10 };
   bool is_png = true;
-  std::vector<uint8_t> magic = { 0, 0, 0, 0, 0, 0, 0, 0 };
-  ifs.read (reinterpret_cast<char *> (&(magic[0])), 8);
+  std::array<uint8_t, 8> magic = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  ifs.seekg (0, std::ios_base::end);
+  sz = ifs.tellg ();
+  ifs.seekg (0, std::ios_base::beg);
+
+  if (sz < 18)
+    {
+      // Have no PNG magic
+      ifs.close ();
+      logger << SeverityLevel::warning << _ ("File ``") << file_name.c_str ()
+             << _ ("\'\' is smaller then smallest image") << std::endl;
+      make_empty (default_image_size.x, default_image_size.y,
+                  ColorType::rgb_alpha);
+      return;
+    }
+
+  ifs.read (reinterpret_cast<char *> (magic.data()), 8);
   uint8_t *data;
   png_header_t png_hdr;
   png_error_t png_result;
   unsigned int bpp;
 
-  for (auto n = 0; n < 8; n++)
+  if (magic == png_signature)
     {
-      if (magic[n] != png_signature[n])
-        {
-          is_png = false;
-          break;
-        };
-    }
-
-  if (is_png)
-    {
-      logger << SeverityLevel::info << _ ("Interpret image file ``")
-             << file_name.c_str () << _ ("\'\' as PNG") << std::endl;
+      LOG_DEBUG (logger << SeverityLevel::info << _ ("Interpret image file ``")
+                        << file_name.c_str () << _ ("\'\' as PNG file")
+                        << std::endl);
+      ifs.close ();
       png_result = LoadPNGFromFile (file_name.c_str (), &png_hdr, &data, true);
       if (png_result != PNG_ERROR_OK)
         {
@@ -158,9 +170,69 @@ Image::Image (const std::string &file_name)
     }
   else // Check for TGA
     {
-    }
+      tga_header_t tga_hdr;
+      tga_error_t tga_result;
 
-  ifs.close ();
+      ifs.seekg (0, std::ios_base::beg);
+      ifs.read (reinterpret_cast<char *> (&tga_hdr), sizeof (tga_header_t));
+      ifs.close ();
+
+      if (tga_hdr.image_type != TGA_IMAGE_COLOR_MAPPED
+          && tga_hdr.image_type != TGA_IMAGE_TRUECOLOR
+          && tga_hdr.image_type != TGA_IMAGE_GRAYSCALE
+          && tga_hdr.image_type != TGA_IMAGE_RLE_COLOR_MAPPED
+          && tga_hdr.image_type != TGA_IMAGE_RLE_TRUECOLOR
+          && tga_hdr.image_type != TGA_IMAGE_RLE_GRAYSCALE)
+        {
+          logger << SeverityLevel::warning << _ ("File ``") << file_name
+                 << _ ("\'\' probably not a valid TGA file ")
+                 << static_cast<int> (tga_hdr.image_type) << std::endl;
+          return;
+        }
+
+      LOG_DEBUG (logger << SeverityLevel::info << _ ("Interpret image file ``")
+                        << file_name.c_str () << _ ("\'\' as TGA file")
+                        << std::endl);
+      tga_result = LoadTGAFromFile (file_name.c_str (), &tga_hdr, &data, true);
+      if (tga_result != TGA_ERROR_OK)
+        {
+          logger << SeverityLevel::warning
+                 << _ ("Can not load TGA file. Reason: ") << tga_result
+                 << std::endl;
+          make_empty (default_image_size.x, default_image_size.y,
+                      ColorType::rgb_alpha);
+        }
+      else
+        {
+          m_size.x = tga_hdr.image_type_specification.width;
+          m_size.y = tga_hdr.image_type_specification.height;
+          switch (tga_hdr.image_type_specification.pixel_depth)
+            {
+            case 8:
+              m_color_type = ColorType::luminance;
+              break;
+
+            case 16:
+              m_color_type = ColorType::luminance_alpha;
+              break;
+
+            case 24:
+              m_color_type = ColorType::rgb;
+              break;
+
+            case 32:
+              m_color_type = ColorType::rgb_alpha;
+              break;
+
+            default:
+              break;
+            }
+
+          m_data.assign (
+              data,
+              data + Color::color_size (m_color_type) * m_size.x * m_size.y);
+        }
+    }
 }
 
 /* *************************** Image::make_empty *************************** */

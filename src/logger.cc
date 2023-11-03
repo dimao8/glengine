@@ -80,7 +80,9 @@ Logger::Logger (std::ostream & os)
 
 Logger::~Logger ()
 {
+#ifndef NDEBUG
   *this << SeverityLevel::info << _ ("Close log stream") << std::endl;
+#endif // NDEBUG
 }
 
 /* ******************************* operator<< ****************************** */

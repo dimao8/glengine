@@ -184,8 +184,6 @@ VertexArray::update ()
       offs = 0;
       it->enable ();
       it->update ();
-      logger << SeverityLevel::warning << "Buffer content is "
-             << (it->is_actual () ? "actual" : "not actual") << std::endl;
       for (int i = 0; i < it->attrib_count (); i++)
         sz += it->attribute (i)->get_size ();
       for (int i = 0; i < it->attrib_count (); i++)
@@ -207,8 +205,6 @@ VertexArray::update ()
     sz += m_buffers[0]->attribute (i)->get_element_count ();
 
   m_vertex_count = m_buffers[0]->size () / sz;
-  logger << SeverityLevel::info << "m_vertex_count: " << m_vertex_count
-         << std::endl;
 
   m_actual = true;
 }

@@ -63,16 +63,26 @@ private:
   ShaderState m_state;   /// Shader state
   ShaderType m_type;     /// Shader type
 
+  void load_from_string (const std::string &source);
+
 public:
   Shader () = delete;
   Shader (const Shader &) = delete;
 
+  //
+  // \brief Load shader from file and compile
+  // \param [in] type -- Type of the shader
+  // \param [in] file_name -- Name of the shader file
+  //
+  // Shader (ShaderType type, const std::string &file_name);
+
   ///
   /// \brief Load shader from file and compile
   /// \param [in] type -- Type of the shader
-  /// \param [in] file_name -- Name of the shader file
+  /// \param [in] source -- Source of the shader
   ///
-  Shader (ShaderType type, const std::string &file_name);
+  Shader (ShaderType type, const std::string &source,
+          bool source_is_file = false);
 
   ///
   /// \brief Destroy shader. Free resources
@@ -90,7 +100,7 @@ public:
   bool compile ();
 
   ShaderType get_type () const;
-  int get_handle() const;
+  int get_handle () const;
   bool is_empty () const;
   bool is_compiled () const;
 };

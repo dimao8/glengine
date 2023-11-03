@@ -41,6 +41,7 @@ public:
   Texture (const std::string & file_name);
   virtual ~Texture ();
   void enable (int index = 0);
+  void set_filtering (TextureFilter min_filter, TextureFilter mag_filter);
 
 private:
 

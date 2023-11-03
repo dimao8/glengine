@@ -41,8 +41,8 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
         {
           glAttachShader (
               m_handle, static_cast<GLuint> (m_vertex_shader->get_handle ()));
-          logger << SeverityLevel::info
-                 << _ ("Vertex shader is loaded and attached") << std::endl;
+          LOG_DEBUG(logger << SeverityLevel::info
+                 << _ ("Vertex shader is loaded and attached") << std::endl);
         }
     }
 
@@ -59,8 +59,8 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
         {
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_fragment_shader->get_handle ()));
-          logger << SeverityLevel::info
-                 << _ ("Fragment shader is loaded and attached") << std::endl;
+          LOG_DEBUG(logger << SeverityLevel::info
+                 << _ ("Fragment shader is loaded and attached") << std::endl);
         }
     }
 
@@ -77,8 +77,8 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
         {
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_geometry_shader->get_handle ()));
-          logger << SeverityLevel::info
-                 << _ ("Geometry shader is loaded and attached") << std::endl;
+          LOG_DEBUG(logger << SeverityLevel::info
+                 << _ ("Geometry shader is loaded and attached") << std::endl);
         }
     }
 
@@ -120,8 +120,8 @@ ShaderProgram::link ()
   else
     {
       m_state = ShaderProgramState::linked;
-      logger << SeverityLevel::info << _ ("Program is linked successfully")
-             << std::endl;
+      LOG_DEBUG(logger << SeverityLevel::info << _ ("Program is linked successfully")
+             << std::endl);
     }
 
   return m_state == ShaderProgramState::linked;

@@ -6,7 +6,7 @@ namespace gle
 {
 
 const uint8_t Texture::default_texture[]
-    = { 255, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 0, 0, 255 };
+    = { 255, 0, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 0, 255, 255 };
 
 /* *********************** Texture::generate_texture *********************** */
 
@@ -53,8 +53,8 @@ Texture::Texture ()
 
 /* **************************** Texture::Texture *************************** */
 
-Texture::Texture (const std::string & file_name) :
-  m_image (new Image(file_name))
+Texture::Texture (const std::string &file_name)
+    : m_image (new Image (file_name))
 {
   generate_texture (TextureFilter::nearest, TextureFilter::nearest,
                     TextureWrap::clamp_to_edge, TextureWrap::clamp_to_edge);
@@ -79,6 +79,18 @@ Texture::enable (int index)
 {
   glActiveTexture (GL_TEXTURE0 + index);
   glBindTexture (GL_TEXTURE_2D, m_handle);
+}
+
+/* ************************* Texture::set_filtering ************************ */
+
+void
+Texture::set_filtering (TextureFilter min_filter, TextureFilter mag_filter)
+{
+  enable ();
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                   static_cast<GLint> (min_filter));
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                   static_cast<GLint> (mag_filter));
 }
 
 /* **************************** Texture::disable *************************** */

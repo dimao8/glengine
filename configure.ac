@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.19dev], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.20dev], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/application.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -34,8 +34,6 @@ AC_ARG_ENABLE([debug],
     ],
     [ac_debug=false])
 
-AM_CONDITIONAL(DEBUG, test "x${ac_debug}" = "xtrue")
-
 # Check for documentation option
 AC_ARG_ENABLE([build-docs],
     [AS_HELP_STRING([--enable-build-docs], [Set to enable build the documentation, default: no])],
@@ -67,6 +65,7 @@ AX_CHECK_GLM
 AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert
   tests/shader.frag:tests/shader.frag
   tests/test.png:tests/test.png
+  tests/test.tga:tests/test.tga
   ])
 
 AC_CONFIG_FILES([Makefile])

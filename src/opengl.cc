@@ -29,11 +29,22 @@
 
 #include <GLFW/glfw3.h>
 
+#ifdef NDEBUG
 #define LOAD_GL_EXTENSION(x, y)                                               \
   x = reinterpret_cast<y> (glfwGetProcAddress (#x));                          \
   if (x == nullptr)                                                           \
     {                                                                         \
-      logger << SeverityLevel::warning << _ ("Can not load ``") << #x         \
+      logger << SeverityLevel::error << _ ("Can not load ``") << #x           \
+             << "\'\'\n"                                                      \
+             << std::endl;                                                    \
+      return false;                                                           \
+    }
+#else
+#define LOAD_GL_EXTENSION(x, y)                                               \
+  x = reinterpret_cast<y> (glfwGetProcAddress (#x));                          \
+  if (x == nullptr)                                                           \
+    {                                                                         \
+      logger << SeverityLevel::error << _ ("Can not load ``") << #x           \
              << "\'\'\n"                                                      \
              << std::endl;                                                    \
       return false;                                                           \
@@ -43,6 +54,7 @@
       logger << SeverityLevel::info << "``" << #x << _ ("\'\' was loaded")    \
              << std::endl;                                                    \
     }
+#endif // NDEBUG
 
 PFNGLGETSTRINGIPROC glGetStringi = nullptr;
 
@@ -53,6 +65,7 @@ PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = nullptr;
 PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
 PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
 PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
+PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
 PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer = nullptr;
 
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
@@ -118,6 +131,7 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glGenRenderbuffers, PFNGLGENRENDERBUFFERSPROC);
   LOAD_GL_EXTENSION (glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSPROC);
   LOAD_GL_EXTENSION (glBindRenderbuffer, PFNGLBINDRENDERBUFFERPROC);
+  LOAD_GL_EXTENSION (glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEPROC);
   LOAD_GL_EXTENSION (glFramebufferRenderbuffer,
                      PFNGLFRAMEBUFFERRENDERBUFFERPROC);
 
@@ -150,7 +164,8 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glDeleteVertexArrays, PFNGLDELETEVERTEXARRAYSPROC);
   LOAD_GL_EXTENSION (glBindVertexArray, PFNGLBINDVERTEXARRAYPROC);
   LOAD_GL_EXTENSION (glGetVertexAttribiv, PFNGLGETVERTEXATTRIBIVPROC);
-  LOAD_GL_EXTENSION (glGetVertexAttribPointerv, PFNGLGETVERTEXATTRIBPOINTERVPROC);
+  LOAD_GL_EXTENSION (glGetVertexAttribPointerv,
+                     PFNGLGETVERTEXATTRIBPOINTERVPROC);
 
   LOAD_GL_EXTENSION (glGetUniformLocation, PFNGLGETUNIFORMLOCATIONPROC);
   LOAD_GL_EXTENSION (glUniformMatrix3fv, PFNGLUNIFORMMATRIX3FVPROC);

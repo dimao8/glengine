@@ -30,17 +30,18 @@
 #include <glm/vec2.hpp>
 #include <list>
 #include <string>
+#include <array>
 
 #include "attribute.h"
 #include "buffer.h"
+#include "camera.h"
 #include "image.h"
+#include "light.h"
+#include "mesh.h"
 #include "shader.h"
 #include "shaderprogram.h"
-#include "vertexarray.h"
-#include "mesh.h"
-#include "camera.h"
-#include "light.h"
 #include "texture.h"
+#include "vertexarray.h"
 
 #include "arguments.h"
 
@@ -60,16 +61,24 @@ private:
   std::list<Argument> m_args;          /// Argument list
   std::list<Argument> m_accepted_args; /// Accepted argument list
   glm::uvec2 m_framebuffer_size;       /// Framebuffer size
-  bool m_save_framebuffer;
+  bool m_save_framebuffer;             /// For debug purposes. Save framebuffer
 
   // Internal application state
   bool m_should_close; /// State of the application. Set to true to exit
                        /// application
 
   // Native variables
-  GLFWwindow *m_window;         /// GLFW main window handle
-  GLuint m_framebuffer;         /// Framebuffer object
-  GLuint m_framebuffer_texture; /// Framebuffer texture object
+  GLFWwindow *m_window;                /// GLFW main window handle
+  GLuint m_framebuffer;                /// Framebuffer object
+  GLuint m_framebuffer_color_texture;  /// Framebuffer color texture
+  GLuint m_renderbuffer;               /// Renderbuffer depth-stencil texture
+  Shader *m_fbo_vertex_shader;         /// Framebuffer vertex shader
+  Shader *m_fbo_fragment_shader;       /// Framebuffer fragment shader
+  ShaderProgram *m_fbo_shader_program; /// Framebuffer shader program
+  VertexArray *m_fbo_vao;
+  Buffer *m_fbo_vbo;
+  std::array<float, 24> m_fbo_mesh;
+  glm::mat4 m_fbo_matrix;
 
   /**
    * \brief Parse arguments and create argument list
@@ -89,7 +98,11 @@ private:
    */
   void p_draw ();
 
-protected:
+  ///
+  /// \brief Draw previously rendered framebuffer image
+  ///
+  void fbo_pass ();
+
 public:
   /**
    * Create default application
@@ -151,6 +164,9 @@ public:
   void terminate ();
 
 private:
+  static const std::string framebuffer_vertex_source;
+  static const std::string framebuffer_fragment_source;
+
   static void static_framebuffer_size_callback (GLFWwindow *wnd, int w, int h);
 
 public:

@@ -38,7 +38,8 @@ namespace gle
 
 /* ***************************** Shader::Shader **************************** */
 
-Shader::Shader (ShaderType type, const std::string &file_name)
+Shader::Shader (ShaderType type, const std::string &file_name,
+                bool source_is_file)
     : m_handle (0), m_state (ShaderState::empty), m_type (type)
 {
   GLenum result;
@@ -64,42 +65,70 @@ Shader::Shader (ShaderType type, const std::string &file_name)
     {
       result = glGetError ();
       logger << SeverityLevel::error << _ ("Create shader cause GL error: ``")
-             << message_gl (result) << _ ("\'\'") << std::endl;
+             << message_gl (result) << "\'\'" << std::endl;
       return;
     }
 
-  // Get data from stream
-  std::ifstream ifs (file_name, std::ios::binary);
-  ifs.unsetf (std::ios::skipws);
-  if (!ifs)
+  if (source_is_file)
     {
-      logger << SeverityLevel::error << _ ("Can not load shader from file ``")
-             << file_name.c_str () << _ ("\'\'") << std::endl;
-      return;
+      std::ifstream ifs (file_name);
+      if (!ifs)
+        {
+          logger << SeverityLevel::error << _ ("Can not open shader file ``")
+                 << file_name << "\'\'" << std::endl;
+          return;
+        }
+
+      ifs.seekg (0, std::ios_base::end);
+      size_t sz = ifs.tellg ();
+      ifs.seekg (0, std::ios_base::beg);
+      std::string str;
+      str.resize (sz);
+
+      ifs.read (&(str[0]), sz);
+      ifs.close ();
+      load_from_string (str);
     }
   else
+    load_from_string (file_name);
+}
+
+/* ***************************** Shader::Shader **************************** */
+
+void
+Shader::load_from_string (const std::string &source)
+{
+  GLenum result;
+
+  switch (m_type)
     {
-      logger << SeverityLevel::info << _ ("Shader is loaded from file ``")
-             << file_name.c_str () << "\'\'" << std::endl;
+
+    case ShaderType::vertex:
+      m_handle = glCreateShader (GL_VERTEX_SHADER);
+      break;
+
+    case ShaderType::fragment:
+      m_handle = glCreateShader (GL_FRAGMENT_SHADER);
+      break;
+
+    case ShaderType::geometry:
+      m_handle = glCreateShader (GL_GEOMETRY_SHADER);
+      break;
     }
 
-  size_t sz;
+  // Check for shader valid
+  if (m_handle == 0)
+    {
+      result = glGetError ();
+      logger << SeverityLevel::error << _ ("Create shader cause GL error: ``")
+             << message_gl (result) << "\'\'" << std::endl;
+      return;
+    }
 
-  ifs.seekg (0, std::ios::end);
-  sz = ifs.tellg ();
-  ifs.seekg (0, std::ios::beg);
+  const char *p = source.data ();
 
-  char *source = new char[sz + 2];
-
-  ifs.read (source, sz);
-  ifs.close ();
-
-  source[sz] = 0;
-  source[sz + 1] = 0;
-
-  glShaderSource (m_handle, 1, &source, nullptr);
-
-  delete[] source;
+  // Get data from stream
+  glShaderSource (m_handle, 1, &p, nullptr);
 
   m_state = ShaderState::source;
 
@@ -135,8 +164,7 @@ Shader::compile ()
       log = new char[len];
       glGetShaderInfoLog (m_handle, len, nullptr, log);
       logger << SeverityLevel::error
-             << _ ("Can not compile shader. Compiler message:")
-             << std::endl
+             << _ ("Can not compile shader. Compiler message:") << std::endl
              << log << std::endl;
       delete[] log;
     }

@@ -31,6 +31,12 @@
 #include <fstream>
 #include <string>
 
+#ifdef NDEBUG
+#define LOG_DEBUG(x)
+#else
+#define LOG_DEBUG(x) x
+#endif // NDEBUG
+
 namespace gle
 {
 
