@@ -7,24 +7,17 @@ namespace gle
 
 /* ************************** SceneNode::SceneNode ************************* */
 
-SceneNode::SceneNode (SceneNode *parent) : m_parent (nullptr)
+SceneNode::SceneNode (const std::shared_ptr<SceneNode> &parent)
+    : m_parent_ptr (parent)
 {
-  if (m_parent != nullptr)
-    {
-      m_parent = parent;
-
-      // TODO : Check for parent validity
-    }
+  // TODO : Check for parent validity
 }
 
 /* ************************* SceneNode::~SceneNode ************************* */
 
 SceneNode::~SceneNode ()
 {
-  for (auto it : m_children)
-    {
-      delete it;
-    }
+  // 
 }
 
 /* *************************** SceneNode::matrix *************************** */
@@ -32,8 +25,8 @@ SceneNode::~SceneNode ()
 glm::mat4
 SceneNode::matrix () const
 {
-  if (m_parent != nullptr)
-    return m_parent->matrix () * m_transform;
+  if (m_parent_ptr != nullptr)
+    return m_parent_ptr->matrix () * m_transform;
   else
     return m_transform;
 }
@@ -49,6 +42,14 @@ SceneNode::draw (ShaderProgram &program)
   //   it->draw(program);
 
   // TODO : Draw SceneNode
+}
+
+/* *************************** SceneNode::parent *************************** */
+
+const std::shared_ptr<SceneNode> &
+SceneNode::parent () const
+{
+  return m_parent_ptr;
 }
 
 }

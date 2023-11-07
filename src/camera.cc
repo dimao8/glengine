@@ -7,10 +7,21 @@ namespace gle
 
 /* ***************************** Camera::Camera **************************** */
 
-Camera::Camera (SceneNode *parent, float aspect)
-    : m_position (-5.0f, 1.0f, 2.0f), m_pov (0.0f, 0.0f, 0.0f)
+Camera::Camera (const std::shared_ptr<SceneNode> &parent, float aspect)
+    : SceneNode (parent), m_position (-5.0f, 1.0f, 2.0f),
+      m_pov (0.0f, 0.0f, 0.0f)
 {
   perspective (45.0f, aspect, 0.1f, 10.0f);
+  update ();
+}
+
+/* ***************************** Camera::Camera **************************** */
+
+Camera::Camera (const Camera &camera) : SceneNode (camera.parent ())
+{
+  m_position = camera.m_position;
+  m_view = camera.m_view;
+  m_projection = camera.projection ();
   update ();
 }
 
@@ -57,9 +68,17 @@ Camera::update ()
   m_view = glm::lookAt (m_position, m_pov, glm::vec3 (0.0f, 1.0f, 0.0f));
 }
 
+/* *************************** Camera::projection ************************** */
+
+const glm::mat4 &
+Camera::projection () const
+{
+  return m_projection;
+}
+
 /* ************************ Camera::view_projection ************************ */
 
-glm::mat4
+const glm::mat4
 Camera::view_projection () const
 {
   return m_projection * m_view;

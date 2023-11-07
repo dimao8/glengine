@@ -27,10 +27,11 @@
 #define APPLICATION_H
 
 #include <GLFW/glfw3.h>
+#include <array>
 #include <glm/vec2.hpp>
 #include <list>
+#include <memory>
 #include <string>
-#include <array>
 
 #include "attribute.h"
 #include "buffer.h"
@@ -68,15 +69,17 @@ private:
                        /// application
 
   // Native variables
-  GLFWwindow *m_window;                /// GLFW main window handle
-  GLuint m_framebuffer;                /// Framebuffer object
-  GLuint m_framebuffer_color_texture;  /// Framebuffer color texture
-  GLuint m_renderbuffer;               /// Renderbuffer depth-stencil texture
-  Shader *m_fbo_vertex_shader;         /// Framebuffer vertex shader
-  Shader *m_fbo_fragment_shader;       /// Framebuffer fragment shader
-  ShaderProgram *m_fbo_shader_program; /// Framebuffer shader program
-  VertexArray *m_fbo_vao;
-  Buffer *m_fbo_vbo;
+  GLFWwindow *m_window;               /// GLFW main window handle
+  GLuint m_framebuffer;               /// Framebuffer object
+  GLuint m_framebuffer_color_texture; /// Framebuffer color texture
+  GLuint m_renderbuffer;              /// Renderbuffer depth-stencil texture
+  std::shared_ptr<Shader> m_fbo_vertex_shader; /// Framebuffer vertex shader
+  std::shared_ptr<Shader>
+      m_fbo_fragment_shader; /// Framebuffer fragment shader
+  std::shared_ptr<ShaderProgram>
+      m_fbo_shader_program; /// Framebuffer shader program
+  std::shared_ptr<VertexArray> m_fbo_vao;
+  std::shared_ptr<Buffer> m_fbo_vbo;
   std::array<float, 24> m_fbo_mesh;
   glm::mat4 m_fbo_matrix;
 
@@ -104,6 +107,8 @@ private:
   void fbo_pass ();
 
 public:
+  Application (const Application &) = delete;
+
   /**
    * Create default application
    *

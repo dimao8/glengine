@@ -16,7 +16,8 @@ private:
 public:
   Light () = delete;
   Light (const Light &) = delete;
-  Light (SceneNode *parent = nullptr, const Color &color = Color (0xFFFFFFFF),
+  Light (const std::shared_ptr<SceneNode> &parent = nullptr,
+         const Color &color = Color (0xFFFFFFFF),
          const glm::vec3 &position = glm::vec3 (0.0f, 0.0f, 0.0f));
 
   ///
@@ -24,7 +25,7 @@ public:
   ///
   virtual ~Light () {}
 
-  void move_to (const glm::vec3 & pos);
+  void move_to (const glm::vec3 &pos);
 
   const float *position_ptr () const;
   const float *color_ptr () const;

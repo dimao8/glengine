@@ -7,7 +7,8 @@ namespace gle
 
 /* ****************************** Light::Light ***************************** */
 
-Light::Light (SceneNode *parent, const Color &color, const glm::vec3 &position)
+Light::Light (const std::shared_ptr<SceneNode> &parent, const Color &color,
+              const glm::vec3 &position)
     : SceneNode (parent), m_color (color), m_position (position)
 {
   //

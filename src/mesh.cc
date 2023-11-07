@@ -63,11 +63,12 @@ const GLfloat Mesh::cube_data[Mesh::cube_data_size] = {
 
 /* ******************************* Mesh::Mesh ****************************** */
 
-Mesh::Mesh (SceneNode *parent)
+Mesh::Mesh (const std::shared_ptr<SceneNode> &parent)
     : SceneNode (parent), m_vertex_array (DrawingMode::triangle), m_model (1.0)
 {
-  Buffer *buffer = new Buffer (BufferAccess::draw, BufferOptimization::stat,
-                               cube_data_size, cube_data);
+  std::shared_ptr<Buffer> buffer (new Buffer (BufferAccess::draw,
+                                              BufferOptimization::stat,
+                                              cube_data_size, cube_data));
   m_buffers.push_back (buffer);
   m_vertex_array.add_buffer (buffer, new Attribute (AttributeType::fv3, 0));
   m_vertex_array.add_buffer (buffer, new Attribute (AttributeType::fv3, 1));
@@ -78,7 +79,7 @@ Mesh::Mesh (SceneNode *parent)
 
 /* ******************************* Mesh::Mesh ****************************** */
 
-Mesh::Mesh (DrawingMode mode, SceneNode *parent)
+Mesh::Mesh (DrawingMode mode, const std::shared_ptr<SceneNode> &parent)
     : SceneNode (parent), m_vertex_array (mode), m_model (1.0f)
 {
   //
@@ -89,9 +90,6 @@ Mesh::Mesh (DrawingMode mode, SceneNode *parent)
 Mesh::~Mesh ()
 {
   m_vertex_array.remove_buffers ();
-
-  for (auto it : m_buffers)
-    delete it;
 }
 
 /* ****************************** Mesh::update ***************************** */

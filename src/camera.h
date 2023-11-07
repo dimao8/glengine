@@ -19,7 +19,8 @@ private:
   glm::mat4 m_view;
 
 public:
-  Camera (SceneNode *parent = nullptr, float aspect = 1.333333333333f);
+  Camera (const std::shared_ptr<SceneNode> & parent = nullptr, float aspect = 1.333333333333f);
+  Camera (const Camera & camera);
 
   void move_position_to (const glm::vec3 & v);
   void move_pov_to (const glm::vec3 & v);
@@ -28,7 +29,8 @@ public:
   void orthographic (float left, float right, float bottom, float top,
                      float znear, float zfar);
 
-  glm::mat4 view_projection () const;
+  const glm::mat4 & projection () const;
+  const glm::mat4 view_projection () const;
 
   void update ();
 };

@@ -26,6 +26,7 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
+#include <memory>
 #include <string>
 
 namespace gle
@@ -52,9 +53,10 @@ class ShaderProgram
 private:
   unsigned int m_handle; /// Internal OpenGL shader program name
 
-  Shader *m_vertex_shader;   /// Vertex shader pointer
-  Shader *m_fragment_shader; /// Fragment shader pointer
-  Shader *m_geometry_shader; /// Geometry shader pointer (can be \c nullptr)
+  std::shared_ptr<Shader> m_vertex_shader;   /// Vertex shader pointer
+  std::shared_ptr<Shader> m_fragment_shader; /// Fragment shader pointer
+  std::shared_ptr<Shader>
+      m_geometry_shader; /// Geometry shader pointer (can be \c nullptr)
 
   ShaderProgramState m_state; /// Shader program state
 public:
@@ -67,7 +69,9 @@ public:
   /// \param [in] fragment  -- Fragment shader pointer
   /// \param [in] geometry  -- Geometry shader pointer (can be \c nullptr)
   ///
-  ShaderProgram (Shader *vertex, Shader *fragment, Shader *geometry = nullptr);
+  ShaderProgram (const std::shared_ptr<Shader> &vertex,
+                 const std::shared_ptr<Shader> &fragment,
+                 const std::shared_ptr<Shader> &geometry = nullptr);
 
   ///
   /// \brief Destroy shader program. Free resources
@@ -92,7 +96,7 @@ public:
 
   unsigned int get_handle () const;
 
-  int get_uniform_location (const std::string & location_name) const;
+  int get_uniform_location (const std::string &location_name) const;
 
   bool is_linked () const;
 

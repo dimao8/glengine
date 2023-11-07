@@ -6,13 +6,13 @@ class App : public gle::Application
 {
 
 private:
-  gle::Shader *m_vertex_shader;
-  gle::Shader *m_fragment_shader;
-  gle::ShaderProgram *m_shader_program;
-  gle::Mesh *m_cube;
-  gle::Camera *m_camera;
-  gle::Light *m_light;
-  gle::Texture *m_texture;
+  std::shared_ptr<gle::Shader> m_vertex_shader;
+  std::shared_ptr<gle::Shader> m_fragment_shader;
+  std::shared_ptr<gle::ShaderProgram> m_shader_program;
+  std::shared_ptr<gle::Mesh> m_cube;
+  std::shared_ptr<gle::Camera> m_camera;
+  std::shared_ptr<gle::Light> m_light;
+  std::shared_ptr<gle::Texture> m_texture;
 
 public:
   App (int argc = 0, char **argv = nullptr);
@@ -53,23 +53,25 @@ App::draw ()
 void
 App::init ()
 {
-  m_vertex_shader
-      = new gle::Shader (gle::ShaderType::vertex, "tests/shader.vert", true);
-  m_fragment_shader
-      = new gle::Shader (gle::ShaderType::fragment, "tests/shader.frag", true);
-  m_shader_program
-      = new gle::ShaderProgram (m_vertex_shader, m_fragment_shader);
-  m_cube = new gle::Mesh ();
-  m_camera = new gle::Camera ();
+  m_vertex_shader = std::shared_ptr<gle::Shader> (
+      new gle::Shader (gle::ShaderType::vertex, "tests/shader.vert", true));
+  m_fragment_shader = std::shared_ptr<gle::Shader> (
+      new gle::Shader (gle::ShaderType::fragment, "tests/shader.frag", true));
+  m_shader_program = std::shared_ptr<gle::ShaderProgram> (
+      new gle::ShaderProgram (m_vertex_shader, m_fragment_shader));
+  m_cube = std::shared_ptr<gle::Mesh> (new gle::Mesh ());
+  m_camera = std::shared_ptr<gle::Camera> (new gle::Camera ());
   m_camera->move_position_to (glm::vec3 (2.0f, 4.0f, -2.0f));
   m_camera->move_pov_to (glm::vec3 (0.0f));
   m_camera->update ();
 
   m_shader_program->enable ();
-  m_light = new gle::Light (nullptr, gle::Color (1.0, 1.0, 1.0, 1.0),
-                            glm::vec3 (-10.0, 10.0, -10.0));
+  m_light = std::shared_ptr<gle::Light> (
+      new gle::Light (nullptr, gle::Color (1.0, 1.0, 1.0, 1.0),
+                      glm::vec3 (-10.0, 10.0, -10.0)));
 
-  m_texture = new gle::Texture ("tests/test.tga");
+  m_texture
+      = std::shared_ptr<gle::Texture> (new gle::Texture ("tests/test.tga"));
   m_texture->enable (0);
   m_texture->set_filtering (gle::TextureFilter::linear,
                             gle::TextureFilter::linear);
@@ -80,13 +82,7 @@ App::init ()
 void
 App::cleanup ()
 {
-  delete m_shader_program;
-  delete m_vertex_shader;
-  delete m_fragment_shader;
-  delete m_cube;
-  delete m_camera;
-  delete m_light;
-  delete m_texture;
+  // TODO : Delete all
 }
 
 /* ********************************** main ********************************* */

@@ -5,13 +5,14 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace gle
 {
 
 class ShaderProgram;
 
-typedef std::vector<Buffer *> buffer_vector_t;
+typedef std::vector<std::shared_ptr<Buffer>> buffer_vector_t;
 
 ///
 /// \brief Drawing mode enumerator
@@ -66,7 +67,7 @@ public:
   /// Add data buffer and link it with an attribute. If buffer is already
   /// exists, bind it and add attribute.
   ///
-  void add_buffer (Buffer *buffer, Attribute *attrib);
+  void add_buffer (const std::shared_ptr<Buffer> & buffer, Attribute *attrib);
 
   ///
   /// \brief Remove all data buffers

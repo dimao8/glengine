@@ -74,7 +74,8 @@ VertexArray::~VertexArray ()
 /* ************************ VertexArray::add_buffer ************************ */
 
 void
-VertexArray::add_buffer (Buffer *buffer, Attribute *attribute)
+VertexArray::add_buffer (const std::shared_ptr<Buffer> &buffer,
+                         Attribute *attribute)
 {
   GLsizei stride = 0;
   unsigned int offs = 0;
@@ -87,7 +88,7 @@ VertexArray::add_buffer (Buffer *buffer, Attribute *attribute)
       return;
     }
 
-  Buffer *buf = nullptr;
+  std::shared_ptr<Buffer> buf = nullptr;
 
   for (auto it : m_buffers)
     {
@@ -117,7 +118,7 @@ VertexArray::remove_buffers ()
 /* *************************** VertexArray::draw *************************** */
 
 void
-VertexArray::draw (ShaderProgram & program)
+VertexArray::draw (ShaderProgram &program)
 {
   GLint result;
   GLvoid *presult;
@@ -146,15 +147,16 @@ VertexArray::draw (ShaderProgram & program)
   //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_TYPE, &result);
   //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_TYPE: " << result << std::endl;
   //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_NORMALIZED, &result);
-  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_NORMALIZED: " << result << std::endl;
-  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_STRIDE, &result);
-  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_STRIDE: " << result << std::endl;
-  //     glGetVertexAttribPointerv (i, GL_VERTEX_ATTRIB_ARRAY_POINTER, &presult);
-  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_POINTER: "
+  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_NORMALIZED: " << result <<
+  //     std::endl; glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_STRIDE,
+  //     &result); logger << "\tGL_VERTEX_ATTRIB_ARRAY_STRIDE: " << result <<
+  //     std::endl; glGetVertexAttribPointerv (i,
+  //     GL_VERTEX_ATTRIB_ARRAY_POINTER, &presult); logger <<
+  //     "\tGL_VERTEX_ATTRIB_ARRAY_POINTER: "
   //           << reinterpret_cast<intptr_t> (presult) << std::endl;
-  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &result);
-  //     logger << "\tGL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: " << result << std::endl;
-  //     glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &result);
+  //     glGetVertexAttribiv (i, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
+  //     &result); logger << "\tGL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: " <<
+  //     result << std::endl; glGetIntegerv (GL_ARRAY_BUFFER_BINDING, &result);
   //     logger << "\tGL_ARRAY_BUFFER_BINDING: " << result << std::endl;
   //   }
 }

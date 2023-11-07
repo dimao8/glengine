@@ -180,17 +180,18 @@ Application::Application (int argc, char **argv)
   m_fbo_mesh[22] = 1.0;
   m_fbo_mesh[23] = 1.0;
 
-  m_fbo_vertex_shader
-      = new Shader (ShaderType::vertex, framebuffer_vertex_source);
-  m_fbo_fragment_shader
-      = new Shader (ShaderType::fragment, framebuffer_fragment_source);
-  m_fbo_shader_program
-      = new ShaderProgram (m_fbo_vertex_shader, m_fbo_fragment_shader);
-  m_fbo_vao = new VertexArray (DrawingMode::triangle);
+  m_fbo_vertex_shader = std::shared_ptr<Shader> (
+      new Shader (ShaderType::vertex, framebuffer_vertex_source));
+  m_fbo_fragment_shader = std::shared_ptr<Shader> (
+      new Shader (ShaderType::fragment, framebuffer_fragment_source));
+  m_fbo_shader_program = std::shared_ptr<ShaderProgram> (
+      new ShaderProgram (m_fbo_vertex_shader, m_fbo_fragment_shader));
+  m_fbo_vao
+      = std::shared_ptr<VertexArray> (new VertexArray (DrawingMode::triangle));
   m_fbo_vao->enable ();
-  m_fbo_vbo
-      = new Buffer (BufferAccess::draw, BufferOptimization::stat,
-                    m_fbo_mesh.size () * sizeof (float), m_fbo_mesh.data ());
+  m_fbo_vbo = std::shared_ptr<Buffer> (
+      new Buffer (BufferAccess::draw, BufferOptimization::stat,
+                  m_fbo_mesh.size () * sizeof (float), m_fbo_mesh.data ()));
   m_fbo_matrix = glm::mat4 (1.0);
   m_fbo_vao->add_buffer (m_fbo_vbo, new Attribute (AttributeType::fv2, 0));
   m_fbo_vao->add_buffer (m_fbo_vbo, new Attribute (AttributeType::fv2, 1));
@@ -336,11 +337,6 @@ Application::p_cleanup ()
   glDeleteFramebuffers (1, &m_framebuffer);
   glDeleteRenderbuffers (1, &m_renderbuffer);
   glDeleteTextures (1, &m_framebuffer_color_texture);
-  delete m_fbo_vbo;
-  delete m_fbo_vao;
-  delete m_fbo_shader_program;
-  delete m_fbo_vertex_shader;
-  delete m_fbo_fragment_shader;
   // <--
 
   glfwTerminate ();

@@ -9,8 +9,9 @@ namespace gle
 
 /* ********************** ShaderProgram::ShaderProgram ********************* */
 
-ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
-                              Shader *geometry)
+ShaderProgram::ShaderProgram (const std::shared_ptr<Shader> &vertex,
+                              const std::shared_ptr<Shader> &fragment,
+                              const std::shared_ptr<Shader> &geometry)
     : m_handle (0), m_vertex_shader (vertex), m_fragment_shader (fragment),
       m_geometry_shader (geometry), m_state (ShaderProgramState::empty)
 {
@@ -41,8 +42,9 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
         {
           glAttachShader (
               m_handle, static_cast<GLuint> (m_vertex_shader->get_handle ()));
-          LOG_DEBUG(logger << SeverityLevel::info
-                 << _ ("Vertex shader is loaded and attached") << std::endl);
+          LOG_DEBUG (logger << SeverityLevel::info
+                            << _ ("Vertex shader is loaded and attached")
+                            << std::endl);
         }
     }
 
@@ -59,8 +61,9 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
         {
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_fragment_shader->get_handle ()));
-          LOG_DEBUG(logger << SeverityLevel::info
-                 << _ ("Fragment shader is loaded and attached") << std::endl);
+          LOG_DEBUG (logger << SeverityLevel::info
+                            << _ ("Fragment shader is loaded and attached")
+                            << std::endl);
         }
     }
 
@@ -77,8 +80,9 @@ ShaderProgram::ShaderProgram (Shader *vertex, Shader *fragment,
         {
           glAttachShader (m_handle, static_cast<GLuint> (
                                         m_geometry_shader->get_handle ()));
-          LOG_DEBUG(logger << SeverityLevel::info
-                 << _ ("Geometry shader is loaded and attached") << std::endl);
+          LOG_DEBUG (logger << SeverityLevel::info
+                            << _ ("Geometry shader is loaded and attached")
+                            << std::endl);
         }
     }
 
@@ -120,8 +124,8 @@ ShaderProgram::link ()
   else
     {
       m_state = ShaderProgramState::linked;
-      LOG_DEBUG(logger << SeverityLevel::info << _ ("Program is linked successfully")
-             << std::endl);
+      LOG_DEBUG (logger << SeverityLevel::info
+                        << _ ("Program is linked successfully") << std::endl);
     }
 
   return m_state == ShaderProgramState::linked;
