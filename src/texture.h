@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include "opengl.h"
+#include "color.h"
 
 #include <memory>
 
@@ -38,10 +39,13 @@ private:
 public:
 
   Texture ();
+  Texture (int width, int height, ColorType color_type);
   Texture (const std::string & file_name);
   virtual ~Texture ();
   void enable (int index = 0);
   void set_filtering (TextureFilter min_filter, TextureFilter mag_filter);
+
+  GLuint handle () const;
 
 private:
 

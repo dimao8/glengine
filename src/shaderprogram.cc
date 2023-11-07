@@ -167,7 +167,14 @@ ShaderProgram::get_handle () const
 int
 ShaderProgram::get_uniform_location (const std::string &location_name) const
 {
-  return glGetUniformLocation (m_handle, location_name.c_str ());
+  GLint location = glGetUniformLocation (m_handle, location_name.c_str ());
+  if (location < 0)
+    {
+      LOG_DEBUG (logger << SeverityLevel::warning << _ ("Location ``")
+                        << location_name << _ ("\'\' is not exist")
+                        << std::endl);
+    }
+  return location;
 }
 
 /* ************************* ShaderProgram::disable ************************ */

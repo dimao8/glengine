@@ -88,6 +88,8 @@ public:
   /// \return Return size in bytes of corresponding pixel
   ///
   static unsigned int color_size (ColorType ct);
+
+  static unsigned int color_type_gl (ColorType ct);
 };
 
 }

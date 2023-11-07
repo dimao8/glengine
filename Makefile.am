@@ -15,6 +15,8 @@ libglengine_la_SOURCES = src/application.h \
 	src/camera.cc \
 	src/color.h \
 	src/color.cc \
+	src/framebuffer.h \
+	src/framebuffer.cc \
 	src/image.h \
 	src/image.cc \
 	src/light.h \

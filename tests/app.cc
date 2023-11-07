@@ -38,6 +38,8 @@ App::draw ()
   location = m_shader_program->get_uniform_location ("tex");
   glUniform1i (location, 0);
 
+  m_texture->enable (0);
+
   m_cube->draw (*m_shader_program, *m_camera);
 
   static float a = 0;

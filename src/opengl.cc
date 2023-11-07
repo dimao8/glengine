@@ -66,6 +66,7 @@ PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers = nullptr;
 PFNGLDELETERENDERBUFFERSPROC glDeleteRenderbuffers = nullptr;
 PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer = nullptr;
 PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage = nullptr;
+PFNGLGETRENDERBUFFERPARAMETERIVPROC glGetRenderbufferParameteriv = nullptr;
 PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer = nullptr;
 
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
@@ -132,6 +133,8 @@ load_gl_extensions ()
   LOAD_GL_EXTENSION (glDeleteRenderbuffers, PFNGLDELETERENDERBUFFERSPROC);
   LOAD_GL_EXTENSION (glBindRenderbuffer, PFNGLBINDRENDERBUFFERPROC);
   LOAD_GL_EXTENSION (glRenderbufferStorage, PFNGLRENDERBUFFERSTORAGEPROC);
+  LOAD_GL_EXTENSION (glGetRenderbufferParameteriv,
+                     PFNGLGETRENDERBUFFERPARAMETERIVPROC);
   LOAD_GL_EXTENSION (glFramebufferRenderbuffer,
                      PFNGLFRAMEBUFFERRENDERBUFFERPROC);
 

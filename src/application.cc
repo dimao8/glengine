@@ -44,40 +44,11 @@
 namespace gle
 {
 
-const std::string Application::framebuffer_vertex_source
-    = "#version 330 core\n"
-      "\n"
-      "layout (location = 0) in vec2 vposition;\n"
-      "layout (location = 1) in vec2 vtexcoord;\n"
-      "\n"
-      "uniform mat4 matrix;\n"
-      "\n"
-      "out vec2 ftexcoord;\n"
-      "\n"
-      "void main(void)\n"
-      "{\n"
-      "  ftexcoord = vtexcoord;\n"
-      "  gl_Position = matrix * vec4(vposition, 0.0, 1.0);\n"
-      "}\n";
-
-const std::string Application::framebuffer_fragment_source
-    = "#version 330 core\n"
-      "\n"
-      "in vec2 ftexcoord;\n"
-      "\n"
-      "uniform sampler2D tex;\n"
-      "\n"
-      "out vec4 color;\n"
-      "\n"
-      "void main(void)\n"
-      "{\n"
-      "  color = texture (tex, ftexcoord);\n"
-      "}\n";
-
 /* ************************ Application::Application *********************** */
 
 Application::Application (int argc, char **argv)
-    : m_should_close (true), m_save_framebuffer (false)
+    : m_should_close (true), m_save_framebuffer (false),
+      m_framebuffer_size (DEFAULT_CLIENT_WIDTH, DEFAULT_CLIENT_HEIGHT)
 {
   LOG_DEBUG (logger << SeverityLevel::info << _ ("Parse arguments")
                     << std::endl);
@@ -113,7 +84,7 @@ Application::Application (int argc, char **argv)
   glfwWindowHint (GLFW_OPENGL_DEBUG_CONTEXT, 1);
 #endif // NDEBUG
 
-  m_window = glfwCreateWindow (DEFAULT_CLIENT_WIDTH, DEFAULT_CLIENT_HEIGHT,
+  m_window = glfwCreateWindow (m_framebuffer_size.x, m_framebuffer_size.y,
                                PACKAGE " " VERSION, 0, 0);
   if (m_window == nullptr)
     {
@@ -155,75 +126,8 @@ Application::Application (int argc, char **argv)
 #endif // NDEBUG
 
   // Generate FBO geometry and shaders
-  m_fbo_mesh[0] = -1.0;
-  m_fbo_mesh[1] = -1.0;
-  m_fbo_mesh[2] = 0.0;
-  m_fbo_mesh[3] = 0.0;
-  m_fbo_mesh[4] = 1.0;
-  m_fbo_mesh[5] = 1.0;
-  m_fbo_mesh[6] = 1.0;
-  m_fbo_mesh[7] = 1.0;
-  m_fbo_mesh[8] = -1.0;
-  m_fbo_mesh[9] = 1.0;
-  m_fbo_mesh[10] = 0.0;
-  m_fbo_mesh[11] = 1.0;
-  m_fbo_mesh[12] = -1.0;
-  m_fbo_mesh[13] = -1.0;
-  m_fbo_mesh[14] = 0.0;
-  m_fbo_mesh[15] = 0.0;
-  m_fbo_mesh[16] = 1.0;
-  m_fbo_mesh[17] = -1.0;
-  m_fbo_mesh[18] = 1.0;
-  m_fbo_mesh[19] = 0.0;
-  m_fbo_mesh[20] = 1.0;
-  m_fbo_mesh[21] = 1.0;
-  m_fbo_mesh[22] = 1.0;
-  m_fbo_mesh[23] = 1.0;
-
-  m_fbo_vertex_shader = std::shared_ptr<Shader> (
-      new Shader (ShaderType::vertex, framebuffer_vertex_source));
-  m_fbo_fragment_shader = std::shared_ptr<Shader> (
-      new Shader (ShaderType::fragment, framebuffer_fragment_source));
-  m_fbo_shader_program = std::shared_ptr<ShaderProgram> (
-      new ShaderProgram (m_fbo_vertex_shader, m_fbo_fragment_shader));
-  m_fbo_vao
-      = std::shared_ptr<VertexArray> (new VertexArray (DrawingMode::triangle));
-  m_fbo_vao->enable ();
-  m_fbo_vbo = std::shared_ptr<Buffer> (
-      new Buffer (BufferAccess::draw, BufferOptimization::stat,
-                  m_fbo_mesh.size () * sizeof (float), m_fbo_mesh.data ()));
-  m_fbo_matrix = glm::mat4 (1.0);
-  m_fbo_vao->add_buffer (m_fbo_vbo, new Attribute (AttributeType::fv2, 0));
-  m_fbo_vao->add_buffer (m_fbo_vbo, new Attribute (AttributeType::fv2, 1));
-
-  int w, h;
-  glfwGetFramebufferSize (m_window, &w, &h);
-  m_framebuffer_size = glm::uvec2 (w, h);
-
-  // Color framebuffer texture
-  glGenFramebuffers (1, &m_framebuffer);
-  glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
-
-  glGenTextures (1, &m_framebuffer_color_texture);
-  glBindTexture (GL_TEXTURE_2D, m_framebuffer_color_texture);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, m_framebuffer_size.x,
-                m_framebuffer_size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-  // glBindTexture (GL_TEXTURE_2D, 0);
-
-  glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                          m_framebuffer_color_texture, 0);
-
-  // Depth-stencil framebuffer texture
-  glGenRenderbuffers (1, &m_renderbuffer);
-  glBindRenderbuffer (GL_RENDERBUFFER, m_renderbuffer);
-  glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, w, h);
-  glBindRenderbuffer (GL_RENDERBUFFER, 0);
-  glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                             GL_RENDERBUFFER, m_renderbuffer);
+  m_framebuffer = std::shared_ptr<Framebuffer> (
+      new Framebuffer (m_framebuffer_size.x, m_framebuffer_size.y));
 
   glEnable (GL_DEPTH_TEST);
   glEnable (GL_TEXTURE_2D);
@@ -333,11 +237,6 @@ void
 Application::p_cleanup ()
 {
   cleanup ();
-  // TODO : Clean further -->
-  glDeleteFramebuffers (1, &m_framebuffer);
-  glDeleteRenderbuffers (1, &m_renderbuffer);
-  glDeleteTextures (1, &m_framebuffer_color_texture);
-  // <--
 
   glfwTerminate ();
 }
@@ -373,32 +272,25 @@ Application::run ()
     {
       glfwPollEvents ();
 
-      glBindFramebuffer (GL_FRAMEBUFFER, m_framebuffer);
+      m_framebuffer->enable ();
 
       p_draw ();
 
       if (m_save_framebuffer)
         {
-          uint8_t *framebuffer_ptr
-              = new uint8_t[m_framebuffer_size.x * m_framebuffer_size.y * 3];
-
-          glReadPixels (0, 0, m_framebuffer_size.x, m_framebuffer_size.y,
-                        GL_RGB, GL_UNSIGNED_BYTE, framebuffer_ptr);
-          Image img (m_framebuffer_size.x, m_framebuffer_size.y,
-                     ColorType::rgb, framebuffer_ptr, true);
-          img.save ("framebuffer.tga");
+          m_framebuffer->save_to_file ("framebuffer.tga");
 
           glfwSetWindowShouldClose (m_window, 1);
 
           break;
         }
       else
-        fbo_pass ();
+        m_framebuffer->draw ();
 
       glfwSwapBuffers (m_window);
     }
 
-  glBindFramebuffer (GL_FRAMEBUFFER, 0);
+  Framebuffer::disable ();
 
   // TODO : Run the application
 
@@ -413,22 +305,6 @@ Application::p_draw ()
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   draw ();
-}
-
-/* ************************* Application::fbo_pass ************************* */
-
-void
-Application::fbo_pass ()
-{
-  glBindFramebuffer (GL_FRAMEBUFFER, 0);
-  glBindTexture (GL_TEXTURE_2D, m_framebuffer_color_texture);
-  glClear (GL_COLOR_BUFFER_BIT);
-  m_fbo_shader_program->enable ();
-  GLint location = m_fbo_shader_program->get_uniform_location ("matrix");
-  glUniformMatrix4fv (location, 1, GL_FALSE,
-                      glm::value_ptr<float> (m_fbo_matrix));
-  m_fbo_vao->enable ();
-  m_fbo_vao->draw (*m_fbo_shader_program);
 }
 
 /* *********************** Application::register_arg *********************** */

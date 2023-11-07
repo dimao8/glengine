@@ -53,6 +53,34 @@ Texture::Texture ()
 
 /* **************************** Texture::Texture *************************** */
 
+Texture::Texture (int width, int height, ColorType color_type)
+{
+  int result;
+
+  glGenTextures (1, &m_handle);
+  if (m_handle == 0)
+    {
+      result = glGetError ();
+      logger << SeverityLevel::error << _ ("Create texture cause GL error: ``")
+             << message_gl (result) << "\'\'" << std::endl;
+      return;
+    }
+
+  enable ();
+
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glTexImage2D (GL_TEXTURE_2D, 0, Color::color_type_gl (color_type), width,
+                height, 0, Color::color_type_gl (color_type), GL_UNSIGNED_BYTE,
+                nullptr);
+}
+
+/* **************************** Texture::Texture *************************** */
+
 Texture::Texture (const std::string &file_name)
     : m_image (new Image (file_name))
 {
@@ -91,6 +119,14 @@ Texture::set_filtering (TextureFilter min_filter, TextureFilter mag_filter)
                    static_cast<GLint> (min_filter));
   glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                    static_cast<GLint> (mag_filter));
+}
+
+/* **************************** Texture::handle **************************** */
+
+GLuint
+Texture::handle () const
+{
+  return m_handle;
 }
 
 /* **************************** Texture::disable *************************** */

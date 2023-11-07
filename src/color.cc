@@ -24,6 +24,7 @@
 //
 
 #include "color.h"
+#include "opengl.h"
 
 #include <glm/gtc/round.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -97,6 +98,31 @@ Color::color_size (ColorType ct)
 
     default:
       return 0;
+    }
+}
+
+/* ************************** Color::color_type_gl ************************* */
+
+unsigned int
+Color::color_type_gl (ColorType ct)
+{
+  switch (ct)
+    {
+
+    case ColorType::luminance:
+      return GL_R;
+
+    case ColorType::luminance_alpha:
+      return GL_RG;
+
+    case ColorType::rgb:
+      return GL_RGB;
+
+    case ColorType::rgb_alpha:
+      return GL_RGBA;
+
+    default:
+      return GL_RGB;
     }
 }
 
