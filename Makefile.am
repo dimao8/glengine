@@ -29,6 +29,8 @@ libglengine_la_SOURCES = src/application.h \
 	src/opengl.cc \
 	src/scene.h \
 	src/scene.cc \
+	src/sceneadapter.h \
+	src/sceneadapter.cc \
 	src/scenenode.h \
 	src/scenenode.cc \
 	src/shader.h \
@@ -96,5 +98,8 @@ TESTS = tests/t_args
 check_PROGRAMS = tests/app
 
 tests_app_SOURCES = tests/app.cc
-tests_app_LDADD = -lglengine
-tests_app_CXXFLAGS = -I$(srcdir)/include
+tests_app_LDADD = -lglengine -L$(builddir)/libpngloader -lpngloader \
+	-L$(builddir)/libtgaloader -ltgaloader -L$(builddir)/liblitejson -llitejson
+tests_app_CXXFLAGS = -I$(srcdir)/include -I$(srcdir)/include \
+	-I$(srcdir)/libpngloader/include -I$(srcdir)/libtgaloader/include \
+	-I$(srcdir)/liblitejson/include

@@ -66,6 +66,9 @@ AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert
   tests/shader.frag:tests/shader.frag
   tests/test.png:tests/test.png
   tests/test.tga:tests/test.tga
+  tests/dice.bin:tests/dice.bin
+  tests/dice.gltf:tests/dice.gltf
+  tests/dice.png:tests/dice.png
   ])
 
 AC_CONFIG_FILES([Makefile])

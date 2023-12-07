@@ -18,24 +18,23 @@ class SceneNode
 {
 
 private:
-  std::list<std::shared_ptr<SceneNode>> m_children; /// List of children nodes
+  std::list<std::shared_ptr<SceneNode> > m_children; /// List of children nodes
 
   std::shared_ptr<SceneNode>
-      m_parent_ptr;    /// Parent node (can be nullptr for root node)
+      m_parent_ptr; /// Parent node (can be nullptr for root node)
 
-  glm::mat4 m_transform;    /// Transform matrix (model matrix)
+  glm::mat4 m_transform; /// Transform matrix (model matrix)
 
 public:
-
   ///
   /// \brief Create empty scene node
   ///
-  SceneNode(const std::shared_ptr<SceneNode> & parent = nullptr);
+  SceneNode (const std::shared_ptr<SceneNode> &parent = nullptr);
 
   ///
   /// \brief Destroy scene node
   ///
-  virtual ~SceneNode();
+  virtual ~SceneNode ();
 
   ///
   /// \brief Get node model matrix including parent matrices
@@ -46,9 +45,12 @@ public:
   ///
   /// \brief Draw scene node
   ///
-  virtual void draw(ShaderProgram & program);
+  virtual void draw (ShaderProgram &program);
 
-  const std::shared_ptr<SceneNode> & parent () const;
+  ///
+  /// \brief Get parent node
+  ///
+  const std::shared_ptr<SceneNode> &parent () const;
 };
 
 }

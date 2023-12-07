@@ -3,13 +3,58 @@
 namespace gle
 {
 
+/* ****************************** Scene::Scene ***************************** */
+
+Scene::Scene ()
+{
+  // ctor
+}
+
 /* ***************************** Scene::~Scene ***************************** */
 
-Scene::~Scene()
+Scene::~Scene ()
 {
-  for (auto it : m_node_list)
-    delete it;
-  m_node_list.clear();
+  // dtor
+}
+
+/* ****************************** Scene::reset ***************************** */
+
+void
+Scene::reset ()
+{
+  m_mesh_list.clear ();
+  m_light_list.clear ();
+  m_camera_list.clear ();
+  m_nodes.clear ();
+
+  m_info = "Default scene";
+
+  std::shared_ptr<Camera> camera = std::make_shared<Camera> (nullptr);
+  m_nodes.push_back (camera);
+  m_camera_list.push_back (camera);
+  std::shared_ptr<Light> light = std::make_shared<Light> (
+      nullptr, Color (0xFFFFFFFF), glm::vec3 (-10.0f, 10.0f, -2.0f));
+  m_nodes.push_back (light);
+  m_light_list.push_back (light);
+  std::shared_ptr<Mesh> cube = std::make_shared<Mesh> (nullptr);
+  m_nodes.push_back (cube);
+  m_mesh_list.push_back (cube);
+}
+
+/* ****************************** Scene::draw ****************************** */
+
+void
+Scene::draw ()
+{
+  // TODO : Draw scene
+}
+
+/* **************************** Scene::get_info **************************** */
+
+const std::string &
+Scene::get_info () const
+{
+  return m_info;
 }
 
 } // namespace gle

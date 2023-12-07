@@ -7,3 +7,6 @@
 [submodule "libtgaloader"]
 	path = libtgaloader
 	url = https://github.com/dimao8/libtgaloader.git
+[submodule "libcpath"]
+	path = libcpath
+	url = https://github.com/dimao8/libcpath.git

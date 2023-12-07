@@ -9,7 +9,8 @@ AC_DEFUN([AX_CHECK_GLFW],
       [],
       [AC_MSG_ERROR(*** There is no GLFW/glfw3.h)])
 
-    LIBS="$LIBS -lglfw3"
+    ac_save_libs="$LIBS"
+    LIBS="$ac_save_libs -lglfw3"
     AC_MSG_CHECKING(for -lglfw3)
     AC_LINK_IFELSE([AC_LANG_SOURCE(#include <GLFW/glfw3.h>
       int main()
@@ -19,6 +20,17 @@ AC_DEFUN([AX_CHECK_GLFW],
       [AC_MSG_RESULT(yes)],
       [
         AC_MSG_RESULT(no)
-        AC_MSG_ERROR(*** There is no libglfw)
+      ])
+
+    LIBS="$ac_save_libs -lglfw"
+    AC_MSG_CHECKING(for -lglfw)
+    AC_LINK_IFELSE([AC_LANG_SOURCE(#include <GLFW/glfw3.h>
+      int main()
+      {
+        glfwTerminate();
+      })],
+      [AC_MSG_RESULT(yes)],
+      [
+        AC_MSG_RESULT(no)
       ])
   ])

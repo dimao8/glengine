@@ -17,7 +17,7 @@ SceneNode::SceneNode (const std::shared_ptr<SceneNode> &parent)
 
 SceneNode::~SceneNode ()
 {
-  // 
+  //
 }
 
 /* *************************** SceneNode::matrix *************************** */
@@ -36,10 +36,10 @@ SceneNode::matrix () const
 void
 SceneNode::draw (ShaderProgram &program)
 {
-  // program.enable();
+  program.enable ();
 
-  // for (auto it : m_children)
-  //   it->draw(program);
+  for (auto it : m_children)
+    it->draw (program);
 
   // TODO : Draw SceneNode
 }

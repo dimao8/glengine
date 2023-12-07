@@ -7,11 +7,11 @@ namespace gle
 
 /* ***************************** Camera::Camera **************************** */
 
-Camera::Camera (const std::shared_ptr<SceneNode> &parent, float aspect)
-    : SceneNode (parent), m_position (-5.0f, 1.0f, 2.0f),
-      m_pov (0.0f, 0.0f, 0.0f)
+Camera::Camera (const std::shared_ptr<SceneNode> &parent, float fovy,
+                float aspect, float znear, float zfar)
+    : SceneNode (parent), m_fovy (fovy), m_aspect (aspect), m_znear (znear),
+      m_zfar (zfar), m_position (-5.0f, 1.0f, 2.0f), m_pov (0.0f, 0.0f, 0.0f)
 {
-  perspective (45.0f, aspect, 0.1f, 10.0f);
   update ();
 }
 
@@ -65,6 +65,7 @@ Camera::orthographic (float left, float right, float bottom, float top,
 void
 Camera::update ()
 {
+  perspective (m_fovy, m_aspect, m_znear, m_zfar);
   m_view = glm::lookAt (m_position, m_pov, glm::vec3 (0.0f, 1.0f, 0.0f));
 }
 
