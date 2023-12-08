@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.22dev], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.23dev], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/application.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -60,6 +60,12 @@ AX_CHECK_GLFW
 
 # Check for glm
 AX_CHECK_GLM
+
+# Check for glib
+AX_CHECK_GLIB
+
+CXXFLAGS+=" $GLIB_CFLAGS"
+LIBS+=" $GLIB_LIBS"
 
 # Make symbolic links to the some files
 AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert

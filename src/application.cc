@@ -46,13 +46,21 @@ namespace gle
 
 /* ************************ Application::Application *********************** */
 
-Application::Application (int argc, char **argv)
-    : m_should_close (true), m_save_framebuffer (false),
+Application::Application (const std::string &appname,
+                          const std::string &appversion, int argc, char **argv)
+    : m_appname (appname), m_appversion (appversion), m_should_close (true),
+      m_save_framebuffer (false),
       m_framebuffer_size (DEFAULT_CLIENT_WIDTH, DEFAULT_CLIENT_HEIGHT)
 {
   LOG_DEBUG (logger << SeverityLevel::info << _ ("Parse arguments")
                     << std::endl);
   parse_arguments (argc, argv);
+
+  // Init dirs
+  dirs.set_application_name (m_appname);
+  dirs.data_search ();
+  dirs.config_search ();
+  dirs.bin_search ();
 
   // Try to init glfw3
   LOG_DEBUG (logger << SeverityLevel::info << _ ("Init glfw3") << std::endl);

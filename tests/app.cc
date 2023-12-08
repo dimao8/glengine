@@ -23,7 +23,10 @@ public:
 
 /* ******************************** App::App ******************************* */
 
-App::App (int argc, char **argv) : gle::Application (argc, argv) {}
+App::App (int argc, char **argv)
+    : gle::Application ("testapp", "0.1.0.0", argc, argv)
+{
+}
 
 /* ******************************* App::draw ******************************* */
 
@@ -38,6 +41,8 @@ App::draw ()
 void
 App::init ()
 {
+  gle::logger << gle::dirs << std::endl;
+
   m_vertex_shader = std::shared_ptr<gle::Shader> (
       new gle::Shader (gle::ShaderType::vertex, "tests/shader.vert", true));
   m_fragment_shader = std::shared_ptr<gle::Shader> (

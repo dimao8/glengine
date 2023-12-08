@@ -33,17 +33,17 @@
 #include <memory>
 #include <string>
 
+#include "arguments.h"
 #include "attribute.h"
 #include "buffer.h"
 #include "camera.h"
+#include "dirs.h"
 #include "framebuffer.h"
 #include "scene.h"
 #include "shader.h"
 #include "shaderprogram.h"
 #include "texture.h"
 #include "vertexarray.h"
-
-#include "arguments.h"
 
 namespace gle
 {
@@ -58,6 +58,9 @@ class Application
 {
 
 private:
+  std::string m_appname;
+  std::string m_appversion;
+
   std::list<Argument> m_args;          /// Argument list
   std::list<Argument> m_accepted_args; /// Accepted argument list
   glm::uvec2 m_framebuffer_size;       /// Framebuffer size
@@ -103,7 +106,8 @@ public:
    * \param [in] argc -- Number of the arguments in the argument list
    * \param [in] argv -- Argument list
    */
-  Application (int argc = 0, char **argv = nullptr);
+  Application (const std::string &appname, const std::string &appversion,
+               int argc = 0, char **argv = nullptr);
 
   /**
    * Destroy application
