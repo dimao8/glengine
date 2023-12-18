@@ -27,7 +27,7 @@ protected:
       m_light_list; /// List of the light source nodes
   std::vector<std::shared_ptr<Mesh> >
       m_mesh_list;    /// List of the geometry nodes
-  std::string m_info; /// Info string
+  std::vector<std::string> m_info; /// Info strings
 
   std::list<std::shared_ptr<SceneNode> > m_nodes;
 
@@ -55,7 +55,7 @@ public:
   ///
   virtual void reset ();
 
-  const std::string &get_info () const;
+  const std::vector<std::string> &get_info () const;
 
   friend class SceneAdapter;
 };

@@ -153,7 +153,8 @@ Dirs::config_search ()
 bool
 Dirs::bin_search ()
 {
-  char buf[256];
+  // BUG : Illegal instruction
+  /*char buf[256];
   size_t sz = sizeof (buf);
 #if defined(_WIN32)
   int bytes = GetModuleFileName (NULL, buf, sz);
@@ -168,7 +169,7 @@ Dirs::bin_search ()
     i--;
   buf[i] = 0;
 
-  m_bin_dir = buf;
+  m_bin_dir = buf;*/
   return true;
 }
 

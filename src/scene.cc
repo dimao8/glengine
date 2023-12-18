@@ -27,7 +27,8 @@ Scene::reset ()
   m_camera_list.clear ();
   m_nodes.clear ();
 
-  m_info = "Default scene";
+  m_info.clear ();
+  m_info.push_back ("Default scene");
 
   std::shared_ptr<Camera> camera = std::make_shared<Camera> (nullptr);
   m_nodes.push_back (camera);
@@ -51,7 +52,7 @@ Scene::draw ()
 
 /* **************************** Scene::get_info **************************** */
 
-const std::string &
+const std::vector<std::string> &
 Scene::get_info () const
 {
   return m_info;

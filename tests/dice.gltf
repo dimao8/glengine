@@ -66,11 +66,27 @@
   "images": [
     {
       "uri": "dice.png"
+    },
+    {
+      "uri": "dice_n.png"
+    }
+  ],
+  "samplers": [
+    {
+      "minFilter": 9729,
+      "magFilter": 9729,
+      "wrapS": 33071,
+      "wrapT": 33071
     }
   ],
   "textures": [
     {
-      "source": 0
+      "source": 0,
+      "sampler": 0
+    },
+    {
+      "source": 1,
+      "sampler": 0
     }
   ],
   "materials": [
@@ -89,6 +105,10 @@
         ],
         "roughnessFactor": 1.0,
         "metallicFactor": 1.0
+      },
+      "normalTexture" : {
+        "index" : 1,
+        "texCoord": 0
       }
     }
   ],
@@ -171,7 +191,7 @@
           "type": "point",
           "color": [
             1,
-            1,
+            0,
             1
           ]
         }

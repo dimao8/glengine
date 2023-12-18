@@ -61,7 +61,8 @@ App::init ()
     }
 
   gle::logger << gle::SeverityLevel::info << "Scene info:" << std::endl;
-  gle::logger << m_scene->get_info () << std::endl;
+  for (auto it : m_scene->get_info ())
+    gle::logger << "\t" << it << std::endl;
 }
 
 /* ****************************** App::cleanup ***************************** */

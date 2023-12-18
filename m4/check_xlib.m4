@@ -10,8 +10,11 @@ LIBS="$LIBS -lX11 -pthread"
 have_xlib=no
 
 AC_MSG_CHECKING(for -lX11)
-AC_TRY_LINK([#include <X11/Xlib.h>],
-            [XFree(0);],
+AC_LINK_IFELSE([AC_LANG_SOURCE(#include <X11/Xlib.h>
+                int main()
+                {
+                  XFree(0);
+                })],
             [have_xlib=yes],
             [have_xlib=no])
 AC_MSG_RESULT([$have_xlib])
