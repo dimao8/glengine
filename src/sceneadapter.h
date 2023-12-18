@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <array>
 
 namespace gle
 {
@@ -135,7 +136,7 @@ private:
 
   struct gltf_pbr_metallic_roughness_desc_t
   {
-    float base_color_factor[4];
+    std::array<float, 4> base_color_factor;
     gltf_textureinfo_desc_t base_color_texture;
     float metallic_factor;
     float roughness_factor;
@@ -162,7 +163,7 @@ private:
     gltf_normal_textureinfo_desc_t normal_texture;
     gltf_occlusion_desc_t occlusion_texture;
     gltf_textureinfo_desc_t emissive_texture;
-    float emissive_factor[3];
+    std::array<float, 3> emissive_factor;
     std::string alpha_mode;
     float alpha_cutoff;
     bool double_sided;
@@ -189,6 +190,26 @@ private:
     gltf_orthographic_camera_desc_t orthographic;
     gltf_perspective_camera_desc_t perspective;
     std::string type;
+    std::string name;
+  };
+
+  struct gltf_node_desc_t
+  {
+    int camera;
+    std::vector<int> children;
+    int skin;
+    std::array<float, 16> matrix;
+    int mesh;
+    std::array<float, 4> rotation;
+    std::array<float, 3> scale;
+    std::array<float, 3> translation;
+    std::vector<float> weights;
+    std::string name;
+  };
+
+  struct gltf_scene_desc_t
+  {
+    std::vector<int> nodes;
     std::string name;
   };
 

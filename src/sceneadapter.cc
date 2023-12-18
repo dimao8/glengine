@@ -171,7 +171,7 @@ SceneAdapter::extract_float (float &f, litejson::JSONValue *val)
     return false;
   else if (val->is_number ())
     {
-      f = val->as_integer ();
+      f = val->as_float ();
       return true;
     }
   else
@@ -190,7 +190,7 @@ SceneAdapter::extract_float (float &f, litejson::JSONValue *val, float def)
     }
   else if (val->is_number ())
     {
-      f = val->as_integer ();
+      f = val->as_float ();
       return true;
     }
   else
@@ -1225,7 +1225,11 @@ SceneAdapter::from_gltf (const std::string &file_name)
           return false;
         }
       if (sampler.min_filter >= 0 && sampler.min_filter != GL_NEAREST
-          && sampler.min_filter != GL_LINEAR)
+          && sampler.min_filter != GL_LINEAR
+          && sampler.min_filter != GL_NEAREST_MIPMAP_NEAREST
+          && sampler.min_filter != GL_LINEAR_MIPMAP_NEAREST
+          && sampler.min_filter != GL_NEAREST_MIPMAP_LINEAR
+          && sampler.min_filter != GL_LINEAR_MIPMAP_LINEAR)
         {
           // TODO : Add MIPMAP
           warn_and_reset ("``samplers[n].minFilter\'\' can be only GL_NEAREST "
@@ -1503,8 +1507,8 @@ SceneAdapter::from_gltf (const std::string &file_name)
                       for (auto j = 0; j < 4; j++)
                         {
                           if (!extract_float (material.pbr_metallic_roughness
-                                                  .base_color_factor[i],
-                                              tmp->as_array (i), 1))
+                                                  .base_color_factor[j],
+                                              tmp->as_array (j), 1))
                             {
                               warn_and_reset (
                                   "materials[n].pbrMetallicRoughness."
@@ -1695,10 +1699,10 @@ SceneAdapter::from_gltf (const std::string &file_name)
               for (auto j = 0; j < 3; j++)
                 {
                   if (!extract_float (material.emissive_factor[i],
-                                      tmp->as_array (i), 0))
+                                      tmp->as_array (j), 0))
                     {
-                      warn_and_reset (
-                          "``materials[n].emissiveFactor[m]\'\' must be a number");
+                      warn_and_reset ("``materials[n].emissiveFactor[m]\'\' "
+                                      "must be a number");
                       return false;
                     }
                 }
@@ -1743,7 +1747,7 @@ SceneAdapter::from_gltf (const std::string &file_name)
       logger << "\t\tbaseColorFactor = [";
       for (auto j = 0; j < 4; j++)
         {
-          logger << materials[i].pbr_metallic_roughness.base_color_factor[i];
+          logger << materials[i].pbr_metallic_roughness.base_color_factor[j];
           if (j != 3)
             logger << ", ";
         }
@@ -1842,7 +1846,7 @@ SceneAdapter::from_gltf (const std::string &file_name)
 
   for (int i = 0; i < n; i++)
     {
-      camera.orthographic.
+      camera.type.clear ();
       val = val->as_array (i);
       if (!check_object (val))
         {
@@ -1850,8 +1854,521 @@ SceneAdapter::from_gltf (const std::string &file_name)
           return false;
         }
 
-      tmp = val->as_object ("pbrMetallicRoughness");
+      tmp = val->as_object ("type");
+      if (!extract_string (camera.type, tmp))
+        {
+          warn_and_reset ("``camera[n].type\'\' must be a string");
+          return false;
+        }
+      if (camera.type == "orthographic")
+        {
+          tmp = val->as_object ("orthographic");
+          if (tmp == nullptr)
+            {
+              warn_and_reset (
+                  "``camera[n].orthographic\'\' must be an object");
+              return false;
+            }
+          if (!tmp->is_object ())
+            {
+              warn_and_reset (
+                  "``camera[n].orthographic\'\' must be an object");
+              return false;
+            }
+          val = tmp;
+          tmp = val->as_object ("xmag");
+          if (!extract_float (camera.orthographic.xmag, tmp))
+            {
+              warn_and_reset (
+                  "``camera[n].orthographic.xmag\'\' must be a number");
+              return false;
+            }
+          tmp = val->as_object ("ymag");
+          if (!extract_float (camera.orthographic.ymag, tmp))
+            {
+              warn_and_reset (
+                  "``camera[n].orthographic.ymag\'\' must be a number");
+              return false;
+            }
+          tmp = val->as_object ("znear");
+          if (!extract_float (camera.orthographic.znear, tmp))
+            {
+              warn_and_reset (
+                  "``camera[n].orthographic.znear\'\' must be a number");
+              return false;
+            }
+          tmp = val->as_object ("zfar");
+          if (!extract_float (camera.orthographic.zfar, tmp))
+            {
+              warn_and_reset (
+                  "``camera[n].orthographic.zfar\'\' must be a number");
+              return false;
+            }
+          val = val->parent ();
+        }
+      else if (camera.type == "perspective")
+        {
+          tmp = val->as_object ("perspective");
+          if (tmp == nullptr)
+            {
+              warn_and_reset ("``camera[n].perspective\'\' must be an object");
+              return false;
+            }
+          if (!tmp->is_object ())
+            {
+              warn_and_reset ("``camera[n].perspective\'\' must be an object");
+              return false;
+            }
+          val = tmp;
+          tmp = val->as_object ("yfov");
+          if (!extract_float (camera.perspective.yfov, tmp))
+            {
+              warn_and_reset (
+                  "``camera[n].perspective.yfov\'\' must be a number");
+              return false;
+            }
+          tmp = val->as_object ("zfar");
+          if (!extract_float (camera.perspective.zfar, tmp, -1))
+            {
+              warn_and_reset (
+                  "``camera[n].perspective.zfar\'\' must be a number");
+              return false;
+            }
+          tmp = val->as_object ("znear");
+          if (!extract_float (camera.perspective.znear, tmp))
+            {
+              warn_and_reset (
+                  "``camera[n].perspective.znear\'\' must be a number");
+              return false;
+            }
+          tmp = val->as_object ("aspectRatio");
+          if (!extract_float (camera.perspective.aspect_ratio, tmp, -1))
+            {
+              warn_and_reset (
+                  "``camera[n].perspective.aspectRatio\'\' must be a number");
+              return false;
+            }
+          val = val->parent ();
+        }
+      else
+        {
+          warn_and_reset ("``camera[n].type\'\' can only be "
+                          "``orthographic\'\' or ``perspective\'\'");
+          return false;
+        }
+      tmp = val->as_object ("name");
+      if (!extract_string (camera.name, tmp, "<unnamed>"))
+        {
+          warn_and_reset ("``camera[n].name\'\' must be a string");
+          return false;
+        }
+
+      cameras.push_back (camera);
+      val = val->parent ();
+
+      // Print data
+      logger << SeverityLevel::info << "Camera #" << i << " found."
+             << std::endl;
+      logger << "\ttype = " << cameras[i].type << std::endl;
+      if (cameras[i].type == "perspective")
+        {
+          logger << "\tperspective =" << std::endl;
+          logger << "\t\tyfov = " << cameras[i].perspective.yfov << std::endl;
+          logger << "\t\taspectRation = "
+                 << cameras[i].perspective.aspect_ratio << std::endl;
+          logger << "\t\tznear = " << cameras[i].perspective.znear
+                 << std::endl;
+          logger << "\t\tzfar = " << cameras[i].perspective.zfar << std::endl;
+        }
+      else if (cameras[i].type == "orthographic")
+        {
+          logger << "\tperspective =" << std::endl;
+          logger << "\t\txmag = " << cameras[i].orthographic.xmag << std::endl;
+          logger << "\t\tymag = " << cameras[i].orthographic.ymag << std::endl;
+          logger << "\t\tznear = " << cameras[i].orthographic.znear
+                 << std::endl;
+          logger << "\t\tzfar = " << cameras[i].orthographic.zfar << std::endl;
+        }
     }
+
+  // Extract nodes
+  std::vector<gltf_node_desc_t> nodes;
+  gltf_node_desc_t node;
+  val = loader.get_root ();
+  val = val->as_object ("nodes");
+  if (!check_array (val))
+    {
+      m_scene_ptr->reset ();
+      return false;
+    }
+  n = val->array_size ();
+  if (n == 0)
+    {
+      warn_and_reset ("``nodes\'\' array has no elements");
+      return false;
+    }
+
+  for (auto i = 0; i < n; i++)
+    {
+      node.children.clear ();
+      node.weights.clear ();
+      node.matrix = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+      node.rotation = { 0, 0, 0, 1 };
+      node.scale = { 1, 1, 1 };
+      node.translation = { 0, 0, 0 };
+
+      val = val->as_array (i);
+      if (!check_object (val))
+        {
+          m_scene_ptr->reset ();
+          return false;
+        }
+
+      tmp = val->as_object ("camera"); // camera
+      if (!extract_int (node.camera, tmp, -1))
+        {
+          warn_and_reset ("``nodes[n].camera\'\' must be a number");
+          return false;
+        }
+
+      tmp = val->as_object ("children"); // children
+      if (tmp != nullptr)
+        {
+          if (!tmp->is_array ())
+            {
+              warn_and_reset ("``nodes[n].children\'\' must be an array");
+              return false;
+            }
+          m = tmp->array_size ();
+          val = tmp;
+          for (auto j = 0; j < m; j++)
+            {
+              tmp = val->as_array (j);
+              if (!extract_int (integer, tmp))
+                {
+                  warn_and_reset (
+                      "``nodes[n].children[n]\'\' must be a number");
+                  return false;
+                }
+              node.children.push_back (integer);
+            }
+          val = val->parent ();
+        }
+
+      tmp = val->as_object ("skin"); // skin
+      if (!extract_int (node.skin, tmp, -1))
+        {
+          warn_and_reset ("``nodes[n].skin\'\' must be a number");
+          return false;
+        }
+
+      tmp = val->as_object ("matrix"); // matrix
+      if (tmp != nullptr)
+        {
+          if (!tmp->is_array ())
+            {
+              warn_and_reset ("``nodes[n].matrix\'\' must be an array");
+              return false;
+            }
+          if (tmp->array_size () != 16)
+            {
+              warn_and_reset (
+                  "``nodes[n].matrix\'\' must be have exactly 16 values");
+              return false;
+            }
+          val = tmp;
+          for (auto j = 0; j < 16; j++)
+            {
+              tmp = val->as_array (j);
+              if (!extract_float (node.matrix[j], tmp))
+                {
+                  warn_and_reset ("``nodes[n].matrix[n]\'\' must be a number");
+                  return false;
+                }
+            }
+          val = val->parent ();
+        }
+
+      tmp = val->as_object ("mesh"); // mesh
+      if (!extract_int (node.mesh, tmp, -1))
+        {
+          warn_and_reset ("``nodes[n].mesh\'\' must be a number");
+          return false;
+        }
+
+      tmp = val->as_object ("rotation"); // rotation
+      if (tmp != nullptr)
+        {
+          if (!tmp->is_array ())
+            {
+              warn_and_reset ("``nodes[n].rotation\'\' must be an array");
+              return false;
+            }
+          if (tmp->array_size () != 4)
+            {
+              warn_and_reset (
+                  "``nodes[n].rotation\'\' must be have exactly 4 values");
+              return false;
+            }
+          val = tmp;
+          for (auto j = 0; j < 4; j++)
+            {
+              tmp = val->as_array (j);
+              if (!extract_float (node.rotation[j], tmp))
+                {
+                  warn_and_reset (
+                      "``nodes[n].rotation[n]\'\' must be a number");
+                  return false;
+                }
+            }
+          val = val->parent ();
+        }
+
+      tmp = val->as_object ("scale"); // scale
+      if (tmp != nullptr)
+        {
+          if (!tmp->is_array ())
+            {
+              warn_and_reset ("``nodes[n].scale\'\' must be an array");
+              return false;
+            }
+          if (tmp->array_size () != 3)
+            {
+              warn_and_reset (
+                  "``nodes[n].scale\'\' must be have exactly 3 values");
+              return false;
+            }
+          val = tmp;
+          for (auto j = 0; j < 3; j++)
+            {
+              tmp = val->as_array (j);
+              if (!extract_float (node.scale[j], tmp))
+                {
+                  warn_and_reset ("``nodes[n].scale[n]\'\' must be a number");
+                  return false;
+                }
+            }
+          val = val->parent ();
+        }
+
+      tmp = val->as_object ("translation"); // translation
+      if (tmp != nullptr)
+        {
+          if (!tmp->is_array ())
+            {
+              warn_and_reset ("``nodes[n].translation\'\' must be an array");
+              return false;
+            }
+          if (tmp->array_size () != 3)
+            {
+              warn_and_reset (
+                  "``nodes[n].translation\'\' must be have exactly 3 values");
+              return false;
+            }
+          val = tmp;
+          for (auto j = 0; j < 3; j++)
+            {
+              tmp = val->as_array (j);
+              if (!extract_float (node.translation[j], tmp))
+                {
+                  warn_and_reset (
+                      "``nodes[n].translation[n]\'\' must be a number");
+                  return false;
+                }
+            }
+          val = val->parent ();
+        }
+
+      tmp = val->as_object ("weights"); // weights
+      if (tmp != nullptr)
+        {
+          if (!tmp->is_array ())
+            {
+              warn_and_reset ("``nodes[n].weights\'\' must be an array");
+              return false;
+            }
+          m = tmp->array_size ();
+          val = tmp;
+          for (auto j = 0; j < m; j++)
+            {
+              tmp = val->as_array (j);
+              if (!extract_int (integer, tmp))
+                {
+                  warn_and_reset (
+                      "``nodes[n].weights[n]\'\' must be a number");
+                  return false;
+                }
+              node.weights.push_back (integer);
+            }
+          val = val->parent ();
+        }
+
+      tmp = val->as_object ("name"); // name
+      if (!extract_string (node.name, tmp, "<unnamed>"))
+        {
+          warn_and_reset ("``nodes[n].name\'\' must be a string");
+          return false;
+        }
+
+      nodes.push_back (node);
+      val = val->parent ();
+
+      // Print data
+      logger << SeverityLevel::info << "Node #" << i << " found." << std::endl;
+      if (nodes[i].camera >= 0)
+        logger << "\tcamera = " << nodes[i].camera << std::endl;
+      if (!nodes[i].children.empty ())
+        {
+          logger << "\tchildren = [";
+          for (auto j = 0; j < nodes[i].children.size (); j++)
+            {
+              logger << nodes[i].children[j];
+              if (j != nodes[i].children.size () - 1)
+                logger << ", ";
+            }
+          logger << "]" << std::endl;
+        }
+      if (nodes[i].skin >= 0)
+        logger << "\tskin = " << nodes[i].skin << std::endl;
+      logger << "\tmatrix = [";
+      for (auto j = 0; j < 16; j++)
+        {
+          logger << nodes[i].matrix[j];
+          if (j != 15)
+            logger << ", ";
+        }
+      logger << "]" << std::endl;
+      if (nodes[i].mesh >= 0)
+        logger << "\tmesh = " << nodes[i].mesh << std::endl;
+      logger << "\trotation = [";
+      for (auto j = 0; j < 4; j++)
+        {
+          logger << nodes[i].rotation[j];
+          if (j != 3)
+            logger << ", ";
+        }
+      logger << "]" << std::endl;
+      logger << "\tscale = [";
+      for (auto j = 0; j < 3; j++)
+        {
+          logger << nodes[i].scale[j];
+          if (j != 2)
+            logger << ", ";
+        }
+      logger << "]" << std::endl;
+      logger << "\ttranslation = [";
+      for (auto j = 0; j < 3; j++)
+        {
+          logger << nodes[i].translation[j];
+          if (j != 2)
+            logger << ", ";
+        }
+      logger << "]" << std::endl;
+      if (!nodes[i].weights.empty ())
+        {
+          logger << "\tweights = [";
+          for (auto j = 0; j < nodes[i].weights.size (); j++)
+            {
+              logger << nodes[i].weights[j];
+              if (j != nodes[i].weights.size () - 1)
+                logger << ", ";
+            }
+          logger << "]" << std::endl;
+        }
+      logger << "\tname = " << nodes[i].name << std::endl;
+    }
+
+  // Extract scenes
+  std::vector<gltf_scene_desc_t> scenes;
+  gltf_scene_desc_t scene;
+  val = loader.get_root ();
+  val = val->as_object ("scenes");
+  if (!check_array (val))
+    {
+      m_scene_ptr->reset ();
+      return false;
+    }
+  n = val->array_size ();
+  if (n == 0)
+    {
+      warn_and_reset ("``scenes\'\' array has no elements");
+      return false;
+    }
+
+  for (auto i = 0; i < n; i++)
+    {
+      scene.nodes.clear ();
+
+      val = val->as_array (i);
+      if (!check_object (val))
+        {
+          m_scene_ptr->reset ();
+          return false;
+        }
+
+      tmp = val->as_object ("nodes"); // nodes
+      if (tmp != nullptr)
+        {
+          if (!tmp->is_array ())
+            {
+              warn_and_reset ("``scenes[n].nodes\'\' must be an array");
+              return false;
+            }
+          m = tmp->array_size ();
+          val = tmp;
+          for (auto j = 0; j < m; j++)
+            {
+              tmp = val->as_array (j);
+              if (!extract_int (integer, tmp))
+                {
+                  warn_and_reset (
+                      "``scenes[n].nodes[n]\'\' must be a number");
+                  return false;
+                }
+              scene.nodes.push_back (integer);
+            }
+          val = val->parent ();
+        }
+
+      tmp = val->as_object ("name"); // name
+      if (!extract_string (scene.name, tmp, "<unnamed>"))
+        {
+          warn_and_reset ("``scenes[n].name\'\' must be a string");
+          return false;
+        }
+
+      scenes.push_back (scene);
+      val = val->parent ();
+
+      // Print data
+      logger << SeverityLevel::info << "Scene #" << i << " found." << std::endl;
+      if (!scenes[i].nodes.empty ())
+        {
+          logger << "\tnodes = [";
+          for (auto j = 0; j < scenes[i].nodes.size (); j++)
+            {
+              logger << scenes[i].nodes[j];
+              if (j != scenes[i].nodes.size () - 1)
+                logger << ", ";
+            }
+          logger << "]" << std::endl;
+        }
+      logger << "\tname = " << nodes[i].name << std::endl;
+    }
+
+  // Extract default scene
+  int default_scene;
+  val = loader.get_root ();
+  val = val->as_object ("scene");
+  if (!extract_int (default_scene, val, -1))
+    {
+      warn_and_reset ("``scene\'\' must be a number");
+      return false;
+    }
+
+  // Print data
+  if (default_scene >= 0)
+    logger << "scene = " << default_scene << std::endl;
 
   return true;
 }

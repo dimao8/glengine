@@ -194,12 +194,12 @@
     ],
     "images" : [
         {
-            "mimeType" : "image/jpeg",
-            "uri" : "checkerboard.jpg"
+            "mimeType" : "image/png",
+            "uri" : "checkerboard.png"
         },
         {
-            "mimeType" : "image/jpeg",
-            "uri" : "Dragon_ThicknessMap.jpg"
+            "mimeType" : "image/png",
+            "uri" : "Dragon_ThicknessMap.png"
         }
     ],
     "accessors" : [

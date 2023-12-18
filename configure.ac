@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.24dev], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.25dev], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/application.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -76,8 +76,9 @@ AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert
   tests/dice.bin:tests/dice.bin
   tests/dice.gltf:tests/dice.gltf
   tests/dice.png:tests/dice.png
-  tests/checkerboard.jpg:tests/checkerboard.jpg
-  tests/Dragon_ThicknessMap.jpg:tests/Dragon_ThicknessMap.jpg
+  tests/dice_n.png:tests/dice_n.png
+  tests/checkerboard.png:tests/checkerboard.png
+  tests/Dragon_ThicknessMap.png:tests/Dragon_ThicknessMap.png
   tests/DragonAttenuation.bin:tests/DragonAttenuation.bin
   tests/DragonAttenuation.gltf:tests/DragonAttenuation.gltf
   ])
