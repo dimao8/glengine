@@ -52,6 +52,8 @@ Application::Application (const std::string &appname,
       m_save_framebuffer (false),
       m_framebuffer_size (DEFAULT_CLIENT_WIDTH, DEFAULT_CLIENT_HEIGHT)
 {
+  logger << SeverityLevel::info << "Start " << m_appname << " " << m_appversion
+         << std::endl;
   LOG_DEBUG (logger << SeverityLevel::info << _ ("Parse arguments")
                     << std::endl);
   parse_arguments (argc, argv);

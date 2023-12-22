@@ -63,7 +63,7 @@ const GLfloat Mesh::cube_data[Mesh::cube_data_size] = {
 
 /* ******************************* Mesh::Mesh ****************************** */
 
-Mesh::Mesh (const std::shared_ptr<SceneNode> &parent)
+Mesh::Mesh (SceneNode *parent)
     : SceneNode (parent), m_vertex_array (DrawingMode::triangle), m_model (1.0)
 {
   std::shared_ptr<Buffer> buffer (new Buffer (BufferAccess::draw,
@@ -79,7 +79,7 @@ Mesh::Mesh (const std::shared_ptr<SceneNode> &parent)
 
 /* ******************************* Mesh::Mesh ****************************** */
 
-Mesh::Mesh (DrawingMode mode, const std::shared_ptr<SceneNode> &parent)
+Mesh::Mesh (DrawingMode mode, SceneNode *parent)
     : SceneNode (parent), m_vertex_array (mode), m_model (1.0f)
 {
   //

@@ -16,8 +16,7 @@ private:
 public:
   Light () = delete;
   Light (const Light &) = delete;
-  Light (const std::shared_ptr<SceneNode> &parent = nullptr,
-         const Color &color = Color (0xFFFFFFFF),
+  Light (SceneNode *parent = nullptr, const Color &color = Color (0xFFFFFFFF),
          const glm::vec3 &position = glm::vec3 (0.0f, 0.0f, 0.0f));
 
   ///

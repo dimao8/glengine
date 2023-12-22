@@ -4,6 +4,9 @@
 #include "shaderprogram.h"
 
 #include <glm/mat4x4.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <list>
 #include <memory>
 #include <string>
@@ -17,19 +20,21 @@ namespace gle
 class SceneNode
 {
 
-private:
-  std::list<std::shared_ptr<SceneNode> > m_children; /// List of children nodes
+protected:
+  std::list<SceneNode*> m_children; /// List of children nodes
+  SceneNode *m_parent_ptr; /// Parent node (can be nullptr for root node)
 
-  std::shared_ptr<SceneNode>
-      m_parent_ptr; /// Parent node (can be nullptr for root node)
+  glm::quat m_rotation;
+  glm::vec3 m_scale;
+  glm::vec3 m_translation;
 
-  glm::mat4 m_transform; /// Transform matrix (model matrix)
+  glm::mat4 m_model; /// Transform to world space
 
 public:
   ///
-  /// \brief Create empty scene node
+  /// \brief Create empty scene nodse
   ///
-  SceneNode (const std::shared_ptr<SceneNode> &parent = nullptr);
+  SceneNode (SceneNode *parent = nullptr);
 
   ///
   /// \brief Destroy scene node
@@ -37,20 +42,23 @@ public:
   virtual ~SceneNode ();
 
   ///
-  /// \brief Get node model matrix including parent matrices
-  /// \return Return node model matrix
-  ///
-  glm::mat4 matrix () const;
-
-  ///
-  /// \brief Draw scene node
-  ///
-  virtual void draw (ShaderProgram &program);
-
-  ///
   /// \brief Get parent node
   ///
-  const std::shared_ptr<SceneNode> &parent () const;
+  SceneNode *parent () const;
+
+  ///
+  /// \brief Update matrices
+  ///
+  virtual void update ();
+
+  ///
+  /// \brief Get model matrix (include parent matrices)
+  ///
+  const glm::mat4 model () const;
+
+public:
+  friend class SceneAdapter;
+
 };
 
 }

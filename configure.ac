@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.25dev], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.26dev], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/application.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -53,11 +53,23 @@ AS_IF([test "x$ac_build_docs" = "xyes"],
     AC_PATH_PROG([PDFLATEX], [pdflatex])
   ])
 
+# Check for pkg-config
+PKG_PROG_PKG_CONFIG
+
+# Check for X11 and gdi32
+XLIB_LIBS=
+XLIB_CFLAGS=
+GDI32_LIBS=
+GDI32_CFLAGS=
+AS_CASE(["$host_os"],
+  [linux-gnu], [AX_CHECK_XLIB],
+  [mingw], [AX_CHECK_GDI32])
+
 # Check for GL
 AX_CHECK_OPENGL
 
 # Check for GLFW3
-AX_CHECK_GLFW
+AX_CHECK_GLFW3
 
 # Check for glm
 AX_CHECK_GLM
@@ -65,8 +77,11 @@ AX_CHECK_GLM
 # Check for glib
 AX_CHECK_GLIB
 
-CXXFLAGS+=" $GLIB_CFLAGS"
-LIBS+=" $GLIB_LIBS"
+# Check for freetype2
+AX_CHECK_FREETYPE2
+
+CXXFLAGS="$CXXFLAGS $XLIB_CFLAGS $GDI32_CFLAGS $GLIB_CFLAGS $FREETYPE2_CFLAGS $GLFW3_CFLAGS $GLM_CFLAGS"
+LIBS="$LIBS $XLIB_LIBS $GDI32_LIBS $GLIB_LIBS $FREETYPE2_LIBS $GLFW3_LIBS $GLM_LIBS"
 
 # Make symbolic links to the some files
 AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert

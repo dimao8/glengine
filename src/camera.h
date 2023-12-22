@@ -9,15 +9,34 @@
 namespace gle
 {
 
+enum class CameraType
+{
+  perspective,
+  orthographic
+};
+
+///
+/// \brief Camera class
+///
+/// \note Camera projection matrix create at start and can not be changed.
+/// Update of projection matrix is not need.
+///
 class Camera : public SceneNode
 {
 
 private:
+  CameraType m_type;
+
   // Projection settings
   float m_fovy;
   float m_aspect;
   float m_znear;
   float m_zfar;
+
+  float m_left;
+  float m_right;
+  float m_bottom;
+  float m_top;
 
   // View settings
   glm::vec3 m_position;
@@ -28,17 +47,16 @@ private:
   glm::mat4 m_view;
 
 public:
-  Camera (const std::shared_ptr<SceneNode> &parent = nullptr,
-          float fovy = 45.0f, float aspect = 1.333333333333f,
-          float znear = 0.5f, float zfar = 10.0f);
+  Camera ();
+  Camera (SceneNode *parent, float fovy, float aspect, float znear,
+          float zfar);
+  Camera (SceneNode *parent, float left, float right, float bottom, float top,
+          float znear, float zfar);
+  Camera (SceneNode *parent);
   Camera (const Camera &camera);
 
   void move_position_to (const glm::vec3 &v);
   void move_pov_to (const glm::vec3 &v);
-
-  void perspective (float fovy, float aspect, float znear, float zfar);
-  void orthographic (float left, float right, float bottom, float top,
-                     float znear, float zfar);
 
   const glm::mat4 &projection () const;
   const glm::mat4 view_projection () const;

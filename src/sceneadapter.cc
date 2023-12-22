@@ -1,5 +1,10 @@
 #include "sceneadapter.h"
 #include "logger.h"
+#include "path.h"
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif // HAVE_CONFIG_H
 
 #ifdef _WIN32
 #include <winsock.h>
@@ -7,8 +12,212 @@
 #include <netinet/in.h>
 #endif
 
+#include <fstream>
+#include <iterator>
+
 namespace gle
 {
+
+/* ************************************************************************* */
+/*                                  glTF 2.0                                 */
+/* ************************************************************************* */
+
+struct gltf_buffer_desc_t
+{
+  std::string uri;
+  int byte_length;
+  std::string name;
+  std::vector<uint8_t> bytes;
+};
+
+struct gltf_buffer_view_desc_t
+{
+  int buffer_index;
+  int byte_offset;
+  int byte_length;
+  int byte_stride;
+  int target;
+  std::string name;
+};
+
+struct gltf_accessor_sparse_index_desc_t
+{
+  int buffer_view;
+  int byte_offset;
+  int component_type;
+};
+
+struct gltf_accessor_sparse_value_desc_t
+{
+  int buffer_view;
+  int byte_offset;
+};
+
+struct gltf_accessor_sparse_desc_t
+{
+  int count;
+  gltf_accessor_sparse_index_desc_t indices;
+  gltf_accessor_sparse_value_desc_t values;
+};
+
+struct gltf_accessor_desc_t
+{
+  int buffer_view;
+  int byte_offset;
+  int component_type;
+  bool normalized;
+  int count;
+  std::string type;
+  std::vector<float> max;
+  std::vector<float> min;
+  gltf_accessor_sparse_desc_t sparse;
+  std::string name;
+};
+
+struct gltf_attributes_desc_t
+{
+  int position;
+  int normal;
+  int tangent;
+  std::vector<int> texcoord;
+  std::vector<int> color;
+  std::vector<int> joints;
+  std::vector<int> weights;
+};
+
+struct gltf_target_desc_t
+{
+  int position;
+  int normal;
+  int tangent;
+  std::vector<int> texcoord;
+  std::vector<int> color;
+};
+
+struct gltf_primitive_desc_t
+{
+  gltf_attributes_desc_t attributes;
+  int indices;
+  int material;
+  int mode;
+  std::vector<gltf_target_desc_t> targets;
+};
+
+struct gltf_mesh_desc_t
+{
+  std::vector<gltf_primitive_desc_t> primitives;
+  std::vector<float> weights;
+  std::string name;
+};
+
+struct gltf_image_desc_t
+{
+  std::string uri;
+  std::string mime_type;
+  int buffer_view;
+  std::string name;
+};
+
+struct gltf_samplers_desc_t
+{
+  int min_filter;
+  int mag_filter;
+  int wrap_s;
+  int wrap_t;
+  std::string name;
+};
+
+struct gltf_textures_desc_t
+{
+  int sampler;
+  int source;
+  std::string name;
+};
+
+struct gltf_textureinfo_desc_t
+{
+  int index;
+  int tex_coord;
+};
+
+struct gltf_pbr_metallic_roughness_desc_t
+{
+  std::array<float, 4> base_color_factor;
+  gltf_textureinfo_desc_t base_color_texture;
+  float metallic_factor;
+  float roughness_factor;
+  gltf_textureinfo_desc_t metallic_roughness_texture;
+};
+
+struct gltf_normal_textureinfo_desc_t
+{
+  int index;
+  int tex_coord;
+  float scale;
+};
+
+struct gltf_occlusion_desc_t
+{
+  int index;
+  int tex_coord;
+  float strength;
+};
+
+struct gltf_material_desc_t
+{
+  gltf_pbr_metallic_roughness_desc_t pbr_metallic_roughness;
+  gltf_normal_textureinfo_desc_t normal_texture;
+  gltf_occlusion_desc_t occlusion_texture;
+  gltf_textureinfo_desc_t emissive_texture;
+  std::array<float, 3> emissive_factor;
+  std::string alpha_mode;
+  float alpha_cutoff;
+  bool double_sided;
+};
+
+struct gltf_orthographic_camera_desc_t
+{
+  float xmag;
+  float ymag;
+  float zfar;
+  float znear;
+};
+
+struct gltf_perspective_camera_desc_t
+{
+  float aspect_ratio;
+  float yfov;
+  float zfar;
+  float znear;
+};
+
+struct gltf_camera_desc_t
+{
+  gltf_orthographic_camera_desc_t orthographic;
+  gltf_perspective_camera_desc_t perspective;
+  std::string type;
+  std::string name;
+};
+
+struct gltf_node_desc_t
+{
+  int camera;
+  std::vector<int> children;
+  int skin;
+  std::array<float, 16> matrix;
+  int mesh;
+  std::array<float, 4> rotation;
+  std::array<float, 3> scale;
+  std::array<float, 3> translation;
+  std::vector<float> weights;
+  std::string name;
+};
+
+struct gltf_scene_desc_t
+{
+  std::vector<int> nodes;
+  std::string name;
+};
 
 /* ********************** SceneAdapter::warn_and_reset ********************* */
 
@@ -2321,8 +2530,7 @@ SceneAdapter::from_gltf (const std::string &file_name)
               tmp = val->as_array (j);
               if (!extract_int (integer, tmp))
                 {
-                  warn_and_reset (
-                      "``scenes[n].nodes[n]\'\' must be a number");
+                  warn_and_reset ("``scenes[n].nodes[n]\'\' must be a number");
                   return false;
                 }
               scene.nodes.push_back (integer);
@@ -2341,7 +2549,8 @@ SceneAdapter::from_gltf (const std::string &file_name)
       val = val->parent ();
 
       // Print data
-      logger << SeverityLevel::info << "Scene #" << i << " found." << std::endl;
+      logger << SeverityLevel::info << "Scene #" << i << " found."
+             << std::endl;
       if (!scenes[i].nodes.empty ())
         {
           logger << "\tnodes = [";
@@ -2369,6 +2578,97 @@ SceneAdapter::from_gltf (const std::string &file_name)
   // Print data
   if (default_scene >= 0)
     logger << "scene = " << default_scene << std::endl;
+
+  /* *************************************************************************
+   */
+
+  // Check and load
+  if (scenes.empty () || default_scene < 0)
+    {
+      warn_and_reset (
+          "There is no scenes in glTF 2.0 file, or default scene not found");
+      return false;
+    }
+
+  // Load buffers
+  Path path = Path::folder_from_filename (file_name);
+  std::ifstream ifs;
+  size_t len;
+  Mesh *mesh_ptr;
+  for (auto it : buffers)
+    {
+      if (it.uri.empty ())
+        {
+          warn_and_reset ("Empty buffer uri found. Only GLB buffer files "
+                          "supported for version " VERSION);
+          return false;
+        }
+
+      path.append (it.uri);
+      str = path.to_string ();
+      logger << SeverityLevel::info << "PWD = " << std::getenv ("PWD") << std::endl;
+      ifs.open (str);
+      if (!ifs)
+        {
+          warn_and_reset (std::string ("Can not open file ``") + str
+                          + std::string ("\'\'"));
+          return false;
+        }
+
+      ifs.seekg (0, std::ios_base::end);
+      len = ifs.tellg ();
+      ifs.seekg (0, std::ios_base::beg);
+      it.bytes.resize (len);
+      ifs.read (reinterpret_cast<char*>(it.bytes.data ()), len);
+    }
+
+  auto node_it = m_scene_ptr->m_nodes.begin ();
+
+  for (auto nds : nodes)
+    {
+      if (nds.camera >= 0
+          && nds.camera < cameras.size ()) // This node is camera
+        {
+          if (cameras[nds.camera].type == "perspective")
+            {
+              m_scene_ptr->m_nodes.push_back (new Camera (
+                  nullptr,
+                  glm::degrees<float> (cameras[nds.camera].perspective.yfov),
+                  cameras[nds.camera].perspective.aspect_ratio,
+                  cameras[nds.camera].perspective.znear,
+                  cameras[nds.camera].perspective.zfar));
+            }
+          else if (cameras[nds.camera].type == "orthographic")
+            {
+              m_scene_ptr->m_nodes.push_back (
+                  new Camera (nullptr, -cameras[nds.camera].orthographic.xmag,
+                              cameras[nds.camera].orthographic.xmag,
+                              -cameras[nds.camera].orthographic.ymag,
+                              cameras[nds.camera].orthographic.ymag,
+                              cameras[nds.camera].orthographic.znear,
+                              cameras[nds.camera].orthographic.zfar));
+            }
+        }
+      else if (nds.mesh >= 0 && nds.mesh < meshes.size ()) // This node is mesh
+        {
+          mesh_ptr = new Mesh (DrawingMode::triangle);
+
+          // TODO : Load mesh
+          // BUG : Empty mesh drops application
+
+          m_scene_ptr->m_nodes.push_back (mesh_ptr);
+        }
+
+      // Common settings
+      node_it++;
+      (*node_it)->m_rotation = glm::quat (nds.rotation[0], nds.rotation[1],
+                                          nds.rotation[2], nds.rotation[3]);
+      (*node_it)->m_scale
+          = glm::vec3 (nds.scale[0], nds.scale[1], nds.scale[2]);
+      (*node_it)->m_translation = glm::vec3 (
+          nds.translation[0], nds.translation[1], nds.translation[2]);
+      (*node_it)->update ();
+    }
 
   return true;
 }

@@ -1,6 +1,9 @@
-AC_DEFUN([AX_CHECK_GDI],
+AC_DEFUN([AX_CHECK_GDI32],
   [
-    LIBS+=-lgdi32
+    GDI32_CFLAGS=
+    GDI32_LIBS=-lgdi32
+    save_libs="$LIBS"
+    LIBS="$LIBS $GDI32_LIBS"
     AC_CHECK_HEADERS([windows.h],
       [],
       [AC_MSG_ERROR(*** There is no windows.h)])
@@ -11,4 +14,5 @@ AC_DEFUN([AX_CHECK_GDI],
       })],
       [],
       AC_MSG_ERROR(*** There is no libgdi32))
+    LIBS="$save_libs"
   ])

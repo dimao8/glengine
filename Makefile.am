@@ -17,8 +17,12 @@ libglengine_la_SOURCES = src/application.h \
 	src/color.cc \
 	src/dirs.h \
 	src/dirs.cc \
+	src/font.h \
+	src/font.cc \
 	src/framebuffer.h \
 	src/framebuffer.cc \
+	src/glyph.h \
+	src/glyph.cc \
 	src/image.h \
 	src/image.cc \
 	src/light.h \
@@ -29,6 +33,12 @@ libglengine_la_SOURCES = src/application.h \
 	src/mesh.cc \
 	src/opengl.h \
 	src/opengl.cc \
+	src/path.h \
+	src/path.cc \
+	src/rasterfont.h \
+	src/rasterfont.cc \
+	src/rasterglyph.h \
+	src/rasterglyph.cc \
 	src/scene.h \
 	src/scene.cc \
 	src/sceneadapter.h \

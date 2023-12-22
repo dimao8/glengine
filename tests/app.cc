@@ -52,7 +52,7 @@ App::init ()
 
   m_scene = std::make_shared<gle::Scene> ();
   gle::SceneAdapter adapter (m_scene);
-  if (!adapter.from_gltf ("tests/DragonAttenuation.gltf"))
+  if (!adapter.from_gltf ("tests/dice.gltf"))
     {
       gle::logger << gle::SeverityLevel::warning
                   << "There was an error during scene initialization. The "

@@ -52,9 +52,10 @@ namespace gle
 class Path
 {
 private:
-  std::string m_driver;               /// Driver name
+  std::string m_drive;                /// Drive name
   std::vector<std::string> m_folders; /// Folder list
-  std::string m_file_name; /// Name of the file (if path ends with file name)
+  std::string m_string_path;          /// String interpretation path
+  bool m_local;                       /// Path is local (not from root)
 
   ///
   /// \brief Parse path string
@@ -64,58 +65,55 @@ private:
   ///
   bool parse_path (const std::string &location);
 
+  void update_string ();
+
 public:
   Path () = delete;
-  Path (const std::string &s);
+  explicit Path (const std::string &s);
   Path (const Path &p);
 
   ///
-  /// \brief Return \c true if path was successfully parsed
+  /// \brief Check if location is exist
+  /// \return Return \c true if location is real
   ///
-  bool is_parsed();
-
-  ///
-  /// \brief Check if location is located at application folder
-  /// \param [in] location -- Path to check
-  /// \return Return \c true if path is in application folder
-  ///
-  /// There is special paths to simplify crossplatform code. If path starts
-  /// with \c data:// , the files in this path are search from application
-  /// folder. The application path always starts at directory, where
-  /// application bin folder is located.
-  ///
-  bool is_internal (const std::string &location);
-
-  ///
-  /// \brief Check if location is located at virtual resource folder
-  /// \param [in] location -- Path to check
-  /// \return Return \c true if path is resource
-  ///
-  /// Some data can be stored as resource. The resource is the file that store
-  /// in compressed form in dynamic library or application executable file.
-  /// Any resource file can be extracted by prepend path with \c resource://
-  ///
-  bool is_resource (const std::string &location);
+  bool is_exists ();
 
   ///
   /// \brief Check if location points to the regular file
-  /// \param [in] location -- Path to check
   /// \return Return \c true if path is regular file
   ///
   /// If path points to the regular file (i.e. simple file on the disk, not an
   /// serial port, device, printer or other virtual file), function returns
   /// \c true
   ///
-  bool is_file (const std::string &location);
+  bool is_file ();
 
   ///
   /// \brief Check if location points to the folder
-  /// \param [in] location -- Path to check
   /// \return Return \c true if path is folder
   ///
   /// If path points to the folder, the function returns \c true
   ///
-  bool is_directory (const std::string &location);
+  bool is_directory ();
+
+  ///
+  /// \brief Convert path to native path string
+  ///
+  const std::string & to_string ();
+
+  ///
+  /// \brief Appends path with folder or file name
+  /// \param [in] folder -- Folder or file name
+  ///
+  void append (const std::string &folder);
+
+public:
+  ///
+  /// \brief Get folder path to the file
+  /// \param [in] filename -- Path to the file
+  /// \return Return path to the folder with file
+  ///
+  static Path folder_from_filename (const std::string &filename);
 };
 
 } // namespace gle

@@ -21,15 +21,9 @@ class Scene
 {
 
 protected:
-  std::vector<std::shared_ptr<Camera> >
-      m_camera_list; /// List of the camera nodes
-  std::vector<std::shared_ptr<Light> >
-      m_light_list; /// List of the light source nodes
-  std::vector<std::shared_ptr<Mesh> >
-      m_mesh_list;    /// List of the geometry nodes
-  std::vector<std::string> m_info; /// Info strings
 
-  std::list<std::shared_ptr<SceneNode> > m_nodes;
+  std::vector<std::string> m_info;
+  std::list<SceneNode*> m_nodes;
 
 public:
   ///
@@ -43,17 +37,14 @@ public:
   virtual ~Scene ();
 
   ///
-  /// \brief Draw current scene
-  ///
-  virtual void draw ();
-
-  ///
   /// \brief Reset scene to default state
   ///
   /// reset() clear all lists and create empty scene with single camera and
   /// cube in the center of the scene.
   ///
   virtual void reset ();
+
+  virtual void draw ();
 
   const std::vector<std::string> &get_info () const;
 

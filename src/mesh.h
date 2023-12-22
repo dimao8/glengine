@@ -28,7 +28,7 @@ public:
   ///
   /// \brief Generate cube
   ///
-  Mesh (const std::shared_ptr<SceneNode> &parent = nullptr);
+  Mesh (SceneNode *parent = nullptr);
 
   Mesh (const Mesh &) = delete;
 
@@ -36,7 +36,7 @@ public:
   /// \brief Create new mesh
   /// \param [in] parent -- Parent mesh
   ///
-  Mesh (DrawingMode mode, const std::shared_ptr<SceneNode> &parent = nullptr);
+  Mesh (DrawingMode mode, SceneNode *parent = nullptr);
 
   ///
   /// \brief Delete mesh

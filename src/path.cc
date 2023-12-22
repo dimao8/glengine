@@ -24,14 +24,16 @@
 //
 
 #include "path.h"
+#include "logger.h"
+
+#include <gio/gio.h>
 
 namespace gle
 {
 
 /* ******************************* Path::Path ****************************** */
 
-Path::Path (const std::string &s)
-    : m_driver (""), m_folders (), m_file_name ("")
+Path::Path (const std::string &s) : m_drive (""), m_folders ()
 {
   parse_path (s);
 }
@@ -39,17 +41,9 @@ Path::Path (const std::string &s)
 /* ******************************* Path::Path ****************************** */
 
 Path::Path (const Path &p)
-    : m_driver (p.m_driver), m_folders (p.m_folders), m_file_name (p.m_file_name)
+    : m_drive (p.m_drive), m_folders (p.m_folders), m_local (p.m_local)
 {
   //
-}
-
-/* **************************** Path::is_parsed **************************** */
-
-bool
-Path::is_parsed ()
-{
-  return !(m_driver.empty () && m_file_name.empty () && m_folders.empty ());
 }
 
 /* **************************** Path::parse_path *************************** */
@@ -57,89 +51,124 @@ Path::is_parsed ()
 bool
 Path::parse_path (const std::string &location)
 {
-  // FIXME : Can use RegExp
+  // TODO : Add win32 path extract
 
   std::string str;
 
+  m_folders.clear ();
+
   auto it = location.begin ();
 
-  // Check drive
-  if (*it == '/') // Root
-    {
-      it++;
-    }
-  else // drive
-    {
-      while (it != location.end () && *it != ':')
-        str.push_back (*it);
-      if (*it != ':')
-        return false;
-      it++;
-      if (*it != '/')
-        return false;
-    }
+  m_local = !(*it == '\\' || *it == '/');
 
   // Get folders
   while (true)
     {
       str.clear ();
-      while (it != location.end () && *it != '/' && *it != '.')
+      while (it != location.end () && *it != '/' && *it != '\\')
         {
           str.push_back (*it);
           it++;
         }
-      if (*it == '/')
+      if (*it == '/' || *it == '\\')
         {
           m_folders.push_back (str);
           it++;
         }
-      else if (*it == '.')
+      else if (!str.empty ())
         {
-          while (it != location.end ())
-            {
-              str.push_back (*it);
-              it++;
-            }
-
-          m_file_name = str;
-          return true;
+          m_folders.push_back (str);
         }
       else
-        return false;
+        break;
     }
-  return true;
+
+  update_string ();
+
+  return !m_folders.empty ();
 }
 
-/* *************************** Path::is_internal *************************** */
+/* ************************** Path::update_string ************************** */
 
-bool
-Path::is_internal (const std::string &location)
+void
+Path::update_string ()
 {
-  return m_driver == "data";
+  m_string_path.clear ();
+
+  for (auto it : m_folders)
+    {
+#if defined(_WIN32)
+      m_string_path += "\\";
+#elif defined(__linux__)
+      m_string_path += "/";
+#endif // __linux__
+      m_string_path += it;
+    }
+
+  #ifdef __linux__
+  if (m_local && (m_string_path[0] == '\\' || m_string_path[0] == '/'))
+    m_string_path.erase (m_string_path.begin ());
+#endif // __linux__
 }
 
-/* *************************** Path::is_resource *************************** */
+/* **************************** Path::to_string **************************** */
 
-bool
-Path::is_resource (const std::string &location)
+const std::string &
+Path::to_string ()
 {
-  return m_driver == "resource";
+  return m_string_path;
+}
+
+/* ****************************** Path::append ***************************** */
+
+void
+Path::append (const std::string &folder)
+{
+  m_folders.push_back (folder);
+  update_string ();
 }
 
 /* ***************************** Path::is_file ***************************** */
 
 bool
-Path::is_file (const std::string &location)
+Path::is_file ()
 {
-  return !m_file_name.empty ();
+  return g_file_test (
+      m_string_path.c_str (),
+      static_cast<GFileTest> (G_FILE_TEST_IS_REGULAR | G_FILE_TEST_EXISTS));
 }
 
 /* *************************** Path::is_directory ************************** */
 
 bool
-Path::is_directory (const std::string &location)
+Path::is_directory ()
 {
-  return m_file_name.empty ();
+  return g_file_test (
+      m_string_path.c_str (),
+      static_cast<GFileTest> (G_FILE_TEST_IS_DIR | G_FILE_TEST_EXISTS));
+}
+
+/* *********************** Path::folder_from_filename ********************** */
+
+Path
+Path::folder_from_filename (const std::string &filename)
+{
+  std::string str = filename;
+  auto it = str.end ();
+  while (it != str.begin ())
+    {
+      if (*it == '\\' || *it == '/')
+        {
+          str.erase (it, str.end ());
+          return Path (str);
+        }
+      else
+        {
+          it--;
+        }
+    }
+
+  return Path (str);
 }
 
 }

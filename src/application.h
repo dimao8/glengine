@@ -58,8 +58,8 @@ class Application
 {
 
 private:
-  std::string m_appname;
-  std::string m_appversion;
+  std::string m_appname;    /// Name of the host application
+  std::string m_appversion; /// Version of the host application
 
   std::list<Argument> m_args;          /// Argument list
   std::list<Argument> m_accepted_args; /// Accepted argument list
