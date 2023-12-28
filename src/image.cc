@@ -112,7 +112,7 @@ Image::Image (const std::string &file_name)
       return;
     }
 
-  ifs.read (reinterpret_cast<char *> (magic.data()), 8);
+  ifs.read (reinterpret_cast<char *> (magic.data ()), 8);
   uint8_t *data;
   png_header_t png_hdr;
   png_error_t png_result;
@@ -255,9 +255,19 @@ Image::save (const std::string &file_name)
            m_data.data (), file_name.c_str ());
 }
 
+/* ***************************** Image::bitblt ***************************** */
+
+void
+Image::bitblt (unsigned int dst_x, unsigned int dst_y, unsigned int src_width,
+               unsigned int src_height, const uint8_t *src, ColorType ct,
+               BlitOperation op = BlitOperation::o_copy)
+{
+  
+}
+
 /* ****************************** Image::width ***************************** */
 
-int
+unsigned int
 Image::width () const
 {
   return m_size.x;
@@ -265,7 +275,7 @@ Image::width () const
 
 /* ***************************** Image::height ***************************** */
 
-int
+unsigned int
 Image::height () const
 {
   return m_size.y;

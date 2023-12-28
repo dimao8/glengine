@@ -24,7 +24,7 @@ protected:
   std::map<int, RasterGlyph> m_glyphs;
 
 public:
-  RasterFont () = delete;
+  RasterFont ();
   RasterFont (const std::string & file_name);
 
   virtual int width (int c) const override;

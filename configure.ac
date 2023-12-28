@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([libglengine], [0.1.0.26dev], [dimao8@yandex.ru])
+AC_INIT([libglengine], [0.1.0.27dev], [dimao8@yandex.ru])
 AC_CONFIG_SRCDIR([src/application.cc])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([1.10 foreign subdir-objects silent-rules])
@@ -78,6 +78,22 @@ AX_CHECK_GLM
 AX_CHECK_GLIB
 
 # Check for freetype2
+# Check for sans default font
+font_list_tmp=`fc-list`
+font_template_tmp=`fc-match sans`
+font_list=`echo "$font_list_tmp" | sed 's|\([[^:]]*\)\(:.*\)|\1|'`
+font_template=`echo "$font_template_tmp" | sed 's|\([[^:]]*\)\(:.*\)|\1|'`
+font_match=`echo "$font_list" | grep -m1 "$font_template"`
+
+AC_MSG_CHECKING(for default font)
+AS_IF([test -z "$font_match"],
+  [AC_MSG_ERROR(*** Can not find sans font)])
+AC_DEFINE_UNQUOTED([DEFAULT_FONT],
+  ["$font_match"],
+  [Set to the default font path])
+AC_MSG_RESULT($font_match)
+
+# Checks for freetype2
 AX_CHECK_FREETYPE2
 
 CXXFLAGS="$CXXFLAGS $XLIB_CFLAGS $GDI32_CFLAGS $GLIB_CFLAGS $FREETYPE2_CFLAGS $GLFW3_CFLAGS $GLM_CFLAGS"
@@ -98,5 +114,6 @@ AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert
   tests/DragonAttenuation.gltf:tests/DragonAttenuation.gltf
   ])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+  doc/Doxyfile])
 AC_OUTPUT

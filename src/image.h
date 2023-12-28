@@ -29,14 +29,23 @@
 #include "color.h"
 #include "logger.h"
 
+#include <array>
 #include <cstdint>
 #include <glm/vec2.hpp>
 #include <string>
 #include <vector>
-#include <array>
 
 namespace gle
 {
+
+enum class BlitOperation
+{
+  o_copy,
+  o_sum,
+  o_diff,
+  o_and,
+  o_or
+};
 
 /**
  * \brief The Image class
@@ -91,13 +100,61 @@ public:
    */
   void save (const std::string &file_name);
 
-  int width () const;
-  int height () const;
+  ///
+  /// \brief Bit blit operation
+  /// \param [in] dst_x -- Destination X coordinate
+  /// \param [in] dst_y -- Destination Y coordinate
+  /// \param [in] src_width -- Source width
+  /// \param [in] src_height -- Source height
+  /// \param [in] src -- Source binary uncompressed data
+  /// \param [in] ct -- Color type of the source image
+  /// \param [in] op -- Blit operation
+  ///
+  /// Function bitblt makes blit operation with current image and raw source
+  /// image. bitblt draw part or whole src image with size (src_width,
+  /// src_height) to (dst_x, dst_y) point of the image. Coordinates of the
+  /// images starts from upper left corner and rise to right and bottom.
+  ///
+  /// It is possible to draw source with destination border intersect. In that
+  /// case source image will be cut. Drawing large source on the small
+  /// destination will have the same result.
+  ///
+  /// Drawing keeps internal image format unchanged and translate source format
+  /// to the image format with next rules:
+  /// 1. If destination image format have larger depth than source, source will
+  /// be extended.
+  /// 2. If destination format have only one channel, destination translates to
+  /// the grayscale and then draw implements.
+  /// 3. Alpha channel will be kept, if it is exist in source and destination.
+  /// 4. If destination has no alpha but source has, alpha channel discards.
+  /// 5. If source has no alpha channel but destination has, source alpha
+  /// channel assumed to be 255.
+  ///
+  /// There is some logic and arithmetic operations that can be implement
+  /// during the draw process.
+  /// 1. When o_copy is in use, simple copy from source to destination will be
+  /// implemented.
+  /// 2. When o_sum is in use, there will arithmetic sum of source and
+  /// destination with saturation be implemented.
+  /// 3. When o_diff is in use, there will be simple difference with zero
+  /// saturation as a result.
+  /// 4. When o_and is in use, there will be bitwise AND operation with source
+  /// and destination.
+  /// 5. When o_or is in use, there will be bitwise OR operation with source
+  /// and destination.
+  ///
+  void bitblt (unsigned int dst_x, unsigned int dst_y, unsigned int src_width,
+               unsigned int src_height, const uint8_t *src, ColorType ct,
+               BlitOperation op = BlitOperation::o_copy);
+
+  unsigned int width () const;
+  unsigned int height () const;
   ColorType color_type () const;
   int gl_type () const;
 
   const uint8_t *data_ptr () const;
 
+public:
   friend Logger &operator<< (Logger &logger, const Image &image);
 };
 
