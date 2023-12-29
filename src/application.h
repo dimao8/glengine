@@ -44,6 +44,7 @@
 #include "shaderprogram.h"
 #include "texture.h"
 #include "vertexarray.h"
+#include "rasterfont.h"
 
 namespace gle
 {

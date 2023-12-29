@@ -83,6 +83,19 @@ public:
          bool vflip = false);
 
   /**
+   * Create empty white image.
+   *
+   * \param [in] width -- Width of the image
+   * \param [in] height -- Height of the image
+   * \param [in] ct -- Type of the pixel color
+   * \param [in] fill -- Fill color
+   */
+  Image (unsigned int width = default_image_size.x,
+         unsigned int height = default_image_size.y,
+         ColorType ct = ColorType::rgb_alpha,
+         const Color &fill = { 0, 0, 0, 0 });
+
+  /**
    * Load image from the file
    *
    * \param [in] file_name -- Name of the image file

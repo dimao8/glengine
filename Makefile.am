@@ -53,6 +53,8 @@ libglengine_la_SOURCES = src/application.h \
 	src/texture.cc \
 	src/uuid.h \
 	src/uuid.cc \
+	src/utils.h \
+	src/utils.cc \
 	src/vertexarray.h \
 	src/vertexarray.cc
 
@@ -79,7 +81,7 @@ DOCPDF = $(DOCNAME).pdf
 DOCSRC = $(DOCNAME).tex
 DOCAUX = $(DOCNAME).aux
 doc_DATA = $(DOCPDF)
-PDFLATEXOPTS = --output-directory=$(DOCDIR)
+PDFLATEXOPTS = --output-directory=$(DOCDIR) -interaction=batchmode
 CLEANFILES += $(DOCPDF) $(DOCNAME).log $(DOCNAME).aux $(DOCNAME).toc \
 	$(DOCNAME).out $(DOCNAME).idx $(DOCNAME).ilg $(DOCNAME).ind $(DOCNAME).btmp
 
@@ -102,6 +104,12 @@ CLEANFILES += $(DOCPDF) $(DOCNAME).log $(DOCNAME).aux $(DOCNAME).toc \
 	@echo === Making $@ file from $^ ===
 	$(MKDIR_P) $(DOCDIR)
 	$(PDFLATEX) $(PDFLATEXOPTS) $(srcdir)/$(DOCSRC)
+
+# Doxygen
+# DOC_INDEX_HTML = html/index.html
+# html : $(DOC_INDEX_HTML)
+# $(DOC_INDEX_HTML) : Doxyfile
+# 	$(AM_V_GEN)$(DOXYGEN) $<
 endif
 
 # Tests

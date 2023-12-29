@@ -27,6 +27,7 @@
 #include "logger.h"
 #include "opengl.h"
 #include "translate.h"
+#include "utils.h"
 
 #include <algorithm>
 #include <pngloader.h>
@@ -69,6 +70,87 @@ Image::Image (unsigned int width, unsigned int height, ColorType ct,
                          m_data.begin () + i * width * bpp);
             }
         }
+    }
+}
+
+/* ****************************** Image::Image ***************************** */
+
+Image::Image (unsigned int width, unsigned int height, ColorType ct,
+              const Color &fill)
+    : m_size (width, height), m_color_type (ct)
+{
+  m_data.resize (m_size.x * m_size.y * Color::color_size (m_color_type));
+  std::array<uint8_t, 4> cl = { 0, 0, 0, 0 };
+
+  switch (m_color_type)
+    {
+    case ColorType::luminance:
+      cl[0] = std::clamp<uint8_t> (
+          (static_cast<float> (fill.color_ptr ()[0]) * 0.299f
+           + static_cast<float> (fill.color_ptr ()[1]) * 0.587f
+           + static_cast<float> (fill.color_ptr ()[2]) * 0.114f)
+              * 255.0f,
+          0, 255);
+      logger << SeverityLevel::info << "{" << static_cast<unsigned int> (cl[0])
+             << ", " << static_cast<unsigned int> (cl[1]) << ", "
+             << static_cast<unsigned int> (cl[2]) << ", "
+             << static_cast<unsigned int> (cl[3]) << "}" << std::endl;
+      for (auto i = 0; i < m_size.x * m_size.y; i++)
+        m_data[i] = static_cast<unsigned int> (cl[0]);
+      break;
+
+    case ColorType::luminance_alpha:
+      cl[0] = std::clamp<uint8_t> (
+          (static_cast<float> (fill.color_ptr ()[0]) * 0.299f
+           + static_cast<float> (fill.color_ptr ()[1]) * 0.587f
+           + static_cast<float> (fill.color_ptr ()[2]) * 0.114f)
+              * 255.0f,
+          0, 255);
+      cl[1] = fill.color_ptr ()[3];
+      logger << SeverityLevel::info << "{" << static_cast<unsigned int> (cl[0])
+             << ", " << static_cast<unsigned int> (cl[1]) << ", "
+             << static_cast<unsigned int> (cl[2]) << ", "
+             << static_cast<unsigned int> (cl[3]) << "}" << std::endl;
+      for (auto i = 0; i < m_size.x * m_size.y; i++)
+        {
+          m_data[i * 2] = static_cast<unsigned int> (cl[0]);
+          m_data[i * 2 + 1] = static_cast<unsigned int> (cl[1]);
+        }
+      break;
+
+    case ColorType::rgb:
+      cl[0] = std::clamp<uint8_t> (fill.color_ptr ()[0] * 255.0f, 0, 255);
+      cl[1] = std::clamp<uint8_t> (fill.color_ptr ()[1] * 255.0f, 0, 255);
+      cl[2] = std::clamp<uint8_t> (fill.color_ptr ()[2] * 255.0f, 0, 255);
+      logger << SeverityLevel::info << "{" << static_cast<unsigned int> (cl[0])
+             << ", " << static_cast<unsigned int> (cl[1]) << ", "
+             << static_cast<unsigned int> (cl[2]) << ", "
+             << static_cast<unsigned int> (cl[3]) << "}" << std::endl;
+      for (auto i = 0; i < m_size.x * m_size.y; i++)
+        {
+          m_data[i * 3] = static_cast<unsigned int> (cl[0]);
+          m_data[i * 3 + 1] = static_cast<unsigned int> (cl[1]);
+          m_data[i * 3 + 2] = static_cast<unsigned int> (cl[2]);
+        }
+      break;
+
+    case ColorType::rgb_alpha:
+      cl[0] = std::clamp<uint8_t> (fill.color_ptr ()[0] * 255.0f, 0, 255);
+      cl[1] = std::clamp<uint8_t> (fill.color_ptr ()[1] * 255.0f, 0, 255);
+      cl[2] = std::clamp<uint8_t> (fill.color_ptr ()[2] * 255.0f, 0, 255);
+      cl[3] = std::clamp<uint8_t> (fill.color_ptr ()[3] * 255.0f, 0, 255);
+      logger << SeverityLevel::info << "{" << static_cast<unsigned int> (cl[0])
+             << ", " << static_cast<unsigned int> (cl[1]) << ", "
+             << static_cast<unsigned int> (cl[2]) << ", "
+             << static_cast<unsigned int> (cl[3]) << "}" << std::endl;
+      for (auto i = 0; i < m_size.x * m_size.y; i++)
+        {
+          m_data[i * 4] = static_cast<unsigned int> (cl[0]);
+          m_data[i * 4 + 1] = static_cast<unsigned int> (cl[1]);
+          m_data[i * 4 + 2] = static_cast<unsigned int> (cl[2]);
+          m_data[i * 4 + 3] = static_cast<unsigned int> (cl[3]);
+        }
+      break;
     }
 }
 
@@ -260,9 +342,186 @@ Image::save (const std::string &file_name)
 void
 Image::bitblt (unsigned int dst_x, unsigned int dst_y, unsigned int src_width,
                unsigned int src_height, const uint8_t *src, ColorType ct,
-               BlitOperation op = BlitOperation::o_copy)
+               BlitOperation op)
 {
-  
+  if (dst_x >= m_size.x || dst_y > m_size.y) // No intersection
+    return;
+
+  unsigned int src_x_tmp = 0;
+  unsigned int src_y_tmp = 0;
+  unsigned int dst_x_tmp = dst_x;
+  unsigned int dst_y_tmp = dst_y;
+  unsigned int width = std::min (m_size.x, dst_x + src_width) - dst_x;
+  unsigned int height = std::min (m_size.y, dst_y + src_height) - dst_y;
+
+  std::array<uint8_t, 4> src_pixel;
+  size_t src_depth = Color::color_size (ct);
+  std::array<uint8_t, 4> dst_pixel;
+  size_t dst_depth = Color::color_size (m_color_type);
+  std::array<uint8_t, 4> result_pixel;
+
+  for (unsigned int j = 0; j < height; j++, src_y_tmp++, dst_y_tmp++)
+    {
+      src_x_tmp = 0;
+      dst_x_tmp = dst_x;
+      for (unsigned int i = 0; i < width; i++, src_x_tmp++, dst_x_tmp++)
+        {
+          switch (ct) // Source copy
+            {
+            case ColorType::luminance:
+              src_pixel[0]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[1]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[2]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[3] = 255;
+              break;
+
+            case ColorType::luminance_alpha:
+              src_pixel[0]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[1]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[2]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[3]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth + 1];
+              break;
+
+            case ColorType::rgb:
+              src_pixel[0]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[1]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth] + 1;
+              src_pixel[2]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth] + 2;
+              src_pixel[3] = 255;
+              break;
+
+            case ColorType::rgb_alpha:
+              src_pixel[0]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth];
+              src_pixel[1]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth] + 1;
+              src_pixel[2]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth] + 2;
+              src_pixel[3]
+                  = src[(src_y_tmp * src_width + src_x_tmp) * src_depth] + 3;
+              break;
+            }
+
+          switch (m_color_type) // Destination copy
+            {
+            case ColorType::luminance:
+              dst_pixel[0]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[1]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[2]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[3] = 255;
+              break;
+
+            case ColorType::luminance_alpha:
+              dst_pixel[0]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[1]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[2]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[3]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth + 1];
+              break;
+
+            case ColorType::rgb:
+              dst_pixel[0]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[1]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth] + 1;
+              dst_pixel[2]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth] + 2;
+              dst_pixel[3] = 255;
+              break;
+
+            case ColorType::rgb_alpha:
+              dst_pixel[0]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth];
+              dst_pixel[1]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth] + 1;
+              dst_pixel[2]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth] + 2;
+              dst_pixel[3]
+                  = m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth] + 3;
+              break;
+            }
+
+          switch (op)
+            {
+            case BlitOperation::o_copy:
+              result_pixel = src_pixel;
+              if ((m_color_type != ColorType::luminance_alpha)
+                  || (m_color_type != ColorType::rgb_alpha))
+                result_pixel[3] = 255;
+              break;
+
+            case BlitOperation::o_sum:
+              result_pixel[0] = sat_sum (src_pixel[0], dst_pixel[0]);
+              result_pixel[1] = sat_sum (src_pixel[1], dst_pixel[1]);
+              result_pixel[2] = sat_sum (src_pixel[2], dst_pixel[2]);
+              result_pixel[3] = dst_pixel[3];
+              break;
+
+            case BlitOperation::o_and:
+              result_pixel[0] = bitwise_and (src_pixel[0], dst_pixel[0]);
+              result_pixel[1] = bitwise_and (src_pixel[1], dst_pixel[1]);
+              result_pixel[2] = bitwise_and (src_pixel[2], dst_pixel[2]);
+              result_pixel[3] = dst_pixel[3];
+              break;
+
+            case BlitOperation::o_or:
+              result_pixel[0] = bitwise_or (src_pixel[0], dst_pixel[0]);
+              result_pixel[1] = bitwise_or (src_pixel[1], dst_pixel[1]);
+              result_pixel[2] = bitwise_or (src_pixel[2], dst_pixel[2]);
+              result_pixel[3] = dst_pixel[3];
+              break;
+            }
+
+          switch (m_color_type)
+            {
+            case ColorType::luminance:
+              m_data[dst_y_tmp * m_size.x + dst_x_tmp] = result_pixel[0];
+              break;
+
+            case ColorType::luminance_alpha:
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth]
+                  = result_pixel[0];
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth + 1]
+                  = result_pixel[3];
+              break;
+
+            case ColorType::rgb:
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth]
+                  = result_pixel[0];
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth + 1]
+                  = result_pixel[1];
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth + 2]
+                  = result_pixel[2];
+              break;
+
+            case ColorType::rgb_alpha:
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth]
+                  = result_pixel[0];
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth + 1]
+                  = result_pixel[1];
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth + 2]
+                  = result_pixel[2];
+              m_data[(dst_y_tmp * m_size.x + dst_x_tmp) * dst_depth + 3]
+                  = result_pixel[3];
+              break;
+            }
+        }
+    }
 }
 
 /* ****************************** Image::width ***************************** */
@@ -327,8 +586,7 @@ Image::data_ptr () const
 Logger &
 operator<< (Logger &logger, const Image &image)
 {
-  logger << "Image(" << image.width () << ")(" << image.width () << "x"
-         << image.height () << "x"
+  logger << "Image(" << image.width () << "x" << image.height () << "x"
          << static_cast<int> (Color::color_size (image.color_type ())) << ")"
          << std::endl;
 

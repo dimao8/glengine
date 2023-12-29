@@ -11,8 +11,8 @@ class Glyph
 {
 
 protected:
-  int m_width;
-  int m_height;
+  unsigned int m_width;
+  unsigned int m_height;
 
 public:
   Glyph () = delete;

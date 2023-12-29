@@ -5,7 +5,7 @@
 
 namespace gle
 {
-  
+
 class RasterGlyph : public Glyph
 {
 
@@ -14,14 +14,13 @@ protected:
   int m_y;
 
 public:
-  RasterGlyph() = delete;
-  RasterGlyph(int x, int y, int width, int height);
+  RasterGlyph () = delete;
+  RasterGlyph (const RasterGlyph & glyph);
+  RasterGlyph (int x, int y, unsigned int width, unsigned int height);
   int x () const;
   int y () const;
-
 };
 
 } // namespace gle
-
 
 #endif // RASTERGLYPH_H

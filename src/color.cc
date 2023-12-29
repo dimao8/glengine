@@ -126,4 +126,15 @@ Color::color_type_gl (ColorType ct)
     }
 }
 
+/* ******************************* operator<< ****************************** */
+
+std::ostream &
+operator<< (std::ostream &stream, const Color &color)
+{
+  stream << "{" << color.m_color_value[0] << ", " << color.m_color_value[1]
+         << ", " << color.m_color_value[2] << ", " << color.m_color_value[3]
+         << "}";
+  return stream;
+}
+
 }

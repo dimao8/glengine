@@ -29,6 +29,7 @@
 #include <cstdint>
 #include <glm/vec4.hpp>
 #include <string>
+#include <ostream>
 
 namespace gle
 {
@@ -90,6 +91,8 @@ public:
   static unsigned int color_size (ColorType ct);
 
   static unsigned int color_type_gl (ColorType ct);
+
+  friend std::ostream & operator<<(std::ostream & stream, const Color & color);
 };
 
 }

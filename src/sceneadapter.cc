@@ -2660,14 +2660,14 @@ SceneAdapter::from_gltf (const std::string &file_name)
         }
 
       // Common settings
+      // (*node_it)->m_rotation = glm::quat (nds.rotation[0], nds.rotation[1],
+      //                                     nds.rotation[2], nds.rotation[3]);
+      // (*node_it)->m_scale
+      //     = glm::vec3 (nds.scale[0], nds.scale[1], nds.scale[2]);
+      // (*node_it)->m_translation = glm::vec3 (
+      //     nds.translation[0], nds.translation[1], nds.translation[2]);
+      // (*node_it)->update ();
       node_it++;
-      (*node_it)->m_rotation = glm::quat (nds.rotation[0], nds.rotation[1],
-                                          nds.rotation[2], nds.rotation[3]);
-      (*node_it)->m_scale
-          = glm::vec3 (nds.scale[0], nds.scale[1], nds.scale[2]);
-      (*node_it)->m_translation = glm::vec3 (
-          nds.translation[0], nds.translation[1], nds.translation[2]);
-      (*node_it)->update ();
     }
 
   return true;

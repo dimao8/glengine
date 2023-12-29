@@ -41,7 +41,7 @@ protected:
 
 public:
   Font ();
-  virtual ~Font();
+  virtual ~Font() {}
 
   virtual int width (int c) const;
   virtual int height (int c) const;

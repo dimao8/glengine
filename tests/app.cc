@@ -63,6 +63,9 @@ App::init ()
   gle::logger << gle::SeverityLevel::info << "Scene info:" << std::endl;
   for (auto it : m_scene->get_info ())
     gle::logger << "\t" << it << std::endl;
+
+  gle::RasterFont fnt;
+  fnt.save_atlas ("default_font.tga");
 }
 
 /* ****************************** App::cleanup ***************************** */

@@ -49,9 +49,12 @@ AM_CONDITIONAL([BUILD_DOC], [test "x$ac_build_docs" = "xyes"])
 
 # Check for pdflatex
 AS_IF([test "x$ac_build_docs" = "xyes"],
-  [
-    AC_PATH_PROG([PDFLATEX], [pdflatex])
-  ])
+  [AC_PATH_PROG([PDFLATEX], [pdflatex])])
+
+# Check for doxygen
+AS_IF([test "x$ac_build_docs" = "xyes"],
+  [AC_PATH_PROG([DOXYGEN], [doxygen])],
+  [AC_MSG_ERROR(*** doxygen not found)])
 
 # Check for pkg-config
 PKG_PROG_PKG_CONFIG
@@ -63,7 +66,8 @@ GDI32_LIBS=
 GDI32_CFLAGS=
 AS_CASE(["$host_os"],
   [linux-gnu], [AX_CHECK_XLIB],
-  [mingw], [AX_CHECK_GDI32])
+  [mingw], [AX_CHECK_GDI32],
+  [AC_MSG_ERROR(*** Unsupported OS $host_os)])
 
 # Check for GL
 AX_CHECK_OPENGL
@@ -115,5 +119,5 @@ AC_CONFIG_LINKS([tests/shader.vert:tests/shader.vert
   ])
 
 AC_CONFIG_FILES([Makefile
-  doc/Doxyfile])
+  Doxyfile])
 AC_OUTPUT

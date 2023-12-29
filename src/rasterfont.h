@@ -25,12 +25,16 @@ protected:
 
 public:
   RasterFont ();
+  RasterFont (const RasterFont &) = delete;
   RasterFont (const std::string & file_name);
+  virtual ~RasterFont ();
 
   virtual int width (int c) const override;
   virtual int height (int c) const override;
   virtual int x (int c) const;
   virtual int y (int c) const;
+
+  void save_atlas(const std::string & file_name);
 
 };
 
